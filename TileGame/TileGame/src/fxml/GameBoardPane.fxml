@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+
+<BorderPane fx:id="GB" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml" fx:controller="GameBoardController">
+   <right>
+      <VBox alignment="TOP_CENTER" prefHeight="400.0" prefWidth="134.0" style="-fx-background-color: LIGHTSALMON;" BorderPane.alignment="CENTER">
+         <children>
+            <HBox alignment="TOP_CENTER" prefHeight="100.0" prefWidth="200.0" spacing="20.0">
+               <children>
+                  <Label text="Turn:">
+                     <font>
+                        <Font name="System Bold Italic" size="27.0" />
+                     </font>
+                  </Label>
+                  <Label text="1">
+                     <font>
+                        <Font size="27.0" />
+                     </font>
+                  </Label>
+               </children>
+            </HBox>
+            <Label text="Players:">
+               <font>
+                  <Font name="System Bold Italic" size="22.0" />
+               </font>
+            </Label>
+            <VBox alignment="TOP_CENTER" prefHeight="141.0" prefWidth="134.0" style="-fx-background-color: rgba(0, 0, 0, 0.5);;">
+               <children>
+                  <Label text="John" textFill="WHITE">
+                     <font>
+                        <Font size="21.0" />
+                     </font>
+                  </Label>
+                  <Label text="Mary" textFill="WHITE">
+                     <font>
+                        <Font size="21.0" />
+                     </font>
+                  </Label>
+                  <Label text="Cena" textFill="WHITE">
+                     <font>
+                        <Font size="21.0" />
+                     </font>
+                  </Label>
+                  <Label text="Tom" textFill="WHITE">
+                     <font>
+                        <Font size="21.0" />
+                     </font>
+                  </Label>
+               </children>
+            </VBox>
+            <VBox alignment="CENTER" prefHeight="123.0" prefWidth="134.0" spacing="20.0">
+               <children>
+                  <Button fx:id="BackHomeButton" onAction="#buttonOnActionB" onMouseEntered="#mouseOnB" onMouseExited="#mouseOFFB" mnemonicParsing="false" style="-fx-background-color: GREEN; -fx-background-radius: 5em;" text="Back to HomePage" textFill="WHITE" />
+                  <Button fx:id="QuitButton" onAction="#buttonOnActionQ" onMouseEntered="#mouseOnQ" onMouseExited="#mouseOFFQ" mnemonicParsing="false" style="-fx-background-color: RED; -fx-background-radius: 5em;" text="Quit Game" textFill="WHITE" />
+               </children>
+            </VBox>
+         </children>
+      </VBox>
+   </right>
+   <center>
+      <Pane prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: BLACK;" BorderPane.alignment="CENTER" />
+   </center>
+</BorderPane>

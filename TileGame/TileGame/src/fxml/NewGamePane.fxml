@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.shape.Rectangle?>
+
+<BorderPane fx:id="BP" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml" fx:controller="NewGameController">
+   <top>
+      <Label prefHeight="73.0" prefWidth="206.0" text="GameSetting" BorderPane.alignment="CENTER">
+         <font>
+            <Font size="36.0" />
+         </font>
+      </Label>
+   </top>
+   <center>
+   <StackPane prefHeight="356.0" prefWidth="400.0" BorderPane.alignment="CENTER">
+         <children>
+            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#fdad015c" height="311.0" stroke="BLACK" strokeType="INSIDE" width="364.0" />
+      <VBox alignment="CENTER" prefHeight="204.0" prefWidth="400.0" BorderPane.alignment="CENTER">
+         <children>
+            <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
+               <children>
+                  <Label  alignment="CENTER" text="Player Number: " />
+                  <Button fx:id="Button1" onAction="#buttonOnAction1" mnemonicParsing="false" prefHeight="27.0" prefWidth="45.0" style="-fx-background-color: rgba(0, 0, 0, 0.5); -fx-border-color: BLACK; -fx-border-width: 2.5px;" text="1" textFill="WHITE" />
+                  <Button fx:id="Button2" onAction="#buttonOnAction2" mnemonicParsing="false" prefHeight="27.0" prefWidth="45.0" style="-fx-background-color: rgba(0, 0, 0, 0.5); -fx-border-color: BLACK; -fx-border-width: 2.5px;" text="2" textFill="WHITE" />
+                  <Button fx:id="Button3" onAction="#buttonOnAction3" mnemonicParsing="false" prefHeight="27.0" prefWidth="45.0" style="-fx-background-color: rgba(0, 0, 0, 0.5); -fx-border-color: BLACK; -fx-border-width: 2.5px;" text="3" textFill="WHITE" />
+                  <Button fx:id="Button4" onAction="#buttonOnAction4" mnemonicParsing="false" prefHeight="27.0" prefWidth="45.0" style="-fx-background-color: rgba(0, 0, 0, 0.5); -fx-border-color: BLACK; -fx-border-width: 2.5px;" text="4" textFill="WHITE" />
+               </children>
+            </HBox>
+            <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
+               <children>
+                  <Label text="Other setting: " />
+                  <Slider />
+               </children>
+            </HBox>
+            <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="10.0">
+               <children>
+                  <Label text="Another setting: " />
+                  <RadioButton mnemonicParsing="false" text="RadioButton1" />
+                  <RadioButton mnemonicParsing="false" text="RadioButton2" />
+               </children>
+            </HBox>
+            <HBox alignment="TOP_CENTER" prefHeight="55.0" prefWidth="600.0" spacing="30.0">
+                     <children>
+            <Button fx:id="BackButton" onAction="#buttonOnActionB" onMouseEntered="#mouseOnB" onMouseExited="#mouseOFFB" mnemonicParsing="false" prefHeight="27.0" prefWidth="97.0" style="-fx-background-color: LIGHTSALMON; -fx-background-radius: 5em;" text="Back" />
+            <Button fx:id="StartButton" onAction="#buttonOnActionS" onMouseEntered="#mouseOnS" onMouseExited="#mouseOFFS" mnemonicParsing="false" prefHeight="27.0" prefWidth="97.0" style="-fx-background-color: LIGHTSALMON; -fx-background-radius: 5em;" text="Start" />
+         </children>
+                  </HBox>
+         </children>
+      </VBox>
+      </children>
+      </StackPane>
+   </center>
+   <right>
+      <VBox prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER" />
+   </right>
+   <left>
+      <VBox prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER" />
+   </left>
+   <bottom>
+      
+   </bottom>
+</BorderPane>
