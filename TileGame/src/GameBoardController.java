@@ -60,8 +60,7 @@ public class GameBoardController implements Initializable{
 	//"quit" button action method
 	@FXML
 	public void buttonOnActionQ(ActionEvent event) throws IOException {
-		stage = (Stage) BackHomeButton.getScene().getWindow();
-	    stage.close();
+		Homepage.closeWindow();
 	}
 	//A pile of mouse on effect methods
 	@FXML
@@ -80,4 +79,5 @@ public class GameBoardController implements Initializable{
 	public void mouseOFFQ() {
 		QuitButton.setStyle("-fx-background-color: RED; -fx-background-radius: 5em;");
 	}
+	
 }
