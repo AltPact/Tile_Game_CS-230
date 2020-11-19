@@ -28,12 +28,12 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.util.Duration;
 
-public class TutorialController implements Initializable{
+public class TutorialController extends GameWindow implements Initializable{
 
 	
-	private static Parent root;
+	/*private static Parent root;
 	private static StackPane homeContainer;
-	private static Scene currentScene;
+	private static Scene currentScene;*/
 	//Counter for arrayList and the progress dots
 	private int counter;
 	//ArrayList for imageView and Circle
@@ -85,20 +85,7 @@ public class TutorialController implements Initializable{
 	//"back" button action method
 	@FXML
 	public void buttonOnActionB(ActionEvent event) throws IOException {
-		root = FXMLLoader.load(getClass().getResource("/fxml/HomePagePane.fxml"));
-		currentScene = Back.getScene();
-		homeContainer = (StackPane)currentScene.getRoot();
-		//remove currentScene
-		homeContainer.getChildren().remove(BP);
-		root.translateXProperty().set(currentScene.getWidth());
-		homeContainer.getChildren().add(root);
-		
-		Timeline tl = new Timeline();
-		KeyValue kv = new KeyValue(root.translateXProperty(), 0, Interpolator.EASE_IN);
-		KeyFrame kf = new KeyFrame(Duration.seconds(0.2), kv);
-		
-		tl.getKeyFrames().add(kf);
-		tl.play();
+		switchPane("/fxml/HomePagePane.fxml",BP);
 	}
 	//">" button action method
 	@FXML
@@ -165,7 +152,7 @@ public class TutorialController implements Initializable{
 	}
 	//Method that switchImage
 	private void switchImage(ImageView simageView2, Boolean right) {
-		homeContainer=getHomeController();
+		homepane=getHomeController();
 		//System.out.println(homeContainer.getChildren());
 		SP.getChildren().add(0,simageView2);
 		animeImage(currentImage,simageView2, right);

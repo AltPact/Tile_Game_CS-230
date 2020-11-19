@@ -30,17 +30,11 @@ import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
 import javafx.util.Duration;
 
-public class HomePageController implements Initializable{
-	
-	private static Parent root;
-	private static Scene currentScene;
+public class HomePageController extends GameWindow implements Initializable{
 	//FXML bindings
-	@FXML
-	public StackPane rSPane;
+
 	@FXML
 	public BorderPane bPane;
-	@FXML
-	public ImageView bgImg;
 	@FXML
     public Button NewGameButton;
 	@FXML
@@ -50,72 +44,27 @@ public class HomePageController implements Initializable{
 	//Method runs when this class is created
 	@Override
     public void initialize(URL url, ResourceBundle resources) {
-		//System.out.print(bPane);
-		//System.out.print(rSPane);
-		//----Set moving background----
-		Path p = new Path();
-		p.getElements().add(new MoveTo(400,300));
-		p.getElements().add(new HLineTo(600));
-		PathTransition trans = new PathTransition();
-		trans.setNode(bgImg);
-		trans.setDuration(Duration.seconds(10));
-		trans.setPath(p);
-		trans.setCycleCount(PathTransition.INDEFINITE);
-		trans.setAutoReverse(true);
-		trans.play();
+		//for future use
     } 
     //"New game" button action
 	@FXML
 	public void buttonOnActionN(ActionEvent event) throws IOException {
 		//load NewGameScene
-		switchScene("/fxml/NewGamePane.fxml");
+		switchPane("/fxml/NewGamePane.fxml", bPane);
 		
 	}
 	//"Load game" button action
 	@FXML
 	public void buttonOnActionL(ActionEvent event) throws IOException {
-			switchScene("/fxml/LoadGamePane.fxml");
-			
+			switchPane("/fxml/LoadGamePane.fxml", bPane);
 	}
-	//switch scene
-	public void switchScene(String fxmlPath) throws IOException {
-				root = FXMLLoader.load(getClass().getResource(fxmlPath));
-				currentScene = NewGameButton.getScene();
-				rSPane.getChildren().remove(bPane);
-				root.translateXProperty().set(currentScene.getWidth());
-				rSPane.getChildren().add(root);
-				
-				Timeline tl = new Timeline();
-				KeyValue kv = new KeyValue(root.translateXProperty(), 0, Interpolator.EASE_IN);
-				KeyFrame kf = new KeyFrame(Duration.seconds(0.3), kv);
-				
-				tl.getKeyFrames().add(kf);
-				
-				tl.play();
-				
-				
-	}
+	
 	
 	//"Tutorial" button action
 	@FXML
 	public void buttonOnActionT(ActionEvent event) throws IOException {
 		//load NewGameScene
-		root = FXMLLoader.load(getClass().getResource("/fxml/TutorialPane.fxml"));
-		currentScene = NewGameButton.getScene();
-		//remove currentScene
-		rSPane.getChildren().remove(bPane);
-		root.translateXProperty().set(currentScene.getWidth());
-		rSPane.getChildren().add(root);
-		
-		Timeline tl = new Timeline();
-		KeyValue kv = new KeyValue(root.translateXProperty(), 0, Interpolator.EASE_IN);
-		KeyFrame kf = new KeyFrame(Duration.seconds(0.3), kv);
-		
-		tl.getKeyFrames().add(kf);
-		
-		tl.play();
-		
-		
+		switchPane("/fxml/TutorialPane.fxml", bPane);
 	}
 	//mouse on effect
 	@FXML

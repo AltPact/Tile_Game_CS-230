@@ -15,11 +15,11 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
 import javafx.util.Duration;
 
-public class NewGameController {
+public class NewGameController extends GameWindow {
 	
-	private static Parent root;
+	/*private static Parent root;
 	private static StackPane homeContainer;
-	private static Scene currentScene;
+	private static Scene currentScene;*/
 	//FXML bindings
 	
 	@FXML
@@ -46,32 +46,15 @@ public class NewGameController {
     public Button BackButton;
 	@FXML
     public Button StartButton;
-	    //switch Scene
-		public void switchScene(String fxmlPath) throws IOException {
-			root = FXMLLoader.load(getClass().getResource(fxmlPath));
-			currentScene = BackButton.getScene();
-			homeContainer = (StackPane)currentScene.getRoot();
-			//remove currentScene
-			homeContainer.getChildren().remove(BP);
-			root.translateXProperty().set(currentScene.getWidth());
-			homeContainer.getChildren().add(root);
-			
-			Timeline tl = new Timeline();
-			KeyValue kv = new KeyValue(root.translateXProperty(), 0, Interpolator.EASE_IN);
-			KeyFrame kf = new KeyFrame(Duration.seconds(0.2), kv);
-			
-			tl.getKeyFrames().add(kf);
-			tl.play();
-		}
 	//"back button" action
 	@FXML
 	public void buttonOnActionB(ActionEvent event) throws IOException {
-		switchScene("/fxml/HomePagePane.fxml");
+		switchPane("/fxml/HomePagePane.fxml",BP);
 	}
 	//"start" button action
 	@FXML
 	public void buttonOnActionS(ActionEvent event) throws IOException {
-		switchScene("/fxml/GameBoardPane.fxml");
+		switchPane("/fxml/GameBoardPane.fxml",BP);
 		
 	}
 	

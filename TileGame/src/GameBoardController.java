@@ -18,7 +18,7 @@ import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
-public class GameBoardController implements Initializable{
+public class GameBoardController extends GameWindow implements Initializable{
 
 	
 	private static Stage stage;
@@ -34,28 +34,10 @@ public class GameBoardController implements Initializable{
     public void initialize(URL url, ResourceBundle resources) {
 		
 	}
-	//switch Scene
-	public void switchScene(String fxmlPath) throws IOException {
-		root = FXMLLoader.load(getClass().getResource(fxmlPath));
-		Scene currentScene = BackHomeButton.getScene();
-		root.translateXProperty().set(currentScene.getWidth());
-		StackPane homeContainer = (StackPane)currentScene.getRoot();
-		//remove currentScene
-		homeContainer.getChildren().remove(GB);
-		root.translateXProperty().set(currentScene.getWidth());
-		homeContainer.getChildren().add(root);
-		
-		Timeline tl = new Timeline();
-		KeyValue kv = new KeyValue(root.translateXProperty(), 0, Interpolator.EASE_IN);
-		KeyFrame kf = new KeyFrame(Duration.seconds(0.2), kv);
-		
-		tl.getKeyFrames().add(kf);
-		tl.play();
-	}
 	//"back" button action method
 	@FXML
 	public void buttonOnActionB(ActionEvent event) throws IOException {
-		switchScene("/fxml/HomePagePane.fxml");
+		switchPane("/fxml/HomePagePane.fxml",GB);
 	}
 	//"quit" button action method
 	@FXML

@@ -14,7 +14,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
 import javafx.util.Duration;
 
-public class LoadGameController {
+public class LoadGameController extends GameWindow {
 	
 	private static Parent root;
 	private static StackPane homeContainer;
@@ -75,32 +75,13 @@ public class LoadGameController {
 		Select.setStyle("-fx-background-color: LIGHTSALMON; -fx-background-radius: 5em;");
 		
 	}
-	//switch Scene
-	public void switchScene(String fxmlPath) throws IOException {
-		root = FXMLLoader.load(getClass().getResource(fxmlPath));
-		currentScene = Back.getScene();
-		homeContainer = (StackPane)currentScene.getRoot();
-		//remove currentScene
-		homeContainer.getChildren().remove(BP);
-		root.translateXProperty().set(currentScene.getWidth());
-		homeContainer.getChildren().add(root);
-		
-		Timeline tl = new Timeline();
-		KeyValue kv = new KeyValue(root.translateXProperty(), 0, Interpolator.EASE_IN);
-		KeyFrame kf = new KeyFrame(Duration.seconds(0.2), kv);
-		
-		tl.getKeyFrames().add(kf);
-		tl.play();
-	}
-	
-	//"back" button action(switch scene)
 	@FXML
 	public void backOnAction(ActionEvent event) throws IOException {
-		switchScene("/fxml/HomePagePane.fxml");	
+		switchPane("/fxml/HomePagePane.fxml", BP);	
 	}
 	//"select" button action(switch scene)
 	@FXML
 	public void selectOnAction(ActionEvent event) throws IOException {
-		switchScene("/fxml/GameBoardPane.fxml");
+		switchPane("/fxml/GameBoardPane.fxml",BP);
 	}
 }
