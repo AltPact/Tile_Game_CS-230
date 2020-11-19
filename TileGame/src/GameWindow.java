@@ -24,7 +24,6 @@ public class GameWindow {
 	protected static StackPane homepane;
 	protected static ImageView bgImg;
 	protected static BorderPane content;
-	protected static String homeFXML = "/fxml/HomePagePane.fxml";
 
 	public GameWindow() {
 	}
