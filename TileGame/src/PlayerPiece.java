@@ -2,6 +2,7 @@
  * File Name: PlayerPiece.java<br>
  * Created: 20/11/2020<br>
  * Modified: 20/11/2020<br>
+ * 
  * @author Morgan Firkins (852264)<br>
  * Version: 1.0<br>
  *
@@ -103,8 +104,9 @@ public class PlayerPiece {
 	 */
 	public boolean getBacktrack() {
 		return this.backtrackApplied;
-		
+
 	}
+
 	@Override
 	public String toString() {
 		String result = "X co-ordinate: " + this.getX() + "\n";
@@ -112,7 +114,7 @@ public class PlayerPiece {
 		result += "Colour: " + this.getColour() + "\n";
 		result += "BackTrack: " + this.getBacktrack() + "\n";
 		return result;
-		
+
 	}
 
 }
