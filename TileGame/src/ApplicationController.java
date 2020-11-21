@@ -11,16 +11,23 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.stage.Stage;
-
-public class Homepage extends Application{
+/**
+ * File Name: ApplicationController.java Created: 07/11/2020 Modified: 19/11/2020
+ * 
+ * @author Wan Fai Tong (1909787) and Adem Arik (850904) Version: 1.0
+ */
+public class ApplicationController extends Application{
 	private static Stage stage;
 	private static MediaPlayer background;
-	
+
 	public static void main(String[] args) {
 		launch(args);
 	}
 	
-	
+	/**
+	 * This method starts the application window
+	 * @param primaryStage
+	 */
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 		//Scene run
@@ -44,6 +51,9 @@ public class Homepage extends Application{
         background.setVolume(0.2);
         background.setAutoPlay(true);
 	}
+	/**
+	 * This method will save game data
+	 */
 	public static void closeWindow() {
 		System.out.println("Save game data");
 	    stage.close();

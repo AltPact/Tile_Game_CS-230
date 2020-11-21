@@ -16,7 +16,11 @@ import javafx.scene.shape.HLineTo;
 import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
 import javafx.util.Duration;
-
+/**
+ * File Name: GameSceneController.java Created: 19/11/2020 Modified: 19/11/2020
+ * 
+ * @author Wan Fai Tong (1909787) and Sam Steadman (1910177) Version: 1.0
+ */
 public class GameWindow {
 
 	protected static Parent root;
@@ -25,23 +29,40 @@ public class GameWindow {
 	protected static ImageView bgImg;
 	protected static BorderPane content;
 
+	/**
+	 * Constructor of GameWindow
+	 */
 	public GameWindow() {
 	}
 
+	/**
+	 * This method initialize the GameWindow
+	 * @param root The reference of root object
+	 * @param currentScene The reference of the scene
+	 * @param homepane The reference of the the StackPane
+	 */
 	public void init(Parent root, Scene currentScene, StackPane homepane) {
 		this.root = root;
 		this.currentScene = currentScene;
 		this.homepane = homepane;
 	}
 
-	// switch scene
+	/**
+	 * This method makes and initializes the StackPane
+	 * @return The StackPane
+	 */
 	public StackPane initStackpane() {
 		StackPane background = new StackPane();
 		background.setPrefSize(600, 400);
 		background.getChildren().add(setImageView());
 		return background;
 	}
-    // set ImageView
+    
+	/**
+	 * This method makes the background
+	 * and add animation to move the background
+	 * @return The background ImageView
+	 */
 	public ImageView setImageView() {
 		Image image = new Image("/img/bg.jpg");
 		bgImg = new ImageView();
@@ -64,7 +85,11 @@ public class GameWindow {
 		return bgImg;
 	}
 
-	// switch scene(actually it is switching pane)
+	/**
+	 * This method switches the current pane to a new pane
+	 * @param fxmlPath The pathname of the fxml
+	 * @param current The reference of the current pane
+	 */
 	public void switchPane(String fxmlPath, BorderPane current) throws IOException {
 		System.out.println("curbor: " + current);
 		content = FXMLLoader.load(getClass().getResource(fxmlPath));

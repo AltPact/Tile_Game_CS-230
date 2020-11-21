@@ -14,7 +14,11 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
 import javafx.util.Duration;
-
+/**
+ * File Name: NewGameController.java Created: 07/11/2020 Modified: 19/11/2020
+ * 
+ * @author Wan Fai Tong (1909787) and Sam Steadman (1910177) Version: 1.0
+ */
 public class NewGameController extends GameWindow {
 	
 	/*private static Parent root;
@@ -46,102 +50,199 @@ public class NewGameController extends GameWindow {
     public Button BackButton;
 	@FXML
     public Button StartButton;
-	//"back button" action
+	
+	/**
+	 * This method is called when the back button is click
+	 * it will call the switchPane() method which switch to HomePagePane
+	 * @param event The action event
+	 */
 	@FXML
 	public void buttonOnActionB(ActionEvent event) throws IOException {
 		switchPane("/fxml/HomePagePane.fxml",BP);
 	}
-	//"start" button action
+	
+	/**
+	 * This method is called when the start button is click
+	 * it will call the switchPane() method which switch to GameBoardPane
+	 * @param event The action event
+	 */
 	@FXML
 	public void buttonOnActionS(ActionEvent event) throws IOException {
 		switchPane("/fxml/GameBoardPane.fxml",BP);
 		
 	}
 	
-	//mouse on effect
+	/**
+	 * This method is called when mouse is on the textfield
+	 * it will change the color of the textfield
+	 */
 	@FXML
 	public void mouseOnTF() {
 		TestField.setStyle("-fx-background-color: rgba(211, 211, 211, 0.5); -fx-border-color: transparent transparent lightsalmon transparent;");
 		
 	}
+	
+	/**
+	 * This method is called when mouse is off the textfield
+	 * it will change the color of the textfield back
+	 */
 	@FXML
 	public void mouseOFFTF() {
 		TestField.setStyle("-fx-background-color: rgba(128, 128, 128, 0.5); -fx-border-color: transparent transparent lightsalmon transparent;");
 		
 	}
+	
+	/**
+	 * This method is called when mouse is on the add button
+	 * it will change the color of the button
+	 */
 	@FXML
 	public void mouseOnA() {
 		AddButton.setStyle("-fx-background-color: WHITE; -fx-background-radius: 1em;");
 		
 	}
+	
+	/**
+	 * This method is called when mouse is off the add button
+	 * it will change the color of the button back
+	 */
 	@FXML
 	public void mouseOFFA() {
 		AddButton.setStyle("-fx-background-color: LIGHTSALMON; -fx-background-radius: 5em;");
 		
 	}
+	
+	/**
+	 * This method is called when mouse is on the delete button
+	 * it will change the color of the button
+	 */
 	@FXML
 	public void mouseOnD1() {
 		DeleteButton1.setStyle("-fx-background-color: rgba(211, 211, 211, 0.5);");
 		
 	}
+	
+	/**
+	 * This method is called when mouse is off the delete button
+	 * it will change the color of the button back
+	 */
 	@FXML
 	public void mouseOFFD1() {
 		DeleteButton1.setStyle("-fx-background-color: rgba(128, 128, 128, 0.5);");
 		
 	}
+	
+	/**
+	 * This method is called when mouse is on the delete button
+	 * it will change the color of the button
+	 */
 	@FXML
 	public void mouseOnD2() {
 		DeleteButton2.setStyle("-fx-background-color: rgba(211, 211, 211, 0.5);");
 		
 	}
+	
+	/**
+	 * This method is called when mouse is off the delete button
+	 * it will change the color of the button back
+	 */
 	@FXML
 	public void mouseOFFD2() {
 		DeleteButton2.setStyle("-fx-background-color: rgba(128, 128, 128, 0.5);");
 		
 	}
+	
+	/**
+	 * This method is called when mouse is on the delete button
+	 * it will change the color of the button
+	 */
 	@FXML
 	public void mouseOnD3() {
 		DeleteButton3.setStyle("-fx-background-color: rgba(211, 211, 211, 0.5);");
 		
 	}
+	
+	/**
+	 * This method is called when mouse is off the delete button
+	 * it will change the color of the button back
+	 */
 	@FXML
 	public void mouseOFFD3() {
 		DeleteButton3.setStyle("-fx-background-color: rgba(128, 128, 128, 0.5);");
 		
 	}
+	
+	/**
+	 * This method is called when mouse is on the back button
+	 * it will change the color of the button
+	 */
 	@FXML
 	public void mouseOnB() {
 		BackButton.setStyle("-fx-background-color: WHITE; -fx-background-radius: 5em;");
 		
 	}
+	
+	/**
+	 * This method is called when mouse is off the back button
+	 * it will change the color of the button back
+	 */
 	@FXML
 	public void mouseOFFB() {
 		BackButton.setStyle("-fx-background-color: LIGHTSALMON; -fx-background-radius: 5em;");
 		
 	}
+	
+	/**
+	 * This method is called when mouse is on the start button
+	 * it will change the color of the button
+	 */
 	@FXML
 	public void mouseOnS() {
 		StartButton.setStyle("-fx-background-color: WHITE; -fx-background-radius: 5em;");
 		
 	}
+	
+	/**
+	 * This method is called when mouse is off the start button
+	 * it will change the color of the button back
+	 */
 	@FXML
 	public void mouseOFFS() {
 		StartButton.setStyle("-fx-background-color: LIGHTSALMON; -fx-background-radius: 5em;");
 		
 	}
-	//button click on effect
+	
+	/**
+	 * This method is called when the button 1 is clicked
+	 * it will change the color of the button
+	 */
 	@FXML
 	public void buttonOnAction1() {
 		Button1.setStyle("-fx-background-color: WHITE; -fx-border-color: BLACK; -fx-border-width: 2.5px; -fx-text-fill: black");
 	}
+	
+	/**
+	 * This method is called when the button 2 is clicked
+	 * it will change the color of the button
+	 */
 	@FXML
 	public void buttonOnAction2() {
 		Button2.setStyle("-fx-background-color: WHITE; -fx-border-color: BLACK; -fx-border-width: 2.5px; -fx-text-fill: black");
 	}
+	
+	/**
+	 * This method is called when the button 3 is clicked
+	 * it will change the color of the button
+	 */
 	@FXML
 	public void buttonOnAction3() {
 		Button3.setStyle("-fx-background-color: WHITE; -fx-border-color: BLACK; -fx-border-width: 2.5px; -fx-text-fill: black");
 	}
+	
+	/**
+	 * This method is called when the button 4 is clicked
+	 * it will change the color of the button
+	 */
 	@FXML
 	public void buttonOnAction4() {
 		Button4.setStyle("-fx-background-color: WHITE; -fx-border-color: BLACK; -fx-border-width: 2.5px; -fx-text-fill: black");

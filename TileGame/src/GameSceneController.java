@@ -17,8 +17,12 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-
-public class GameBoardController extends GameWindow implements Initializable{
+/**
+ * File Name: GameSceneController.java Created: 07/11/2020 Modified: 10/11/2020
+ * 
+ * @author Wan Fai Tong (1909787) and Sam Steadman (1910177) Version: 1.0
+ */
+public class GameSceneController extends GameWindow implements Initializable{
 
 	
 	private static Stage stage;
@@ -29,34 +33,68 @@ public class GameBoardController extends GameWindow implements Initializable{
     public Button BackHomeButton;
 	@FXML
     public Button QuitButton;
-	//Made this method for future use
+	
+	/**
+	 * This method initialize this page
+	 * @param url The location of root object
+	 * @param resources The resources to localize the root object
+	 */
 	@Override
     public void initialize(URL url, ResourceBundle resources) {
 		
 	}
-	//"back" button action method
+	
+	/**
+	 * This method is called when the back button is click
+	 * it will call the switchPane() method which switch to HomePagePane
+	 * @param event The action event
+	 */
 	@FXML
 	public void buttonOnActionB(ActionEvent event) throws IOException {
 		switchPane("/fxml/HomePagePane.fxml",GB);
 	}
-	//"quit" button action method
+	
+	/**
+	 * This method is called when the quit button is click
+	 * it will close the application window
+	 * @param event The action event
+	 */
 	@FXML
 	public void buttonOnActionQ(ActionEvent event) throws IOException {
-		Homepage.closeWindow();
+		ApplicationController.closeWindow();
 	}
-	//A pile of mouse on effect methods
+	
+	/**
+	 * This method is called when mouse is on the back button
+	 * it will change the color of the button
+	 */
 	@FXML
 	public void mouseOnB() {
 		BackHomeButton.setStyle("-fx-background-color: WHITE; -fx-text-fill: black; -fx-background-radius: 5em;");
 	}
+	
+	/**
+	 * This method is called when mouse is off the back button
+	 * it will change the color of the button back
+	 */
 	@FXML
 	public void mouseOFFB() {
 		BackHomeButton.setStyle("-fx-background-color: GREEN; -fx-background-radius: 5em;");
 	}
+	
+	/**
+	 * This method is called when mouse is on the quit button
+	 * it will change the color of the button
+	 */
 	@FXML
 	public void mouseOnQ() {
 		QuitButton.setStyle("-fx-background-color: WHITE; -fx-text-fill: black; -fx-background-radius: 5em;");
 	}
+	
+	/**
+	 * This method is called when mouse is off the quit button
+	 * it will change the color of the button back
+	 */
 	@FXML
 	public void mouseOFFQ() {
 		QuitButton.setStyle("-fx-background-color: RED; -fx-background-radius: 5em;");
