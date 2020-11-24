@@ -24,6 +24,9 @@ public abstract class Tile {
 		return tileType;
 	}
 	
+	/**
+	 * @return If the tile is a action.
+	 */
 	public boolean isAction() {
 		if(tileType == TileType.BackTrack) {
 			return true;

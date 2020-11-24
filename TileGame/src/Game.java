@@ -21,7 +21,7 @@ public class Game {
 	}
 	
 	public GameState getState() {
-		return new GameState(board, players, curPlayers);
+		return new GameState(board, players, curPlayer);
 	}
 	
 	public Tile getNewTileForCurrentPlayer() {
@@ -36,8 +36,8 @@ public class Game {
 		return players[curPlayer].getActionTilesOwned();
 	}
 	
-	public void insertTile(Tile tileToBeInserted, int gridRef) {
-		board.insert(tileToBeInserted, gridRef);
+	public void insertTile(Tile tileToBeInserted, int x, int y) {
+		board.insert(tileToBeInserted, x, y);
 	}
 	
 	public void playDoubleMove(ActionTile doubleMove) {

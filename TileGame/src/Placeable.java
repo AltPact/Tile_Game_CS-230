@@ -35,6 +35,26 @@ public class Placeable extends Tile {
 	}
 	
 	/**
+	 * A constructor to construct tile. It will automatically
+	 * interpret the ways to move based on the chosen type and 
+	 * orientation.
+	 * @param tileType The type of the tile from the enumerated values
+	 * @param isGoal If the tile is a goal tile
+	 * @param isFixed If the tile is fixed.
+	 * @param orientation The orientation of the Tile. 
+	 */
+	public Placeable(TileType tileType, boolean isGoal, boolean isFixed, int orientation) {
+		super(tileType);
+		this.ISGOAL = isGoal;
+		this.ISFIXED = isFixed;
+		setType(tileType);
+		this.orientation = orientation;
+		for(int i = 0; i < orientation; i++) {
+			rotateRight(); 
+		}
+	}
+	
+	/**
 	 * This private method sets the tiles ways to move based on the tile type
 	 * @param tileType The type of tile being created.
 	 */
