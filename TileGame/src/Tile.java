@@ -23,5 +23,19 @@ public abstract class Tile {
 	public TileType getType() {
 		return tileType;
 	}
+	
+	public boolean isAction() {
+		if(tileType == TileType.BackTrack) {
+			return true;
+		} else if (tileType == TileType.DoubleMove) {
+			return true;
+		} else if (tileType == TileType.Fire) {
+			return true;
+		} else if (tileType == TileType.Ice) {
+			return true;
+		} else {
+			return false;
+		}
+	}
 
 }

@@ -1,7 +1,11 @@
+import java.util.ArrayList;
+
 /**
  * File Name: PlayerPiece.java<br>
  * Created: 20/11/2020<br>
- * Modified: 20/11/2020<br>
+ * Modified: 24/11/2020<br>
+ * 
+ * 24/11/2020 - Added ability to own action tiles.
  * 
  * @author Morgan Firkins (852264)<br>
  * Version: 1.0<br>
@@ -12,6 +16,7 @@ public class PlayerPiece {
 	private int y;
 	private String colour;
 	private boolean backtrackApplied;
+	private ArrayList<ActionTile> ownedActionTiles;
 
 	/**
 	 * Constructs the player piece object for the board
@@ -29,6 +34,7 @@ public class PlayerPiece {
 		this.y = y;
 		this.colour = colour;
 		this.backtrackApplied = backtrackApplied;
+		this.ownedActionTiles = new ArrayList<ActionTile>();
 
 	}
 
@@ -105,6 +111,31 @@ public class PlayerPiece {
 	public boolean getBacktrack() {
 		return this.backtrackApplied;
 
+	}
+	
+	/**
+	 * Allows an action tile to be issued to this user
+	 * @param tile tile to be added
+	 */
+	public void addActionTile(ActionTile tile) {
+		this.ownedActionTiles.add(tile);
+	}
+	
+	/**
+	 * Returns a array of all of the tiles owned by this player.
+	 * @return tiles owned by this player
+	 */
+	public ArrayList<ActionTile> getActionTilesOwned(){
+		return this.ownedActionTiles;
+	}
+	
+	/**
+	 * Allows a player to play a tile.
+	 * @param tile the tile to be played
+	 * @return boolean if the operation has been completed correctly. 
+	 */
+	public boolean playActionTile(ActionTile tile) {
+		return this.ownedActionTiles.remove(tile);
 	}
 
 	@Override

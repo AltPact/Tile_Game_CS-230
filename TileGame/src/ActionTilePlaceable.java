@@ -36,7 +36,7 @@ public abstract class ActionTilePlaceable extends ActionTile {
 		if (super.getType() == TileType.Ice) {
 			this.timeRemaing = NUM_OF_PLAYERS;
 		} else if (super.getType() == TileType.Fire) {
-			this.timeRemaing = NUM_OF_PLAYERS;
+			this.timeRemaing = NUM_OF_PLAYERS * 2;
 		} else {
 			throw new IncorrectTileTypeException(super.getType());
 		}

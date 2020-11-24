@@ -1,78 +1,140 @@
+//Java Doc Not Yet Complete.
+//Class Not Yet Complete.
+
+import java.util.ArrayList;
+
 public class Game {
-	/**
-	 * File Name: Game.java Created: 14/11/2020 Modified: 15/11/2020
-	 * 
-	 * @author Wan Fai Tong (1909787) and Adem Arik (850904) Version: 1.0
-	 */
-	//This should be replaced by Board object 
-	private static Tile gameboard[][];
-	private static PlayerPiece playerArray[];
-	private static int turns;
 	
-	/**
-	 * Constructor of GameWindow
-	 * @param playerAray The array reference of player piece object
-	 */
-	public Game(PlayerPiece[] playerArray) {
-		this.playerArray=playerArray;
-		turns=0;
-		//intialize game board using game board class object
-		//but tile class hasn't completed yet so just type a comment here
+	private Board board;
+	private SilkBag bag;
+	private PlayerPiece[] players;
+	private int curPlayer;
+	private int movesRemaingForThisPlayer = 1;
+	private ArrayList<ActionTilePlaceable> tilesInAction;
+	
+	public Game(String fileName, PlayerPiece[] players) {
+		this.bag = new SilkBag()
+		this.board = new Board(fileName, bag);
+		this.players = players;
+		this.curPlayer = 0;
+		this.tilesInAction = new ArrayList<ActionTilePlaceable>();
 	}
 	
-	/**
-	 * Constructor of GameWindow
-	 * for loading game history
-	 * @param gameboard The array reference of player piece object
-	 * @param playerAray The array reference of player piece object
-	 * @param turns The number of turns
-	 */
-	//This constructor is for loading previous game history
-	public Game(Tile gameboard[][], PlayerPiece[] playerArray, int turns) {
-		this.gameboard=gameboard;
-		this.playerArray=playerArray;
-		this.turns=turns;
-	}
-
-	/**
-	 * Method for game window
-	 * @return The array of player piece
-	 */
-	public static PlayerPiece[] getPlayerArray() {
-		return playerArray;
+	public GameState getState() {
+		return new GameState(board, players, curPlayers);
 	}
 	
-	/**
-	 * Method for game window
-	 * @return The gameboard
-	 */
-	public static Tile[][] getGameboard() {
-		return gameboard;
-	}
-
-	/**
-	 * Temporary method for testing the game window
-	 * @param gameboard The gameboard
-	 */
-	public static void setGameboard(Tile[][] gameboard) {
-		Game.gameboard = gameboard;
-	}
-
-	/**
-	 * Method for game window
-	 * @return turns
-	 */
-	public static int getTurns() {
-		return turns;
-	}
-
-	/**
-	 * Method that increase the turns numbers
-	 */
-	public static void nextTurns() {
-		Game.turns += 1;
+	public Tile getNewTileForCurrentPlayer() {
+		Tile newTile = bag.getTile();
+		if (newTile.isAction()) {
+			players[curPlayer].addActionTile((ActionTile)newTile);
+		}
+		return newTile;
 	}
 	
+	public ArrayList<ActionTile> getActionTilesForPlayer() {
+		return players[curPlayer].getActionTilesOwned();
+	}
 	
+	public void insertTile(Tile tileToBeInserted, int gridRef) {
+		board.insert(tileToBeInserted, gridRef);
+	}
+	
+	public void playDoubleMove(ActionTile doubleMove) {
+		players[curPlayer].playActionTile(doubleMove);
+		this.movesRemaingForThisPlayer++;
+	}
+	
+	public void playBackTrack(ActionTile backtrack) {
+		players[curPlayer].playActionTile(backtrack);
+		//TODO Implement Backtrack 
+	}
+	
+	public void playIce(Ice ice, int x, int y) {
+		players[curPlayer].playActionTile(ice);
+		Placeable[] tilesToAction= new Placeable[9];
+		tilesToAction[0] = (Placeable) board.getTile((x - 1), (y - 1));
+		tilesToAction[1] = (Placeable) board.getTile((x - 1), y);
+		tilesToAction[2] = (Placeable) board.getTile((x - 1), (y + 1));
+		tilesToAction[3] = (Placeable) board.getTile(x, (y - 1));
+		tilesToAction[4] = (Placeable) board.getTile(x, y);
+		tilesToAction[5] = (Placeable) board.getTile(x, (y + 1));
+		tilesToAction[6] = (Placeable) board.getTile((x + 1), (y - 1));
+		tilesToAction[7] = (Placeable) board.getTile((x + 1), y);
+		tilesToAction[8] = (Placeable) board.getTile((x + 1) , (y + 1));
+		ice.instantiateAction(tilesToAction);
+	}
+	
+	public void playFire(Fire fire, int x, int y) {
+		players[curPlayer].playActionTile(fire);
+		Placeable[] tilesToAction= new Placeable[9];
+		tilesToAction[0] = (Placeable) board.getTile((x - 1), (y - 1));
+		tilesToAction[1] = (Placeable) board.getTile((x - 1), y);
+		tilesToAction[2] = (Placeable) board.getTile((x - 1), (y + 1));
+		tilesToAction[3] = (Placeable) board.getTile(x, (y - 1));
+		tilesToAction[4] = (Placeable) board.getTile(x, y);
+		tilesToAction[5] = (Placeable) board.getTile(x, (y + 1));
+		tilesToAction[6] = (Placeable) board.getTile((x + 1), (y - 1));
+		tilesToAction[7] = (Placeable) board.getTile((x + 1), y);
+		tilesToAction[8] = (Placeable) board.getTile((x + 1) , (y + 1));
+		fire.instantiateAction(tilesToAction);
+	}
+	
+	public boolean move(int direction) {
+		int curX = players[curPlayer].getX();
+		int curY = players[curPlayer].getY();
+		Placeable curTile =  (Placeable) board.getTile(curX, curY);
+		int newX;
+		int newY;
+		if(curTile.canMove(direction)) {
+			if(direction == 0) {
+				newX = curX;
+				newY = curY - 1;
+			} else if(direction == 1) {
+				newX = curX + 1;
+				newY = curY;
+			} else if(direction == 2) {
+				newX = curX;
+				newY = curY + 1;
+			} else if(direction == 3) {
+				newX = curX - 1;
+				newY = curY;
+			}
+		} else {
+			return false;
+		}
+		
+		Placeable newTile =  (Placeable) board.getTile(curX, curY);
+		
+		int oppDirection;
+		if(direction == 0) {
+			oppDirection = 2;
+		} else if(direction == 1) {
+			oppDirection = 3;
+		} else if(direction == 2) {
+			oppDirection = 0;
+		} else if(direction == 3) {
+			oppDirection = 1;
+		}
+		
+		if(newTile.canMove(oppDirection)) {
+			players[curPlayer].setX(newX);
+			players[curPlayer].setY(newY);
+			return true;
+		} else {
+			return false;
+		}
+	}
+		
+	public void endTurn() {
+		curPlayer ++;
+		if ((curPlayer % players.length) == 0) {
+			curPlayer = 0;
+		}
+		for(ActionTilePlaceable tile : tilesInAction) {
+			tile.decrementTime();
+		}
+		
+	}
 
 }
