@@ -151,13 +151,7 @@ public class Placeable extends Tile {
 	public int getOrientation() {
 		return this.orientation;
 	}
-	/**
-	 * Sets the orientation of the tile.
-	 */
-	public void setOrientation(int orientation) {
-		this.orientation = orientation;
-		// TODO: update ways to move for orientation, remake of setType will be needed
-	}
+	
 	/**
 	 * @return The ways you can move from the tile
 	 */
