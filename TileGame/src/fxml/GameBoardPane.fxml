@@ -21,7 +21,7 @@
          <children>
             <ImageView fitHeight="83.0" fitWidth="109.0" layoutX="14.0" layoutY="6.0" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="@../Javafx%20texture/imageedit_14_8328084463.png" />
+                  <Image url="/img/TurnsBG.png" />
                </image>
             </ImageView>
             <Label fx:id="turnLabel" layoutX="59.0" layoutY="9.0" prefHeight="45.0" prefWidth="20.0" text="1" textFill="WHITE">
@@ -37,17 +37,17 @@
             <Label layoutX="33.0" layoutY="66.0" text="CurrentPlayer" textFill="WHITE" />
             <ImageView fitHeight="67.0" fitWidth="90.0" layoutX="22.0" layoutY="127.0" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="@../Javafx%20texture/royalPattern.png" />
+                  <Image url="/img/royalPattern.png" />
                </image>
             </ImageView>
             <ImageView fx:id="playerIndicator" fitHeight="59.0" fitWidth="57.0" layoutX="39.0" layoutY="83.0" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="@../Javafx%20texture/redWizard.png" />
+                  <Image url="/img/redWizard.png" />
                </image>
             </ImageView>
             <ImageView fitHeight="101.0" fitWidth="88.0" layoutX="29.0" layoutY="185.0" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="@../Javafx%20texture/silkBag.png" />
+                  <Image url="/img/silkBag.png" />
                </image>
             </ImageView>
             <Button fx:id="BackHomeButton" onAction="#buttonOnActionB" onMouseEntered="#mouseOnB" onMouseExited="#mouseOFFB" layoutX="11.0" layoutY="316.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="110.0" style="-fx-background-color: BLACK; -fx-background-radius: 5px; -fx-border-color: GOLDENROD; -fx-border-radius: 5px; -fx-border-width: 2;" text="To Homepage" textFill="#da9707" />
