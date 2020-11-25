@@ -1,8 +1,9 @@
 /**
  * This is a implementation of the Ice Class. It extends the Action Tile Placeable 
  * class and implements the instantiate action method and the deactivate action method. 
- * @author 851800
- * @version 0.1
+ * @author Alex Ullman (851732) and Joshua Sinderberry (851800)
+ * 
+ * @version 1.0
  */
 public class Ice extends ActionTilePlaceable {
 	

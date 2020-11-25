@@ -1,4 +1,14 @@
+/*
+ * Class not yet complete, can be added to with what ever game window 
+ * requires to display the game.
+ */
 
+/**
+ * Game state, used to hold data relating to the state at any given time. 
+ * @author Alex Ullman (851732) and Joshua Sinderberry (851800)
+ * @version 1
+ *
+ */
 public class GameState {
 	
 	private Board board;

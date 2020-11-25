@@ -3,8 +3,9 @@
  * This class models the time remaining for each Tile and ensures that
  * a sub class implements the activation/de-activations by providing 
  * abstract implementations.  
- * @author 851800
- * @version 0.1
+ * @author Alex Ullman (851732) and Joshua Sinderberry (851800)
+ * 
+ * @version 1.0
  *
  */
 public abstract class ActionTilePlaceable extends ActionTile {

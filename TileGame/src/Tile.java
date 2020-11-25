@@ -2,8 +2,8 @@
  * The super class of all tiles. 
  * It holds what type of tile is being played.
  * This is a abstract class.
- * @author 851732 and 851800
- * @version 0.1
+ * @author Alex Ullman (851732) and Joshua Sinderberry (851800)
+ * @version 1
  */
 public abstract class Tile {
 	

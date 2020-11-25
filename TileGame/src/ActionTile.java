@@ -1,8 +1,10 @@
 /**
  * This is a abstract class action tile. All action tiles
  * exist lower in the tile inheritance hierarchy. It inherits from tile.
- * @author 851732 and 851800
- * @version 0.1
+ * 
+ * @author Alex Ullman (851732) and Joshua Sinderberry (851800)
+ * 
+ * @version 1
  *
  */
 

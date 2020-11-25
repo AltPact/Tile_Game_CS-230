@@ -4,8 +4,8 @@
  * do with the tile in question.
  * It should be instantiated from the board via silk bag. Inherits from Tile.
  * The orientation defaults to 0.
- * @author 851732 and 851800
- * @version 0.1
+ * @author Alex Ullman (851732) and Joshua Sinderberry (851800)
+ * @version 1
  */
 
 public class Placeable extends Tile {

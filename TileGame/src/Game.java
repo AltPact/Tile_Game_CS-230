@@ -1,8 +1,21 @@
-//Java Doc Not Yet Complete.
-//Class Not Yet Complete.
+/*
+ * Java Doc Not Yet Complete.
+ * Class Not Yet Complete.
+ * No implementation for backtrack yet as file reader/writer not yet implemented.
+ * No working implementation as silk bag not yet complete.
+ */
+
 
 import java.util.ArrayList;
-
+/**
+ * Game Class is designed to implement the game.
+ * It has the ability for a player to draw a tile, play a action tile,
+ * place a placeable tile and move, when each is required.
+ * @author Wan Fai Tong (1909787), Alex Ullman (851732) and Joshua Sinderberry (851800)
+ * 
+ * @version 1.2
+ *
+ */
 public class Game {
 	
 	private Board board;
@@ -12,6 +25,12 @@ public class Game {
 	private int movesRemaingForThisPlayer = 1;
 	private ArrayList<ActionTilePlaceable> tilesInAction;
 	
+	/**
+	 * This class allows for the creation of a new game, it takes a file name
+	 * to show which board file should be read and a array of player piece.
+	 * @param fileName The file to be loaded.
+	 * @param players The players that are going to play.
+	 */
 	public Game(String fileName, PlayerPiece[] players) {
 		this.bag = new SilkBag()
 		this.board = new Board(fileName, bag);
@@ -19,6 +38,7 @@ public class Game {
 		this.curPlayer = 0;
 		this.tilesInAction = new ArrayList<ActionTilePlaceable>();
 	}
+	
 	
 	public GameState getState() {
 		return new GameState(board, players, curPlayer);
@@ -36,8 +56,8 @@ public class Game {
 		return players[curPlayer].getActionTilesOwned();
 	}
 	
-	public void insertTile(Tile tileToBeInserted, int x, int y) {
-		board.insert(tileToBeInserted, x, y);
+	public void insertTile(Placeable tileToBeInserted, int x, int y, boolean vertical) {
+		board.insertPiece(x, y, vertical, tileToBeInserted);
 	}
 	
 	public void playDoubleMove(ActionTile doubleMove) {
@@ -81,6 +101,9 @@ public class Game {
 	}
 	
 	public boolean move(int direction) {
+		if (movesRemaingForThisPlayer <= 0) {
+			return false;
+		}
 		int curX = players[curPlayer].getX();
 		int curY = players[curPlayer].getY();
 		Placeable curTile =  (Placeable) board.getTile(curX, curY);
@@ -126,7 +149,7 @@ public class Game {
 		}
 	}
 		
-	public void endTurn() {
+	public GameState endTurn() {
 		curPlayer ++;
 		if ((curPlayer % players.length) == 0) {
 			curPlayer = 0;
@@ -134,6 +157,8 @@ public class Game {
 		for(ActionTilePlaceable tile : tilesInAction) {
 			tile.decrementTime();
 		}
+		
+		return getState();
 		
 	}
 

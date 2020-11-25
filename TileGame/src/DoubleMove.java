@@ -2,8 +2,9 @@
  * This class is used when double move is called. It should provoke a response in 
  * the game class. It inherits from action tile.
  * 
- * @author 851732 and 851800
- * @version 0.1
+ * @author Alex Ullman (851732) and Joshua Sinderberry (851800)
+ * 
+ * @version 1.0
  *
  */
 public class DoubleMove extends ActionTile{
