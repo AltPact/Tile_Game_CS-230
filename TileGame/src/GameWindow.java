@@ -12,6 +12,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.media.MediaPlayer;
 import javafx.scene.shape.HLineTo;
 import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
@@ -23,12 +24,14 @@ import javafx.util.Duration;
  */
 public class GameWindow {
 
+	
 	protected static Parent root;
 	protected static Scene currentScene;
 	protected static StackPane homepane;
 	protected static ImageView bgImg;
 	protected static BorderPane content;
-
+	protected static MediaPlayer background;
+	protected static Game currentGame;
 	/**
 	 * Constructor of GameWindow
 	 */
@@ -57,7 +60,6 @@ public class GameWindow {
 		background.getChildren().add(setImageView());
 		return background;
 	}
-    
 	/**
 	 * This method makes the background
 	 * and add animation to move the background
@@ -84,25 +86,29 @@ public class GameWindow {
 		trans.play();
 		return bgImg;
 	}
-
 	/**
 	 * This method switches the current pane to a new pane
 	 * @param fxmlPath The pathname of the fxml
 	 * @param current The reference of the current pane
 	 */
 	public void switchPane(String fxmlPath, BorderPane current) throws IOException {
-		System.out.println("curbor: " + current);
-		content = FXMLLoader.load(getClass().getResource(fxmlPath));
+		if(fxmlPath.equals("/fxml/GameBoardPane.fxml")) {
+			homepane.getChildren().remove(bgImg);
+			background.stop();
+			currentGame = new Game();
+		}
+		root = FXMLLoader.load(getClass().getResource(fxmlPath));
 		homepane.getChildren().remove(current);
-		content.translateXProperty().set(currentScene.getWidth());
-		homepane.getChildren().add(content);
+		root.translateXProperty().set(currentScene.getWidth());
+		homepane.getChildren().add(root);
 		System.out.println("new: " + homepane.getChildrenUnmodifiable());
 		Timeline tl = new Timeline();
-		KeyValue kv = new KeyValue(content.translateXProperty(), 0, Interpolator.EASE_IN);
+		KeyValue kv = new KeyValue(root.translateXProperty(), 0, Interpolator.EASE_IN);
 		KeyFrame kf = new KeyFrame(Duration.seconds(0.3), kv);
-
+        
 		tl.getKeyFrames().add(kf);
 		tl.play();
+		
 	}
 
 }

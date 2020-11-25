@@ -68,8 +68,8 @@ public class NewGameController extends GameWindow {
 	 */
 	@FXML
 	public void buttonOnActionS(ActionEvent event) throws IOException {
+		System.out.println("Click game");
 		switchPane("/fxml/GameBoardPane.fxml",BP);
-		
 	}
 	
 	/**

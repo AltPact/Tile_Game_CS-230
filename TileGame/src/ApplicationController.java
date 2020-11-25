@@ -18,7 +18,7 @@ import javafx.stage.Stage;
  */
 public class ApplicationController extends Application{
 	private static Stage stage;
-	private static MediaPlayer background;
+	
 
 	public static void main(String[] args) {
 		launch(args);
@@ -44,12 +44,7 @@ public class ApplicationController extends Application{
         	closeWindow();
         });
 		primaryStage.show();
-		//Play bg music
-		File bgmF = new File("src/soundtracks/bgm.mp3");
-		Media bgm = new Media(bgmF.toURI().toString());
-        background = new MediaPlayer(bgm);
-        background.setVolume(0.2);
-        background.setAutoPlay(true);
+		
 	}
 	/**
 	 * This method will save game data
