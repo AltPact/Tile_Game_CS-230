@@ -466,7 +466,7 @@ public class GameSceneController extends GameWindow implements Initializable {
 	 */
 	@FXML
 	public void mouseOnB() {
-		BackHomeButton.setStyle("-fx-background-color: WHITE; -fx-text-fill: black; -fx-background-radius: 5em;");
+		BackHomeButton.setStyle("-fx-background-color: GOLDENROD; -fx-background-radius: 5px;");
 	}
 
 	/**
@@ -475,7 +475,7 @@ public class GameSceneController extends GameWindow implements Initializable {
 	 */
 	@FXML
 	public void mouseOFFB() {
-		BackHomeButton.setStyle("-fx-background-color: GREEN; -fx-background-radius: 5em;");
+		BackHomeButton.setStyle("-fx-background-color: BLACK; -fx-background-radius: 5px; -fx-border-color: GOLDENROD; -fx-border-radius: 5px; -fx-border-width: 2;");
 	}
 
 	/**
@@ -484,7 +484,7 @@ public class GameSceneController extends GameWindow implements Initializable {
 	 */
 	@FXML
 	public void mouseOnQ() {
-		QuitButton.setStyle("-fx-background-color: WHITE; -fx-text-fill: black; -fx-background-radius: 5em;");
+		QuitButton.setStyle("-fx-background-color: GOLDENROD; -fx-background-radius: 5px;");
 	}
 
 	/**
@@ -493,7 +493,7 @@ public class GameSceneController extends GameWindow implements Initializable {
 	 */
 	@FXML
 	public void mouseOFFQ() {
-		QuitButton.setStyle("-fx-background-color: RED; -fx-background-radius: 5em;");
+		QuitButton.setStyle("-fx-background-color: BLACK; -fx-background-radius: 5px; -fx-border-color: GOLDENROD; -fx-border-radius: 5px; -fx-border-width: 2;");
 	}
 
 }
