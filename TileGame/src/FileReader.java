@@ -43,6 +43,7 @@ public class FileReader {
 			}
 			
 			s.close();
+			return;  // TODO: need to construct Game object
     } catch (FileNotFoundException e) {
       System.out.println("An error occurred.");
       e.printStackTrace();
@@ -107,7 +108,7 @@ public class FileReader {
 					}
 				}
 			}
-			
+			/* read previous board states */
 			int previousBoardStates = s.nextInt();
 			Tile[][][] previousBoards = new Tile[previousBoardStates][boardWidth][boardHeight];
 			for (int b = 0; b < previousBoardStates; b++) {
@@ -133,6 +134,9 @@ public class FileReader {
 					}
 				}
 			}
+			
+			s.close();
+			return; // TODO: need to construct Game object
 		} catch (FileNotFoundException e){
 		      System.out.println("An error occurred.");
 		      e.printStackTrace();
