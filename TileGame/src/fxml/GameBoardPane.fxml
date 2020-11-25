@@ -2,70 +2,66 @@
 
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
-<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.paint.LinearGradient?>
+<?import javafx.scene.paint.Stop?>
 <?import javafx.scene.text.Font?>
-
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
 
 <BorderPane fx:id="GB" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml" fx:controller="GameSceneController">
-   <right>
-      <VBox alignment="TOP_CENTER" prefHeight="400.0" prefWidth="134.0" style="-fx-background-color: LIGHTSALMON;" BorderPane.alignment="CENTER">
-         <children>
-            <HBox alignment="TOP_CENTER" prefHeight="100.0" prefWidth="200.0" spacing="20.0">
-               <children>
-                  <Label text="Turn:">
-                     <font>
-                        <Font name="System Bold Italic" size="27.0" />
-                     </font>
-                  </Label>
-                  <Label text="1">
-                     <font>
-                        <Font size="27.0" />
-                     </font>
-                  </Label>
-               </children>
-            </HBox>
-            <Label text="Players:">
-               <font>
-                  <Font name="System Bold Italic" size="22.0" />
-               </font>
-            </Label>
-            <VBox alignment="TOP_CENTER" prefHeight="141.0" prefWidth="134.0" style="-fx-background-color: rgba(0, 0, 0, 0.5);;">
-               <children>
-                  <Label text="John" textFill="WHITE">
-                     <font>
-                        <Font size="21.0" />
-                     </font>
-                  </Label>
-                  <Label text="Mary" textFill="WHITE">
-                     <font>
-                        <Font size="21.0" />
-                     </font>
-                  </Label>
-                  <Label text="Cena" textFill="WHITE">
-                     <font>
-                        <Font size="21.0" />
-                     </font>
-                  </Label>
-                  <Label text="Tom" textFill="WHITE">
-                     <font>
-                        <Font size="21.0" />
-                     </font>
-                  </Label>
-               </children>
-            </VBox>
-            <VBox alignment="CENTER" prefHeight="123.0" prefWidth="134.0" spacing="20.0">
-               <children>
-                  <Button fx:id="BackHomeButton" onAction="#buttonOnActionB" onMouseEntered="#mouseOnB" onMouseExited="#mouseOFFB" mnemonicParsing="false" style="-fx-background-color: GREEN; -fx-background-radius: 5em;" text="Back to HomePage" textFill="WHITE" />
-                  <Button fx:id="QuitButton" onAction="#buttonOnActionQ" onMouseEntered="#mouseOnQ" onMouseExited="#mouseOFFQ" mnemonicParsing="false" style="-fx-background-color: RED; -fx-background-radius: 5em;" text="Quit Game" textFill="WHITE" />
-               </children>
-            </VBox>
-         </children>
-      </VBox>
-   </right>
    <center>
       <Pane prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: BLACK;" BorderPane.alignment="CENTER" />
    </center>
+   <right>
+      <Pane prefHeight="200.0" prefWidth="134.0" style="-fx-background-color: BLACK;" BorderPane.alignment="CENTER">
+         <children>
+            <ImageView fitHeight="83.0" fitWidth="109.0" layoutX="14.0" layoutY="6.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../Javafx%20texture/imageedit_14_8328084463.png" />
+               </image>
+            </ImageView>
+            <Label fx:id="turnLabel" layoutX="59.0" layoutY="9.0" prefHeight="45.0" prefWidth="20.0" text="1" textFill="WHITE">
+               <font>
+                  <Font name="System Bold" size="29.0" />
+               </font>
+            </Label>
+            <Label layoutX="54.0" layoutY="-2.0" text="Turn" textFill="WHITE">
+               <font>
+                  <Font name="System Bold Italic" size="12.0" />
+               </font>
+            </Label>
+            <Label layoutX="33.0" layoutY="66.0" text="CurrentPlayer" textFill="WHITE" />
+            <ImageView fitHeight="67.0" fitWidth="90.0" layoutX="22.0" layoutY="127.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../Javafx%20texture/royalPattern.png" />
+               </image>
+            </ImageView>
+            <ImageView fx:id="playerIndicator" fitHeight="59.0" fitWidth="57.0" layoutX="39.0" layoutY="83.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../Javafx%20texture/redWizard.png" />
+               </image>
+            </ImageView>
+            <ImageView fitHeight="101.0" fitWidth="88.0" layoutX="29.0" layoutY="185.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../Javafx%20texture/silkBag.png" />
+               </image>
+            </ImageView>
+            <Button fx:id="BackHomeButton" onAction="#buttonOnActionB" onMouseEntered="#mouseOnB" onMouseExited="#mouseOFFB" layoutX="11.0" layoutY="316.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="110.0" style="-fx-background-color: BLACK; -fx-background-radius: 5px; -fx-border-color: GOLDENROD; -fx-border-radius: 5px; -fx-border-width: 2;" text="To Homepage" textFill="#da9707" />
+            <Button fx:id="QuitButton" onAction="#buttonOnActionQ" onMouseEntered="#mouseOnQ" onMouseExited="#mouseOFFQ" layoutX="11.0" layoutY="355.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="110.0" style="-fx-background-color: BLACK; -fx-background-radius: 5px; -fx-border-color: GOLDENROD; -fx-border-radius: 5px; -fx-border-width: 2;" text="Quit" textFill="#da9707" />
+               <textFill>
+                  <LinearGradient endX="1.0" endY="1.0">
+                     <stops>
+                        <Stop color="RED" />
+                        <Stop color="#1100ff" offset="1.0" />
+                     </stops>
+                  </LinearGradient>
+               </textFill>
+            </Label>
+         </children>
+      </Pane>
+   </right>
 </BorderPane>
