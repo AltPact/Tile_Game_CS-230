@@ -16,13 +16,11 @@ public class Board {
 	 * @param bag The silk bag tiles will be pulled from to fill the board
 	 * @param tiles The initial state of the board, likely only containing fixed tiles
 	 */
-	public Board(int width, int height, Placeable[][] tiles, bool fillEmptySpaces) {
+	public Board(int width, int height, Placeable[][] tiles) {
 		this.width = tiles[0].length;
 		this.height = tiles[1].length;
 		this.tiles = tiles;
-		if (fillEmptySpaces) {
-			fillBoard(bag);
-		}
+		fillBoard(bag);
 	}
 	
 	/**
@@ -57,8 +55,10 @@ public class Board {
 	}
 	
 	/**
-	 * Fills any empty spaces in the board using floor tiles from the silk bag.
-	 * @param bag The bag to draw floor tiles from.
+	 * @param x the x position to move the player to
+	 * @param y the y position to move the player to
+	 * @param player The player to be moved
+	 * @return a boolean representing if the player has been moved
 	 */
 	public boolean movePlayer(int x, int y, PlayerPiece player) {
 		boolean[][] moveableSpaces = this.getMoveableSpaces(player);
@@ -182,11 +182,6 @@ public class Board {
 	}
 	
 	
-	/**
-	 * Checks if a tile can be inserted at this position
-	 * @param int x x position to insert tile
-	 * @param int y y position to insert tile
-	 */
 	private boolean isInsertable (int x, int y) {
 		boolean isInsetable = true;
 		
@@ -209,6 +204,61 @@ public class Board {
 		}
 		return isInsetable;
 	}
+	
+	/**
+	 * Freezes tile at this position
+	 * @param x  x position of tile
+	 * @param y  y position of tile
+	 */
+	public void freezeTile(int x, int y) {
+		tiles[x][y].freeze();
+	}
+	
+	/**
+	 * Sets tile at this position on fire
+	 * @param x  x position of tile
+	 * @param y  y position of tile
+	 */
+	public void fireTile(int x, int y) {
+		tiles[x][y].putOnFire();
+	}
+	
+	/**
+	 * Thaws tile at this position
+	 * @param x  x position of tile
+	 * @param y  y position of tile
+	 */
+	public void thawTile(int x, int y) {
+		tiles[x][y].freeze();
+	}
+	
+	/**
+	 * Extinguishes the tile at this position
+	 * @param x  x position of tile
+	 * @param y  y position of tile
+	 */
+	public void extinguishTile(int x, int y) {
+		tiles[x][y].putOutFire();
+	}
+	
+	/**
+	 * Checks if the tile at this position is on fire
+	 * @param x  x position of tile
+	 * @param y  y position of tile
+	 */
+	public boolean isOnFire(int x, int y) {
+		return tiles[x][y].isOnFire();
+	}
+	
+	/**
+	 * Checks if the tile at this position is frozen
+	 * @param x  x position of tile
+	 * @param y  y position of tile
+	 */
+	public boolean isFrozen(int x, int y) {
+		return tiles[x][y].isFrozen();
+	}
+	
 	
 	public Tile getTile(int x, int y) {
 		if (x > width || y > height) {
