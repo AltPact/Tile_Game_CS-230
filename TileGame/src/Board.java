@@ -16,11 +16,13 @@ public class Board {
 	 * @param bag The silk bag tiles will be pulled from to fill the board
 	 * @param tiles The initial state of the board, likely only containing fixed tiles
 	 */
-	public Board(int width, int height, Placeable[][] tiles) {
+	public Board(int width, int height, Placeable[][] tiles, bool fillEmptySpaces) {
 		this.width = tiles[0].length;
 		this.height = tiles[1].length;
 		this.tiles = tiles;
-		fillBoard(bag);
+		if (fillEmptySpaces) {
+			fillBoard(bag);
+		}
 	}
 	
 	/**
