@@ -4,10 +4,10 @@ public class SilkBag {
 	private int[] numActionTiles = {1, 1, 1, 1};
 	private int[] numPlaceableTiles = {1, 1, 1};
 	
-	/*public SilkBag(int[] actionTiles, int[] placeableTiles) {
-		this.actionTiles = actionTiles;
-		this.placeableTiles = placeableTiles;
-	}*/ 
+	public SilkBag(int[] numActionTiles, int[] numPlaceableTiles) {
+		this.numActionTiles = numActionTiles;
+		this.numPlaceableTiles = numPlaceableTiles;
+	}
 	
 	/**
 	 * Draws a tile from the bag
