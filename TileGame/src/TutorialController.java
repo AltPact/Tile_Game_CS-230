@@ -91,7 +91,7 @@ public class TutorialController extends GameWindow implements Initializable{
 	 */
 	@FXML
 	public void buttonOnActionB(ActionEvent event) throws IOException {
-		switchPane("/fxml/HomePagePane.fxml",BP);
+		switchPane("/fxml/HomePagePane.fxml",BP, "back");
 	}
 	
 	/**

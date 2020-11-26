@@ -395,7 +395,6 @@ public class GameSceneController extends GameWindow implements Initializable {
 	}
 
 	private static ScaleTransition animateTile(Box tile) {
-
 		ScaleTransition enlarge = new ScaleTransition(Duration.millis(500), tile);
 		enlarge.setToX(0.8);
 		enlarge.setToY(0.8);
@@ -446,7 +445,7 @@ public class GameSceneController extends GameWindow implements Initializable {
 	 */
 	@FXML
 	public void buttonOnActionB(ActionEvent event) throws IOException {
-		switchPane("/fxml/HomePagePane.fxml", GB);
+		switchPane("/fxml/HomePagePane.fxml", GB, "back");
 	}
 
 	/**

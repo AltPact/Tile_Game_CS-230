@@ -58,7 +58,7 @@ public class NewGameController extends GameWindow {
 	 */
 	@FXML
 	public void buttonOnActionB(ActionEvent event) throws IOException {
-		switchPane("/fxml/HomePagePane.fxml",BP);
+		switchPane("/fxml/HomePagePane.fxml",BP, "back");
 	}
 	
 	/**
@@ -69,7 +69,7 @@ public class NewGameController extends GameWindow {
 	@FXML
 	public void buttonOnActionS(ActionEvent event) throws IOException {
 		System.out.println("Click game");
-		switchPane("/fxml/GameBoardPane.fxml",BP);
+		switchPane("/fxml/GameBoardPane.fxml",BP, "forward");
 	}
 	
 	/**

@@ -131,7 +131,7 @@ public class LoadGameController extends GameWindow {
 	 */
 	@FXML
 	public void backOnAction(ActionEvent event) throws IOException {
-		switchPane("/fxml/HomePagePane.fxml", BP);	
+		switchPane("/fxml/HomePagePane.fxml", BP, "back");	
 	}
 	
 	/**
@@ -141,6 +141,6 @@ public class LoadGameController extends GameWindow {
 	 */
 	@FXML
 	public void selectOnAction(ActionEvent event) throws IOException {
-		switchPane("/fxml/GameBoardPane.fxml",BP);
+		switchPane("/fxml/GameBoardPane.fxml",BP, "forward");
 	}
 }

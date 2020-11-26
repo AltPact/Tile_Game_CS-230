@@ -91,24 +91,28 @@ public class GameWindow {
 	 * @param fxmlPath The pathname of the fxml
 	 * @param current The reference of the current pane
 	 */
-	public void switchPane(String fxmlPath, BorderPane current) throws IOException {
+	public void switchPane(String fxmlPath, BorderPane current, String inOri) throws IOException {
 		if(fxmlPath.equals("/fxml/GameBoardPane.fxml")) {
 			homepane.getChildren().remove(bgImg);
 			background.stop();
 			currentGame = new Game();
 		}
-		root = FXMLLoader.load(getClass().getResource(fxmlPath));
+		content = FXMLLoader.load(getClass().getResource(fxmlPath));
 		homepane.getChildren().remove(current);
-		root.translateXProperty().set(currentScene.getWidth());
-		homepane.getChildren().add(root);
+		homepane.getChildren().add(content);
 		System.out.println("new: " + homepane.getChildrenUnmodifiable());
+		if(inOri.equals("forward")) {
+			content.translateXProperty().set(currentScene.getWidth());
+		}else{
+			content.translateXProperty().set(-currentScene.getWidth());
+		}
 		Timeline tl = new Timeline();
-		KeyValue kv = new KeyValue(root.translateXProperty(), 0, Interpolator.EASE_IN);
+		KeyValue kv = new KeyValue(content.translateXProperty(), 0, Interpolator.EASE_IN);
 		KeyFrame kf = new KeyFrame(Duration.seconds(0.3), kv);
         
 		tl.getKeyFrames().add(kf);
 		tl.play();
-		
 	}
+	
 
 }

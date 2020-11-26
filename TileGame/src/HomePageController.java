@@ -19,6 +19,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
@@ -39,13 +40,15 @@ import javafx.util.Duration;
 public class HomePageController extends GameWindow implements Initializable {
 	// FXML bindings
 	@FXML
-	public BorderPane bPane;
+	private BorderPane bPane;
 	@FXML
-	public Button NewGameButton;
+	private Label messageOfTheDay;
 	@FXML
-	public Button LoadGameButton;
+	private Button NewGameButton;
 	@FXML
-	public Button TutorialButton;
+	private Button LoadGameButton;
+	@FXML
+	private Button TutorialButton;
 
 	/**
 	 * This method initialize this page
@@ -61,6 +64,11 @@ public class HomePageController extends GameWindow implements Initializable {
 			if (!homepane.getChildren().contains(bgImg)) {
 				homepane.getChildren().add(bgImg);
 			}
+		}
+		try {
+		    messageOfTheDay.setText(MessageOfTheDay.getResult());
+		} catch (IOException e) {
+			System.out.println("Cannot get message of the day");
 		}
 		if (background == null) {
 			File bgmF = new File("src/soundtracks/bgm.mp3");
@@ -82,7 +90,7 @@ public class HomePageController extends GameWindow implements Initializable {
 	@FXML
 	public void buttonOnActionN(ActionEvent event) throws IOException {
 		// load NewGameScene
-		switchPane("/fxml/NewGamePane.fxml", bPane);
+		switchPane("/fxml/NewGamePane.fxml", bPane, "forward");
 
 	}
 
@@ -94,7 +102,7 @@ public class HomePageController extends GameWindow implements Initializable {
 	 */
 	@FXML
 	public void buttonOnActionL(ActionEvent event) throws IOException {
-		switchPane("/fxml/LoadGamePane.fxml", bPane);
+		switchPane("/fxml/LoadGamePane.fxml", bPane, "forward");
 	}
 
 	/**
@@ -106,7 +114,7 @@ public class HomePageController extends GameWindow implements Initializable {
 	@FXML
 	public void buttonOnActionT(ActionEvent event) throws IOException {
 		// load NewGameScene
-		switchPane("/fxml/TutorialPane.fxml", bPane);
+		switchPane("/fxml/TutorialPane.fxml", bPane, "back");
 	}
 
 	/**
