@@ -35,6 +35,17 @@ public class Placeable extends Tile {
 	}
 	
 	/**
+	 * Constructor to construct a new, non goal, non fixed standard tile of a particular type.
+	 * @param tileType The type of tile to be constructed. 
+	 */
+	public Placeable(TileType tileType) {
+		super(tileType);
+		this.ISGOAL = false;
+		this.ISFIXED = false;
+		setType(tileType);
+	}
+	
+	/**
 	 * A constructor to construct tile. It will automatically
 	 * interpret the ways to move based on the chosen type and 
 	 * orientation.

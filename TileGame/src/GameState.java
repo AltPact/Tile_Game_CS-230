@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 /*
  * Class not yet complete, can be added to with what ever game window 
  * requires to display the game.
@@ -11,26 +13,40 @@
  */
 public class GameState {
 	
-	private Board board;
-	private PlayerPiece[] players;
+	private Placeable[][] boardTiles;
+	private int[][] playersPositions;
 	private int curPlayer;
+	private boolean isGoalHit;
+	private ArrayList<ActionTile>[] actionTilesForEachPlayer;
 	
-	public GameState(Board board, PlayerPiece[] players, int curPlayer) {
-		this.board = board;
-		this.players = players;
+	
+	public GameState(Placeable[][] boardTiles, int[][] playersPositions, ArrayList<ActionTile>[] actionTilesForEachPlayer, int curPlayer, boolean isGoalHit) {
+		this.boardTiles = boardTiles;
+		this.playersPositions = playersPositions;
 		this.curPlayer = curPlayer;
+		this.actionTilesForEachPlayer = actionTilesForEachPlayer;
 	}
 
-	public Board getBoard() {
-		return board;
+	public Placeable[][] getBoard() {
+		return boardTiles;
 	}
 
-	public PlayerPiece[] getPlayers() {
-		return players;
+	public int[][] getPlayersPositions() {
+		return playersPositions;
 	}
 
 	public int getCurPlayer() {
 		return curPlayer;
 	}
+	
+	public boolean isGoalHit() {
+		return isGoalHit;
+	}
+	
+	public ArrayList<ActionTile> getActionTileForPlayer(int playerNumber){
+		return actionTilesForEachPlayer[playerNumber];
+	}
+	
+	
 
 }

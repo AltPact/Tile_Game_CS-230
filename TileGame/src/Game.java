@@ -24,6 +24,9 @@ public class Game {
 	private int curPlayer;
 	private int movesRemaingForThisPlayer = 1;
 	private ArrayList<ActionTilePlaceable> tilesInAction;
+	private boolean isGoalReached;
+	private ArrayList<GameState> pastStates;
+	
 	
 	/**
 	 * This class allows for the creation of a new game, it takes a file name
@@ -31,23 +34,44 @@ public class Game {
 	 * @param fileName The file to be loaded.
 	 * @param players The players that are going to play.
 	 */
-	public Game(String fileName, PlayerPiece[] players) {
-		this.bag = new SilkBag()
-		this.board = new Board(fileName, bag);
+	public Game(GameState curState, ArrayList<GameState> pastStates, SilkBag bag, PlayerPiece[] players, int curPlayer, int movesLeftForCurrent, ArrayList<ActionTilePlaceable> tilesInAction) {
+		this.bag = bag;
+		this.board = new Board(curState.getBoard().length, curState.getBoard()[0].length, curState.getBoard());
 		this.players = players;
-		this.curPlayer = 0;
-		this.tilesInAction = new ArrayList<ActionTilePlaceable>();
+		this.curPlayer = curPlayer;
+		this.tilesInAction = tilesInAction;
+		this.pastStates = pastStates;;
 	}
 	
 	
 	public GameState getState() {
-		return new GameState(board, players, curPlayer);
+		int[][] playerPositions = new int[players.length][2];
+		ArrayList[] actionTilesForPlayers = new ArrayList[players.length];
+		for(int i = 0; i < players.length; i++) {
+			actionTilesForPlayers[i] = players[i].getActionTilesOwned();
+			playerPositions[i][0] = players[i].getX();
+			playerPositions[i][1] = players[i].getY();
+		}
+		return new GameState(board.getTiles(), playerPositions, actionTilesForPlayers, curPlayer, isGoalReached);
 	}
 	
 	public Tile getNewTileForCurrentPlayer() {
-		Tile newTile = bag.getTile();
-		if (newTile.isAction()) {
+		TileType newTileType = bag.draw();
+		Tile newTile = null;
+		if(newTileType == TileType.BackTrack) {
+			newTile = new BackTrack(players[curPlayer]);
 			players[curPlayer].addActionTile((ActionTile)newTile);
+		} else if (newTileType == TileType.DoubleMove) {
+			newTile = new DoubleMove(players[curPlayer]);
+			players[curPlayer].addActionTile((ActionTile)newTile);
+		} else if (newTileType == TileType.Ice) {
+			newTile = new DoubleMove(players[curPlayer]);
+			players[curPlayer].addActionTile((ActionTile)newTile);
+		} else if (newTileType == TileType.Fire) {
+			newTile = new DoubleMove(players[curPlayer]);
+			players[curPlayer].addActionTile((ActionTile)newTile);
+		} else {
+			newTile = new Placeable(newTileType);
 		}
 		return newTile;
 	}
@@ -65,12 +89,48 @@ public class Game {
 		this.movesRemaingForThisPlayer++;
 	}
 	
-	public void playBackTrack(ActionTile backtrack) {
+	public void playBackTrack(ActionTile backtrack, int playerAgainst) throws IllegalBackTrackException {
+		if (players[playerAgainst].getBacktrack()) {
+			throw new IllegalBackTrackException(playerAgainst + " Has already had backtrack applied");
+		}
 		players[curPlayer].playActionTile(backtrack);
-		//TODO Implement Backtrack 
+		int i = pastStates.size();
+		GameState twoMovesAgo = null;
+		try {
+			GameState testState = pastStates.get(i);
+			while(testState.getCurPlayer() != playerAgainst) {
+				i--;
+				testState = pastStates.get(i);
+			}
+			twoMovesAgo = pastStates.get(i - players.length);
+
+		
+		
+		int backTrackedX = twoMovesAgo.getPlayersPositions()[playerAgainst][0];
+		int backTrackedY = twoMovesAgo.getPlayersPositions()[playerAgainst][1];
+		
+		Placeable testTile = (Placeable) board.getTile(backTrackedX, backTrackedY);
+			while(testTile.isOnFire()) {
+				int gameStateIndex = pastStates.indexOf(twoMovesAgo);
+				gameStateIndex =- players.length;
+				GameState furtherBackState = pastStates.get(gameStateIndex);
+				backTrackedX = furtherBackState.getPlayersPositions()[playerAgainst][0];
+				backTrackedY = furtherBackState.getPlayersPositions()[playerAgainst][1];
+				testTile = (Placeable) board.getTile(backTrackedX, backTrackedY);
+			}
+			
+		} catch(IndexOutOfBoundsException e) {
+			throw new IllegalBackTrackException("Not enough moves made to conduct backtrack against player " + playerAgainst);
+		} finally {
+			players[curPlayer].addActionTile(new BackTrack(players[curPlayer]));
+		}
+		
+		players[playerAgainst].setX(backTrackedX);
+		players[playerAgainst].setY(backTrackedY);
+		
 	}
 	
-	public void playIce(Ice ice, int x, int y) {
+	public void playIce(Ice ice, int x, int y) throws IncorrectTileTypeException {
 		players[curPlayer].playActionTile(ice);
 		Placeable[] tilesToAction= new Placeable[9];
 		tilesToAction[0] = (Placeable) board.getTile((x - 1), (y - 1));
@@ -85,7 +145,7 @@ public class Game {
 		ice.instantiateAction(tilesToAction);
 	}
 	
-	public void playFire(Fire fire, int x, int y) {
+	public void playFire(Fire fire, int x, int y) throws IncorrectTileTypeException {
 		players[curPlayer].playActionTile(fire);
 		Placeable[] tilesToAction= new Placeable[9];
 		tilesToAction[0] = (Placeable) board.getTile((x - 1), (y - 1));
@@ -107,8 +167,8 @@ public class Game {
 		int curX = players[curPlayer].getX();
 		int curY = players[curPlayer].getY();
 		Placeable curTile =  (Placeable) board.getTile(curX, curY);
-		int newX;
-		int newY;
+		int newX = 0;
+		int newY = 0;
 		if(curTile.canMove(direction)) {
 			if(direction == 0) {
 				newX = curX;
@@ -129,7 +189,7 @@ public class Game {
 		
 		Placeable newTile =  (Placeable) board.getTile(curX, curY);
 		
-		int oppDirection;
+		int oppDirection = 0;
 		if(direction == 0) {
 			oppDirection = 2;
 		} else if(direction == 1) {
@@ -143,6 +203,9 @@ public class Game {
 		if(newTile.canMove(oppDirection)) {
 			players[curPlayer].setX(newX);
 			players[curPlayer].setY(newY);
+			if(newTile.isGoal()) {
+				this.isGoalReached = true;
+			}
 			return true;
 		} else {
 			return false;
@@ -157,8 +220,10 @@ public class Game {
 		for(ActionTilePlaceable tile : tilesInAction) {
 			tile.decrementTime();
 		}
+		GameState newState = getState();
+		this.pastStates.add(newState);
 		
-		return getState();
+		return newState;
 		
 	}
 
