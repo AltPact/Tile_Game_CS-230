@@ -7,28 +7,18 @@
 <?import javafx.scene.image.ImageView?>
 
 
-<!-- <StackPane fx:id="rSPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
- xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml" fx:controller="HomePageController">
-   <children>
-      
-      <ImageView fx:id="bgImg" fitHeight="1000.0" fitWidth="1000.0" pickOnBounds="true" preserveRatio="true">
-         <image>
-            <Image url="/img/bg.jpg" />
-         </image>
-         
-      </ImageView> -->
 	
 <BorderPane fx:id="bPane"  maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml" fx:controller="HomePageController">
 
    <top>
-      <VBox alignment="CENTER" prefHeight="100.0" prefWidth="600.0" BorderPane.alignment="CENTER">
+      <VBox alignment="CENTER" prefHeight="150.0" prefWidth="600.0" BorderPane.alignment="CENTER">
          <children>
-            <Label alignment="CENTER" contentDisplay="CENTER" text="Game Title">
+            <Label alignment="BOTTOM_CENTER" contentDisplay="CENTER" text="Game Title">
                <font>
                   <Font size="44.0" />
                </font>
             </Label>
-            <Label text="Message of the day" />
+            <Label fx:id="messageOfTheDay" text="Message of the day" prefWidth="300.0" wrapText="true" />
          </children>
       </VBox>
    </top>
@@ -52,5 +42,3 @@
    </left>
    
 </BorderPane>
-<!-- </children>
-</StackPane>-->
