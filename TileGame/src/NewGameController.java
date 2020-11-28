@@ -130,7 +130,7 @@ public class NewGameController extends GameWindow implements Initializable {
 		if(playerName==null) {
 			wrongInputAnimation();
 		}else {
-			PlayerData player = new PlayerData(playerName,9,10,"/img/firefly.png");
+			PlayerData player = new PlayerData(playerName,9,10,"/img/firefly.png");//<-change this line
 		    addPlayerInQuene(player);
 		}
 	}
