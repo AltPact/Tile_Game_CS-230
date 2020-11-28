@@ -114,5 +114,7 @@ public class GameWindow {
 		tl.play();
 	}
 	
-
+    public void setCurrentGame(Game gameToBeSet) {
+    	currentGame=gameToBeSet;
+    }
 }

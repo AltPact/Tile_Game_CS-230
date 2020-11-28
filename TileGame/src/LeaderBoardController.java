@@ -37,7 +37,8 @@ public class LeaderBoardController extends GameWindow implements Initializable {
 		playerdataArray.add(new PlayerData("Mary",9,10,"/img/firefly.png"));
 		playerdataArray.add(new PlayerData("Mary",9,10,"/img/firefly.png"));
 		playerdataArray.add(new PlayerData("Mary",9,10,"/img/firefly.png"));
-		
+		//^ this should be changed, becoz it is just for testing
+		//it should do some array sorting
 		return sortPlayerWin(playerdataArray);
 	}
 	
