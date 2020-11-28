@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
 
 <BorderPane fx:id="BP" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml" fx:controller="NewGameController">
@@ -22,8 +23,7 @@
    <center>
       <StackPane prefHeight="304.0" prefWidth="496.0" BorderPane.alignment="CENTER">
          <children>
-            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#00000099" height="308.0" stroke="BLACK" strokeType="INSIDE" width="496.0" />
-            <VBox alignment="CENTER" prefHeight="204.0" prefWidth="400.0">
+            <VBox alignment="CENTER" prefHeight="327.0" prefWidth="549.0" style="-fx-background-color: rgba(0,0,0, 0.3);">
                <children>
                   <HBox alignment="CENTER" prefHeight="64.0" prefWidth="496.0">
                      <children>
@@ -40,41 +40,22 @@
                   </HBox>
                   <HBox alignment="CENTER" prefHeight="60.0" prefWidth="496.0" spacing="20.0">
                      <children>
-                        <Label text="Add Player: " textFill="WHITE" />
-                        <TextField fx:id="TestField" onMouseEntered="#mouseOnTF" onMouseExited="#mouseOFFTF" promptText="Player Name" style="-fx-background-color: rgba(128, 128, 128, 0.5); -fx-border-color: transparent transparent lightsalmon transparent;" />
-                        <Button fx:id="AddButton" mnemonicParsing="false" onMouseEntered="#mouseOnA" onMouseExited="#mouseOFFA" prefHeight="27.0" prefWidth="51.0" style="-fx-background-color: LIGHTSALMON; -fx-background-radius: 1em;" text="Add" />
+                        <Label prefHeight="17.0" prefWidth="66.0" text="Add Player: " textFill="WHITE" />
+                        <ComboBox fx:id="searchBox" editable="true" prefWidth="150.0" promptText="Player Name" style="-fx-background-color: rgba(128, 128, 128, 0.5);" />
+                        <Button fx:id="AddButton" onAction="#addButtonClick" mnemonicParsing="false" onMouseEntered="#mouseOnA" onMouseExited="#mouseOFFA" prefHeight="27.0" prefWidth="51.0" style="-fx-background-color: LIGHTSALMON; -fx-background-radius: 1em;" text="Add" />
+                        <Separator orientation="VERTICAL" prefHeight="59.0" prefWidth="0.0" />
+                        <Button fx:id="createButton" onAction="#createButtonClick" onMouseEntered="#mouseOnCreate" onMouseExited="#mouseOffCreate" mnemonicParsing="false" prefHeight="27.0" prefWidth="99.0" style="-fx-background-color: LIGHTSALMON; -fx-background-radius: 1em;" text="Create Player" />
                      </children>
                   </HBox>
                   
-                  <VBox alignment="TOP_CENTER" prefHeight="95.0" prefWidth="496.0" style="-fx-background-color: rgba(0,0,0, 0.3);">
+                  <VBox fx:id="playerBox" alignment="TOP_CENTER" prefHeight="95.0" prefWidth="496.0" style="-fx-background-color: rgba(0,0,0, 0.3);">
                      <children>
                      
-                        <Label alignment="CENTER" prefHeight="21.0" prefWidth="496.0" style="-fx-background-color: rgba(255, 160, 122, 0.5);" text="Players:" textFill="WHITE">
+                        <Label alignment="CENTER" prefHeight="21.0" prefWidth="650.0" style="-fx-background-color: rgba(255, 160, 122, 0.5);" text="Players:" textFill="WHITE">
                            <font>
                               <Font size="15.0" />
                            </font>
                         </Label>
-                        
-                        <HBox prefHeight="22.0" prefWidth="496.0">
-                           <children>
-                              <Label alignment="CENTER" contentDisplay="RIGHT" prefHeight="25.0" prefWidth="426.0" style="-fx-background-color: rgba(0, 0, 0, 0.5);" text="PlayerName" textFill="WHITE" />
-                              <Button fx:id="DeleteButton1" mnemonicParsing="false" nodeOrientation="LEFT_TO_RIGHT" onMouseEntered="#mouseOnD1" onMouseExited="#mouseOFFD1" prefHeight="25.0" prefWidth="138.0" style="-fx-background-color: rgba(128, 128, 128, 0.5);" text="delete" textFill="WHITE" />
-                           </children>
-                        </HBox>
-                        
-                        <HBox prefHeight="22.0" prefWidth="496.0">
-                           <children>
-                              <Label alignment="CENTER" contentDisplay="RIGHT" prefHeight="25.0" prefWidth="426.0" style="-fx-background-color: rgba(0, 0, 0, 0.5);" text="PlayerName2" textFill="WHITE" />
-                              <Button fx:id="DeleteButton2" mnemonicParsing="false" nodeOrientation="LEFT_TO_RIGHT" onMouseEntered="#mouseOnD2" onMouseExited="#mouseOFFD2" prefHeight="25.0" prefWidth="138.0" style="-fx-background-color: rgba(128, 128, 128, 0.5);" text="delete" textFill="WHITE" />
-                           </children>
-                        </HBox>
-                        
-                        <HBox prefHeight="22.0" prefWidth="496.0">
-                           <children>
-                              <Label alignment="CENTER" contentDisplay="RIGHT" prefHeight="25.0" prefWidth="426.0" style="-fx-background-color: rgba(0, 0, 0, 0.5);" text="PlayerName3" textFill="WHITE" />
-                              <Button fx:id="DeleteButton3" mnemonicParsing="false" nodeOrientation="LEFT_TO_RIGHT" onMouseEntered="#mouseOnD3" onMouseExited="#mouseOFFD3" prefHeight="25.0" prefWidth="138.0" style="-fx-background-color: rgba(128, 128, 128, 0.5);" text="delete" textFill="WHITE" />
-                           </children>
-                        </HBox>
                         
                      </children>
                   </VBox>
@@ -84,16 +65,22 @@
                         <Button fx:id="BackButton" mnemonicParsing="false" onAction="#buttonOnActionB" onMouseEntered="#mouseOnB" onMouseExited="#mouseOFFB" prefHeight="27.0" prefWidth="97.0" style="-fx-background-color: LIGHTSALMON; -fx-background-radius: 5em;" text="Back" />
                         <Button fx:id="StartButton" mnemonicParsing="false" onAction="#buttonOnActionS" onMouseEntered="#mouseOnS" onMouseExited="#mouseOFFS" prefHeight="27.0" prefWidth="97.0" style="-fx-background-color: LIGHTSALMON; -fx-background-radius: 5em;" text="Start" />
                      </children>
+                     <VBox.margin>
+                        <Insets top="10.0" />
+                     </VBox.margin>
                   </HBox>
                </children>
+               <StackPane.margin>
+                  <Insets bottom="15.0" />
+               </StackPane.margin>
             </VBox>
          </children>
       </StackPane>
    </center>
    <right>
-      <VBox prefHeight="327.0" prefWidth="70.0" BorderPane.alignment="CENTER" />
+      <VBox prefHeight="327.0" prefWidth="22.0" BorderPane.alignment="CENTER" />
    </right>
    <left>
-      <VBox prefHeight="327.0" prefWidth="71.0" BorderPane.alignment="CENTER" />
+      <VBox prefHeight="327.0" prefWidth="23.0" BorderPane.alignment="CENTER" />
    </left>
 </BorderPane>

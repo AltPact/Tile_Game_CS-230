@@ -28,6 +28,7 @@ import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaPlayer.Status;
 import javafx.scene.shape.HLineTo;
+import javafx.scene.input.MouseEvent; 
 import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
 import javafx.util.Duration;
@@ -79,8 +80,22 @@ public class HomePageController extends GameWindow implements Initializable {
 		} else if (!background.getStatus().equals(Status.PLAYING)) {
 			background.play();
 		}
+		
 	}
 
+	@FXML
+	public void playerIconOnClick(ActionEvent event) throws IOException {
+		// load NewGameScene
+		switchPane("/fxml/NewGamePane.fxml", bPane, "forward");
+
+	}
+	@FXML
+	public void LeaderBoardOnClick(ActionEvent event) throws IOException {
+		// load NewGameScene
+		switchPane("/fxml/LeaderBoard.fxml", bPane, "forward");
+
+	}
+	
 	/**
 	 * This method is called when the new button is click it will call the
 	 * switchPane() method which switch to NewGamePane

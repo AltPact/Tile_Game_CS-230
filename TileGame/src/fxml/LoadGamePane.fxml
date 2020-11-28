@@ -2,15 +2,14 @@
 
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
 
-
-<BorderPane fx:id="BP" fx:controller="LoadGameController" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml">
+<BorderPane fx:id="BP" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml" fx:controller="LoadGameController">
    <top>
       <VBox alignment="CENTER" prefHeight="81.0" prefWidth="600.0" BorderPane.alignment="CENTER">
          <children>
@@ -25,11 +24,6 @@
    <center>
       <StackPane prefHeight="150.0" prefWidth="200.0" BorderPane.alignment="CENTER">
          <children>
-            <VBox alignment="BOTTOM_CENTER" prefHeight="200.0" prefWidth="100.0">
-               <children>
-                  <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#00000076" height="182.0" stroke="BLACK" strokeType="INSIDE" width="429.0" />
-               </children>
-            </VBox>
             <VBox alignment="TOP_CENTER" prefHeight="222.0" prefWidth="510.0">
                <children>
                   <Label alignment="TOP_CENTER" prefHeight="0.0" prefWidth="144.0" text="Game Saves">
@@ -37,11 +31,7 @@
                         <Font size="27.0" />
                      </font>
                   </Label>
-                  <Button fx:id="Save1" onAction="#saveOnAction1" mnemonicParsing="false" prefHeight="25.0" prefWidth="429.0" style="-fx-background-color: transparent;" text="Game Data 1 29/06/2020" textFill="WHITE" />
-                  <Button fx:id="Save2" onAction="#saveOnAction2" mnemonicParsing="false" prefHeight="25.0" prefWidth="429.0" style="-fx-background-color: transparent;" text="Game Data 2 30/07/2020" textFill="WHITE" />
-                  <Button fx:id="Save3" onAction="#saveOnAction3" mnemonicParsing="false" prefHeight="25.0" prefWidth="429.0" style="-fx-background-color: transparent;" text="Game Data 3 15/12/2020" textFill="WHITE" />
-                  <Button fx:id="Save4" onAction="#saveOnAction4" mnemonicParsing="false" prefHeight="25.0" prefWidth="429.0" style="-fx-background-color: transparent;" text="Game Data 4 01/04/2019" textFill="WHITE" />
-                  <Button fx:id="Save5" onAction="#saveOnAction5" mnemonicParsing="false" prefHeight="25.0" prefWidth="429.0" style="-fx-background-color: transparent;" text="Game Data 5 20/01/2019" textFill="WHITE" />
+                  <ListView fx:id="gameSaves" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: rgba(128, 128, 128, 0.5);" />
                </children>
             </VBox>
          </children>
@@ -50,9 +40,15 @@
    <bottom>
       <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="20.0" BorderPane.alignment="CENTER">
          <children>
-            <Button fx:id="Back" onAction="#backOnAction" onMouseEntered="#mouseOnB" onMouseExited="#mouseOFFB" mnemonicParsing="false" prefHeight="25.0" prefWidth="80.0" style="-fx-background-color: LIGHTSALMON; -fx-background-radius: 5em;" text="Back" />
-            <Button fx:id="Select" onAction="#selectOnAction" onMouseEntered="#mouseOnS" onMouseExited="#mouseOFFS" mnemonicParsing="false" prefHeight="25.0" prefWidth="80.0" style="-fx-background-color: LIGHTSALMON; -fx-background-radius: 5em;" text="Select" />
+            <Button fx:id="Back" mnemonicParsing="false" onAction="#backOnAction" onMouseEntered="#mouseOnB" onMouseExited="#mouseOFFB" prefHeight="25.0" prefWidth="80.0" style="-fx-background-color: LIGHTSALMON; -fx-background-radius: 5em;" text="Back" />
+            <Button fx:id="Select" mnemonicParsing="false" onAction="#selectOnAction" onMouseEntered="#mouseOnS" onMouseExited="#mouseOFFS" prefHeight="25.0" prefWidth="80.0" style="-fx-background-color: LIGHTSALMON; -fx-background-radius: 5em;" text="Select" />
          </children>
       </HBox>
    </bottom>
+   <left>
+      <VBox prefHeight="200.0" prefWidth="50.0" BorderPane.alignment="CENTER" />
+   </left>
+   <right>
+      <VBox prefHeight="200.0" prefWidth="50.0" BorderPane.alignment="CENTER" />
+   </right>
 </BorderPane>
