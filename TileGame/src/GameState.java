@@ -18,13 +18,16 @@ public class GameState {
 	private int curPlayer;
 	private boolean isGoalHit;
 	private ArrayList<ActionTile>[] actionTilesForEachPlayer;
+	private ArrayList<ActionTilePlaceable> tilesInAction;
+	
 	private int[] positionOfInsertedTile;
 	private Tile insertedTile;
 	private int movedPlayer;
 	private int[] newXYForMovedPlayer;
 	private boolean[][] moveableSpaces;
-	private ArrayList<ActionTilePlaceable> tilesInAction;
 	private int movesLeftForCurrentPlayer;
+	private boolean[][] insertableLocations;
+	private boolean placeableActionTileApplied;
 	
 	
 	
@@ -55,6 +58,10 @@ public class GameState {
 		
 	}
 	
+	public void isGoalHit(boolean isGoalHit) {
+		this.isGoalHit = isGoalHit;
+	}
+	
 	public void setMoveableSpaces(boolean[][] moveAbleSpaces) {
 		this.moveableSpaces = moveAbleSpaces;
 	}
@@ -62,6 +69,14 @@ public class GameState {
 	public void setCurrentPlayer(int currentPlayer, int movesLeftForCurrentPlayer) {
 		this.curPlayer = currentPlayer;
 		this.movesLeftForCurrentPlayer = movesLeftForCurrentPlayer;
+	}
+	
+	public void setInsertableLocation(boolean[][] insertableLocations) {
+		this.insertableLocations = insertableLocations;
+	}
+	
+	public void setActionTileApplied() {
+		placeableActionTileApplied = true;
 	}
 	
 	public Placeable[][] getBoard() {
@@ -110,6 +125,14 @@ public class GameState {
 	
 	public int getMovesLeftForCurrentPlayer() {
 		return movesLeftForCurrentPlayer;
+	}
+	
+	public boolean[][] getInsertableLocations(){
+		return insertableLocations;
+	}
+	
+	public boolean hasPlaceableActionTileApplied() {
+		return placeableActionTileApplied;
 	}
 
 }

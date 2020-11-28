@@ -1,9 +1,21 @@
-/*
- * Java Doc Not Yet Complete.
+
+ 
+/* Java Doc Not Yet Complete.
  * Class Not Yet Complete.
  * No implementation for backtrack yet as file reader/writer not yet implemented.
  * No working implementation as silk bag not yet complete.
+ * 
+ * TO DO TODAY:
+ * 		- Implement the relevant game state constructors.
+ * 			end Game
+ * 		- New Move, combining this move and move in board.
+ *  
+ *  Board needs method to get all tiles.
+ * 
  */
+
+
+
 
 
 import java.util.ArrayList;
@@ -29,30 +41,59 @@ public class Game {
 	
 	
 	/**
-	 * This class allows for the creation of a new game, it takes a file name
-	 * to show which board file should be read and a array of player piece.
-	 * @param fileName The file to be loaded.
-	 * @param players The players that are going to play.
+	 * This constructor is designed to be used to construct a new 
+	 * game, it should have a silk bag, the players and the board parsed to it.
+	 * @param bag The silk bag that should operate this game
+	 * @param players The players, they should already have their starting positions loaded.
+	 * @param board The game board that should be played. 
 	 */
-	public Game(GameState curState, ArrayList<GameState> pastStates, SilkBag bag, PlayerPiece[] players, int curPlayer, int movesLeftForCurrent, ArrayList<ActionTilePlaceable> tilesInAction) {
+	public Game(SilkBag bag, PlayerPiece[] players, Board board) {
+		this.board = board;
 		this.bag = bag;
-		this.board = new Board(curState.getBoard().length, curState.getBoard()[0].length, curState.getBoard());
 		this.players = players;
-		this.curPlayer = curPlayer;
-		this.tilesInAction = tilesInAction;
-		this.pastStates = pastStates;;
+		this.curPlayer = 0;
+		this.movesRemaingForThisPlayer = 1;
+		this.tilesInAction = new ArrayList<ActionTilePlaceable>();
+		this.isGoalReached = false;
+		this.pastStates = new ArrayList<GameState>();
+		
 	}
 	
+	/**
+	 * This constructor is designed to be used to construct a game that is already in play.
+	 * It rebuilds a game based on the curState that has been parsed to it by the caller.
+	 * It also takes a array list of past states, a silk bag that is fully populated. 
+	 * @param curState The state the game should be loaded into
+	 * @param pastStates The past states of the game.
+	 * @param bag The silk bag.
+	 * @param players The players, the they do not need to have their positions loaded.
+	 */
+	public Game(GameState curState, ArrayList<GameState> pastStates, SilkBag bag, PlayerPiece[] players) {
+		this.bag = bag;
+		this.players = players;
+		this.pastStates = pastStates;
+		reconstructGame(curState);
+		
+	}
 	
-	public GameState getState() {
-		int[][] playerPositions = new int[players.length][2];
-		ArrayList[] actionTilesForPlayers = new ArrayList[players.length];
-		for(int i = 0; i < players.length; i++) {
-			actionTilesForPlayers[i] = players[i].getActionTilesOwned();
-			playerPositions[i][0] = players[i].getX();
-			playerPositions[i][1] = players[i].getY();
+	 //TODO now game class has been reprogrammed, get the data that is relevant for the graphics context.
+	
+	/**
+	 * @private
+	 * This method is designed to be able to build the game from a current state.
+	 * @param curState The state the game should be loaded into.
+	 */
+	private void reconstructGame(GameState curState) {
+		this.board = new Board(curState.getBoard().length, curState.getBoard()[0].length, curState.getBoard(), bag);
+		this.tilesInAction = curState.getTilesInAction();
+		this.curPlayer = curState.getCurPlayer();
+		this.movesRemaingForThisPlayer = curState.getMovedPlayer();
+		this.tilesInAction = curState.getTilesInAction();
+		for(int i = 0; i < players.length ; i++) {
+			players[i].setX(curState.getPlayersPositions()[i][0]);
+			players[i].setX(curState.getPlayersPositions()[i][1]);
+			players[i].setBulkActionTiles(curState.getActionTileForPlayer(i));
 		}
-		return new GameState(board.getTiles(), playerPositions, actionTilesForPlayers, curPlayer, isGoalReached);
 	}
 	
 	public Tile getNewTileForCurrentPlayer() {
@@ -76,12 +117,11 @@ public class Game {
 		return newTile;
 	}
 	
-	public ArrayList<ActionTile> getActionTilesForPlayer() {
-		return players[curPlayer].getActionTilesOwned();
-	}
 	
-	public void insertTile(Placeable tileToBeInserted, int x, int y, boolean vertical) {
+	public GameState insertTile(Placeable tileToBeInserted, int x, int y, boolean vertical) {
 		board.insertPiece(x, y, vertical, tileToBeInserted);
+		int[] postion = {x,y};
+		return tileAfterInsertion(tileToBeInserted, postion);
 	}
 	
 	public void playDoubleMove(ActionTile doubleMove) {
@@ -89,7 +129,7 @@ public class Game {
 		this.movesRemaingForThisPlayer++;
 	}
 	
-	public void playBackTrack(ActionTile backtrack, int playerAgainst) throws IllegalBackTrackException {
+	public GameState playBackTrack(ActionTile backtrack, int playerAgainst) throws IllegalBackTrackException {
 		if (players[playerAgainst].getBacktrack()) {
 			throw new IllegalBackTrackException(playerAgainst + " Has already had backtrack applied");
 		}
@@ -117,6 +157,8 @@ public class Game {
 				backTrackedX = furtherBackState.getPlayersPositions()[playerAgainst][0];
 				backTrackedY = furtherBackState.getPlayersPositions()[playerAgainst][1];
 				testTile = (Placeable) board.getTile(backTrackedX, backTrackedY);
+				players[playerAgainst].setX(backTrackedX);
+				players[playerAgainst].setY(backTrackedY);
 			}
 			
 		} catch(IndexOutOfBoundsException e) {
@@ -125,12 +167,11 @@ public class Game {
 			players[curPlayer].addActionTile(new BackTrack(players[curPlayer]));
 		}
 		
-		players[playerAgainst].setX(backTrackedX);
-		players[playerAgainst].setY(backTrackedY);
-		
+		return actionTileBackTrack(playerAgainst);
+
 	}
 	
-	public void playIce(Ice ice, int x, int y) throws IncorrectTileTypeException {
+	public GameState playIce(Ice ice, int x, int y) throws IncorrectTileTypeException {
 		players[curPlayer].playActionTile(ice);
 		Placeable[] tilesToAction= new Placeable[9];
 		tilesToAction[0] = (Placeable) board.getTile((x - 1), (y - 1));
@@ -143,9 +184,10 @@ public class Game {
 		tilesToAction[7] = (Placeable) board.getTile((x + 1), y);
 		tilesToAction[8] = (Placeable) board.getTile((x + 1) , (y + 1));
 		ice.instantiateAction(tilesToAction);
+		return actionTilePlayed();
 	}
 	
-	public void playFire(Fire fire, int x, int y) throws IncorrectTileTypeException {
+	public GameState playFire(Fire fire, int x, int y) throws IncorrectTileTypeException {
 		players[curPlayer].playActionTile(fire);
 		Placeable[] tilesToAction= new Placeable[9];
 		tilesToAction[0] = (Placeable) board.getTile((x - 1), (y - 1));
@@ -158,11 +200,12 @@ public class Game {
 		tilesToAction[7] = (Placeable) board.getTile((x + 1), y);
 		tilesToAction[8] = (Placeable) board.getTile((x + 1) , (y + 1));
 		fire.instantiateAction(tilesToAction);
+		return actionTilePlayed();
 	}
 	
-	public boolean move(int direction) {
+	public GameState move(int direction) throws IllegalMove {
 		if (movesRemaingForThisPlayer <= 0) {
-			return false;
+			throw new IllegalMove("This player has no moves remaining");
 		}
 		int curX = players[curPlayer].getX();
 		int curY = players[curPlayer].getY();
@@ -184,7 +227,7 @@ public class Game {
 				newY = curY;
 			}
 		} else {
-			return false;
+			throw new IllegalMove("This player cannot move in this direction");
 		}
 		
 		Placeable newTile =  (Placeable) board.getTile(curX, curY);
@@ -206,9 +249,9 @@ public class Game {
 			if(newTile.isGoal()) {
 				this.isGoalReached = true;
 			}
-			return true;
+			return playerMoved();
 		} else {
-			return false;
+			throw new IllegalMove("This player cannot move in this direction");
 		}
 	}
 		
@@ -220,11 +263,69 @@ public class Game {
 		for(ActionTilePlaceable tile : tilesInAction) {
 			tile.decrementTime();
 		}
-		GameState newState = getState();
+		GameState newState = makeStateEndTurn();
 		this.pastStates.add(newState);
 		
 		return newState;
 		
 	}
+	
+	private GameState actionTilePlayed() {
+		GameState newState = new GameState();
+		newState.setBoard(board.getTiles());
+		newState.setActionTileApplied();
+		return newState;
+	}
+	
+	private int[][] getPlayerPositions(){
+		int[][] playerPositions = new int[players.length][2];
+		for(int i = 0; i < players.length; i++) {
+			playerPositions[i][0] = players[i].getX();
+			playerPositions[i][1] = players[i].getY();
+		}
+		return playerPositions;
+	}
+	
+	private GameState playerMoved() {
+		GameState newState = new GameState();
+		newState.setChangedPlayerPosition(curPlayer, getPlayerPositions()[curPlayer]);
+		newState.setPlayerPositions(getPlayerPositions());
+		newState.isGoalHit(isGoalReached);
+		return newState;
+	}
+
+
+	private GameState actionTileBackTrack(int playerBackTracked) {
+		GameState newState = new GameState();
+		newState.setChangedPlayerPosition(playerBackTracked, getPlayerPositions()[playerBackTracked]);
+		newState.setPlayerPositions(getPlayerPositions());
+		return newState;
+	}
+	
+	private GameState tileAfterInsertion(Tile t, int[] positionOfInsertedTile) {
+		GameState newState = new GameState();
+		newState.setChangedTile(t, positionOfInsertedTile);
+		newState.setPlayerPositions(getPlayerPositions());
+		return newState;	
+	}
+	
+	private GameState makeStateEndTurn() {
+		GameState newState = new GameState();
+		newState.setPlayerPositions(getPlayerPositions());
+		newState.setBoard(board.getTiles());
+		newState.setTilesInAction(tilesInAction);
+		@SuppressWarnings("unchecked")
+		ArrayList<ActionTile>[] tilesOwnedByPlayers = new ArrayList[players.length];
+		for(int i = 0; i < players.length; i++) {
+			tilesOwnedByPlayers[i] = players[i].getActionTilesOwned(); 
+		}
+		newState.setCurrentPlayer(curPlayer, movesRemaingForThisPlayer);
+		return newState;
+		
+	}
+	
+	
+	
+	
 
 }
