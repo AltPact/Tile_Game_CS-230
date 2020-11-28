@@ -1,10 +1,102 @@
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.Scanner; 
+import java.util.ArrayList;
+import java.util.Scanner;
 
 public class FileReader {
 
-	public static void readBoardFile(String filename) {
+	public static Game readGameFile(String filename) {
+		try {
+			File f = new File(filename);
+			Scanner s = new Scanner(f);
+
+			/* read game meta data */
+			int height = s.nextInt();
+			int width = s.nextInt();
+			int numPlayers = s.nextInt();
+			int curPlayer = s.nextInt(); // TODO: DUPLICATE DATA, this is included in curState
+			int movesLeftForCurrent = s.nextInt();
+			boolean isGoalHit = s.nextBoolean();
+
+			/* read player data */
+			/* TODO: this data is all duplicates of data in curState (except colour), and can't instantiate an array of ActionTiles so can't construct player pieces */
+			for (int p = 0; p < numPlayers; p++) {
+				int playerX = s.nextInt();
+				int playerY = s.nextInt();
+				String playerColour = s.next();
+				//
+			}
+
+			/* read current game state */
+			GameState curState = readGameState(s, height, width, numPlayers);
+
+			/* read past game states */
+			ArrayList<GameState> pastStates = new ArrayList<GameState>();
+			int numPastStates = s.nextInt();
+			for (int state = 0; state < numPastStates; state++) {
+				pastStates.add(readGameState(s, height, width, numPlayers));
+			}
+
+			/* read the silk bag */
+
+			int[] numActionTiles = new int[] {0, 0, 0, 0};
+			int[] numPlaceableTiles = new int[] {0, 0, 0};
+			int numBagTiles = s.nextInt();
+			for (int bagTile = 0; bagTile < numBagTiles; bagTile++) {
+				int curTile = s.nextInt();
+				if (curTile < 4) {  // if action tile
+					numActionTiles[curTile] = numActionTiles[curTile] + 1;
+				} else {  // if placeable tile
+					numPlaceableTiles[curTile % 3] = numPlaceableTiles[curTile % 3] + 1;
+				}
+			}
+			SilkBag bag = new SilkBag(numActionTiles, numPlaceableTiles);
+
+			return new Game(curState, pastStates, bag, players, curPlayer, movesLeftForCurrent, tilesInAction);
+		} catch (FileNotFoundException e) {
+			System.out.println("An error occurred.");
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+
+
+	private static GameState readGameState(Scanner s, int height, int width, int numPlayers) {
+		boolean isGoalHit = s.nextBoolean();
+		int curPlayer = s.nextInt();
+
+		Placeable[][] stateTiles = new Placeable[height][width];
+		for (int y = 0; y < height; y++) {
+			for (int x = 0; x < width; x++) {
+				TileType type = TileType.valueOf(s.next());
+				boolean isFixed = s.nextBoolean();
+				int orientation = s.nextInt();
+				stateTiles[y][x] = new Placeable(type, type == TileType.Goal, isFixed, orientation);
+			}
+		}
+
+		int[][] playerPositions = new int[numPlayers][2];
+		for (int p = 0; p < numPlayers; p++) {
+			playerPositions[p][0] = s.nextInt();
+			playerPositions[p][1] = s.nextInt();
+		}
+
+		// TODO: action tiles are currently abstract, you can't instantiate them to put them in an array.
+		ArrayList<ActionTile>[] curActionTilesForEachPlayer = new ArrayList[numPlayers];
+		for (int p = 0; p < numPlayers; p++) {
+			curActionTilesForEachPlayer[p]= new ArrayList<ActionTile> ();
+			int numActionTilesInHand = s.nextInt();
+			for (int a = 0; a < numActionTilesInHand; a++) {
+				TileType actionTileType = TileType.valueOf(s.next());
+				curActionTilesForEachPlayer[p].add(new ActionTile(actionTileType));
+			}
+		}
+
+		return new GameState(stateTiles, playerPositions, curActionTilesForEachPlayer, curPlayer, isGoalHit);
+	}
+
+	public static void oldReadBoardFile(String filename) {
 		try {
 			File f = new File(filename);
 			Scanner s = new Scanner(f);
@@ -41,19 +133,20 @@ public class FileReader {
 				// TODO: much more information will be needed than just tile type, will need to talk about this
 				actionTiles[t] = s.next();
 			}
-			
+
 			s.close();
 			return;  // TODO: need to construct Game object
-    } catch (FileNotFoundException e) {
-      System.out.println("An error occurred.");
-      e.printStackTrace();
-    }
-		
-	public static void readGameFile(String filename) {
+		} catch (FileNotFoundException e) {
+			System.out.println("An error occurred.");
+			e.printStackTrace();
+		}
+	}
+
+	/* public static void oldReadGameFile(String filename) {
 		try {
 			File f = new File(filename);
 			Scanner s = new Scanner(f);
-			/* read player data */
+
 			int numPlayers = s.nextInt();
 			PlayerPiece[] players = new PlayerPiece[numPlayers];
 			TileType[][] playerHands = new String[numPlayers][10]; // assumes max hand size of 10
@@ -77,13 +170,13 @@ public class FileReader {
 			}
 			
 			int curTurn = s.nextInt();
-			/* read the silk bag */
+
 			int silkBagSize = s.nextInt();
 			String[] silkBag = new String[silkBagSize];  // TODO: probably need to make this not be a string
 			for (int t = 0; t < silkBagSize; t++) {
 				silkBag[t] = s.next();
 			}			
-			/* read the game's current board */
+
 			int boardWidth = s.nextInt();  // TODO: maybe make reading this data a function to be reused when reading previous states?
 			int boardHeight = s.nextInt();
 			Tile[][] currentBoard = new Tile[boardWidth][boardHeight];
@@ -97,10 +190,10 @@ public class FileReader {
 					boolean onFire = s.hasNextBoolean();
 					boolean frozen = s.hasNextBoolean();
 					int timeRemaining = s.nextInt();
-					if (tileTypeEnum = TileType.Ice) {
+					if (tileTypeEnum == TileType.Ice) {
 						currentBoard[x][y] = new Ice(owner, numPlayers);
 						// TODO: no function exists yet for the time remaining to be set on initialisation
-					} else if (tileTypeEnum = TileType.Fire) {
+					} else if (tileTypeEnum == TileType.Fire) {
 						currentBoard[x][y] = new Fire(owner, numPlayers);
 						// TODO: see above
 					} else {
@@ -108,7 +201,7 @@ public class FileReader {
 					}
 				}
 			}
-			/* read previous board states */
+
 			int previousBoardStates = s.nextInt();
 			Tile[][][] previousBoards = new Tile[previousBoardStates][boardWidth][boardHeight];
 			for (int b = 0; b < previousBoardStates; b++) {
@@ -122,10 +215,10 @@ public class FileReader {
 						boolean onFire = s.hasNextBoolean();
 						boolean frozen = s.hasNextBoolean();
 						int timeRemaining = s.nextInt();
-						if (tileTypeEnum = TileType.Ice) {
+						if (tileTypeEnum == TileType.Ice) {
 							previousBoards[b][x][y] = new Ice(owner, numPlayers);
 							// TODO: no function exists yet for the time remaining to be set on initialisation
-						} else if (tileTypeEnum = TileType.Fire) {
+						} else if (tileTypeEnum == TileType.Fire) {
 							previousBoards[b][x][y] = new Fire(owner, numPlayers);
 							// TODO: see above
 						} else {
@@ -141,6 +234,6 @@ public class FileReader {
 		      System.out.println("An error occurred.");
 		      e.printStackTrace();
 		}
-	}
-  }
+	} */
+
 }

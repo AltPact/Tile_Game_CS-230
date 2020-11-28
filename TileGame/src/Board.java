@@ -259,7 +259,11 @@ public class Board {
 		return tiles[x][y].isFrozen();
 	}
 	
-	
+
+	public Placeable[][] getTiles() {
+		return tiles;
+	}
+
 	public Tile getTile(int x, int y) {
 		if (x > width || y > height) {
 			return null; // should throw an exception here maybe

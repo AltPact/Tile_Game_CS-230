@@ -26,7 +26,13 @@ public class GameState {
 	private ArrayList<ActionTilePlaceable> tilesInAction;
 	private int movesLeftForCurrentPlayer;
 	
-	
+	public GameState(Placeable[][] boardTiles, int[][] playersPositions, ArrayList<ActionTile>[] actionTilesForEachPlayer, int curPlayer, boolean isGoalHit) {
+		this.boardTiles = boardTiles;
+		this.playersPositions = playersPositions;
+		this.actionTilesForEachPlayer = actionTilesForEachPlayer;
+		this.curPlayer = curPlayer;
+		this.isGoalHit = isGoalHit;
+	}
 	
 	public void setBoard(Placeable[][] board) {
 		this.boardTiles = board;
