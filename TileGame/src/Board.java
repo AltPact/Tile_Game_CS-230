@@ -44,7 +44,7 @@ public class Board {
 	 * Fills any empty spaces in the board using floor tiles from the silk bag.
 	 * @param bag The bag to draw floor tiles from.
 	 */
-	private void fillBoard(SilkBag bag) {
+	public void fillBoard(SilkBag bag) {
 		for (int x = 0; x < height; x++) {
 			for (int y = 0; y < width; y++) {
 				if (tiles[x][y] == null) {
@@ -259,7 +259,11 @@ public class Board {
 		return tiles[x][y].isFrozen();
 	}
 	
-	
+
+	public Placeable[][] getTiles() {
+		return tiles;
+	}
+
 	public Tile getTile(int x, int y) {
 		if (x > width || y > height) {
 			return null; // should throw an exception here maybe
