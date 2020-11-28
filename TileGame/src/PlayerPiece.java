@@ -122,6 +122,14 @@ public class PlayerPiece {
 	}
 	
 	/**
+	 * Allows a bulk of actionTiles to be allocated to the player.
+	 * @param actionTiles The action tiles to be added to the player.
+	 */
+	public void setBulkActionTiles(ArrayList<ActionTile> actionTiles) {
+		this.ownedActionTiles = actionTiles;
+	}
+	
+	/**
 	 * Returns a array of all of the tiles owned by this player.
 	 * @return tiles owned by this player
 	 */
