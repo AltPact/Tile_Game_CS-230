@@ -44,7 +44,7 @@ public class Board {
 	 * Fills any empty spaces in the board using floor tiles from the silk bag.
 	 * @param bag The bag to draw floor tiles from.
 	 */
-	private void fillBoard(SilkBag bag) {
+	public void fillBoard(SilkBag bag) {
 		for (int x = 0; x < height; x++) {
 			for (int y = 0; y < width; y++) {
 				if (tiles[x][y] == null) {
