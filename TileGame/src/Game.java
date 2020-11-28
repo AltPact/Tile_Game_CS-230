@@ -8,7 +8,7 @@
  * TO DO TODAY:
  * 		- Implement the relevant game state constructors.
  * 			end Game
- * 		- New Move, combining this move and move in board.
+ * 		- Past States reduce data.
  *  
  *  Board needs method to get all tiles.
  * 
@@ -203,55 +203,35 @@ public class Game {
 		return actionTilePlayed();
 	}
 	
-	public GameState move(int direction) throws IllegalMove {
+	public GameState moveCurrentPlayer(int direction) throws IllegalMove {
 		if (movesRemaingForThisPlayer <= 0) {
 			throw new IllegalMove("This player has no moves remaining");
 		}
 		int curX = players[curPlayer].getX();
 		int curY = players[curPlayer].getY();
-		Placeable curTile =  (Placeable) board.getTile(curX, curY);
+		boolean[][] moveableSpaces = board.getMoveableSpaces(players[curPlayer]);
 		int newX = 0;
 		int newY = 0;
-		if(curTile.canMove(direction)) {
-			if(direction == 0) {
-				newX = curX;
-				newY = curY - 1;
-			} else if(direction == 1) {
-				newX = curX + 1;
-				newY = curY;
-			} else if(direction == 2) {
-				newX = curX;
-				newY = curY + 1;
-			} else if(direction == 3) {
-				newX = curX - 1;
-				newY = curY;
-			}
-		} else {
-			throw new IllegalMove("This player cannot move in this direction");
-		}
-		
-		Placeable newTile =  (Placeable) board.getTile(curX, curY);
-		
-		int oppDirection = 0;
 		if(direction == 0) {
-			oppDirection = 2;
+			newX = curX;
+			newY = curY - 1;
 		} else if(direction == 1) {
-			oppDirection = 3;
+			newX = curX + 1;
+			newY = curY;
 		} else if(direction == 2) {
-			oppDirection = 0;
+			newX = curX;
+			newY = curY + 1;
 		} else if(direction == 3) {
-			oppDirection = 1;
+			newX = curX - 1;
+			newY = curY;
 		}
-		
-		if(newTile.canMove(oppDirection)) {
+		if(moveableSpaces[newX][newY]) {
 			players[curPlayer].setX(newX);
 			players[curPlayer].setY(newY);
-			if(newTile.isGoal()) {
-				this.isGoalReached = true;
-			}
+			movesRemaingForThisPlayer--;
 			return playerMoved();
 		} else {
-			throw new IllegalMove("This player cannot move in this direction");
+			throw new IllegalMove("Player Cannot move in this Direction");
 		}
 	}
 		
@@ -320,6 +300,7 @@ public class Game {
 			tilesOwnedByPlayers[i] = players[i].getActionTilesOwned(); 
 		}
 		newState.setCurrentPlayer(curPlayer, movesRemaingForThisPlayer);
+		newState.setMoveableSpaces(board.getMoveableSpaces(players[curPlayer]));
 		return newState;
 		
 	}
