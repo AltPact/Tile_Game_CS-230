@@ -76,9 +76,9 @@ public class HomePageController extends GameWindow implements Initializable {
 			Media bgm = new Media(bgmF.toURI().toString());
 			background = new MediaPlayer(bgm);
 			background.setVolume(0.1);
-			background.play();
+			//background.play();
 		} else if (!background.getStatus().equals(Status.PLAYING)) {
-			background.play();
+			//background.play();
 		}
 		
 	}

@@ -37,6 +37,8 @@ public class LoadGameController extends GameWindow implements Initializable {
 	@FXML
 	public ListView gameSaves;
 	
+	private Game gameSave[];
+	
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		addGameSave();
@@ -44,7 +46,9 @@ public class LoadGameController extends GameWindow implements Initializable {
 	
 	public void addGameSave() {
 		gameSaves.getItems().add("Game Save");
+		
 	}
+	
 	/**
 	 * This method is called when mouse is on the back button
 	 * it will change the color of the button
