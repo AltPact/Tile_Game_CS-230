@@ -155,7 +155,7 @@ public class NewGameController extends GameWindow implements Initializable {
 	
 	@FXML
 	public void createButtonClick(ActionEvent event) throws IOException {
-		//switchPane("/fxml/CreatePlayer.fxml",BP, "back");<-should be something like that
+		switchPane("/fxml/CreatePlayerPane.fxml",BP, "back");
 	}
 	@FXML
 	public void mouseOnCreate() {
