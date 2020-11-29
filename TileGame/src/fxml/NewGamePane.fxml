@@ -25,19 +25,7 @@
          <children>
             <VBox alignment="CENTER" prefHeight="327.0" prefWidth="549.0" style="-fx-background-color: rgba(0,0,0, 0.3);">
                <children>
-                  <HBox alignment="CENTER" prefHeight="64.0" prefWidth="496.0">
-                     <children>
-                        <Label alignment="CENTER" text="Player Number: " textFill="WHITE" />
-                        <HBox alignment="CENTER" prefHeight="86.0" prefWidth="252.0">
-                           <children>
-                              <Button fx:id="Button1" mnemonicParsing="false" onAction="#buttonOnAction1" prefHeight="27.0" prefWidth="58.0" style="-fx-background-color: rgba(128, 128, 128, 0.5); -fx-border-color: BLACK; -fx-background-insets: 0;" text="1" textFill="WHITE" />
-                              <Button fx:id="Button2" mnemonicParsing="false" onAction="#buttonOnAction2" prefHeight="27.0" prefWidth="58.0" style="-fx-background-color: rgba(128, 128, 128, 0.5); -fx-border-color: BLACK; -fx-background-insets: 0;" text="2" textFill="WHITE" />
-                              <Button fx:id="Button3" mnemonicParsing="false" onAction="#buttonOnAction3" prefHeight="27.0" prefWidth="58.0" style="-fx-background-color: rgba(128, 128, 128, 0.5); -fx-border-color: BLACK; -fx-background-insets: 0;" text="3" textFill="WHITE" />
-                              <Button fx:id="Button4" mnemonicParsing="false" onAction="#buttonOnAction4" prefHeight="27.0" prefWidth="58.0" style="-fx-background-color: rgba(128, 128, 128, 0.5); -fx-border-color: BLACK; -fx-background-insets: 0;" text="4" textFill="WHITE" />
-                           </children>
-                        </HBox>
-                     </children>
-                  </HBox>
+       
                   <HBox alignment="CENTER" prefHeight="60.0" prefWidth="496.0" spacing="20.0">
                      <children>
                         <Label prefHeight="17.0" prefWidth="66.0" text="Add Player: " textFill="WHITE" />
