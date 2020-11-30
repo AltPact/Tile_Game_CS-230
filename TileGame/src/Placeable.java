@@ -94,12 +94,12 @@ public class Placeable extends Tile {
 	}
 	
 	/**
-	 * This method tests if the user can move in a particular direction 
+	 * This method tests if the user can move in a particular direction ad if the tile is on fire
 	 * @param direction the direction the user wishes to move
 	 * @return a boolean demonstrating if the user can/cannot move.
 	 */
 	public boolean canMove(int direction) {
-		return this.waysToMove[direction];
+		return this.waysToMove[direction] && !isOnFire();
 	}
 	
 	/**

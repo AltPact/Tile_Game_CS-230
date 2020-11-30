@@ -17,6 +17,8 @@ public class PlayerPiece {
 	private String colour;
 	private boolean backtrackApplied;
 	private ArrayList<ActionTile> ownedActionTiles;
+	
+	private PlayerData linkedData;
 
 	/**
 	 * Constructs the player piece object for the board
@@ -29,15 +31,16 @@ public class PlayerPiece {
 	 * @param backtrackApplied: Used to store state of if the backtrack function has
 	 *                          been used
 	 */
-	public PlayerPiece(int x, int y, String colour, boolean backtrackApplied) {
+	public PlayerPiece(int x, int y, String colour, boolean backtrackApplied, PlayerData linkedData) {
 		this.x = x;
 		this.y = y;
 		this.colour = colour;
 		this.backtrackApplied = backtrackApplied;
 		this.ownedActionTiles = new ArrayList<ActionTile>();
-
+		
 	}
-
+	
+	
 	/**
 	 * Sets X co-ordinate of the player piece
 	 * 
@@ -144,6 +147,14 @@ public class PlayerPiece {
 	 */
 	public boolean playActionTile(ActionTile tile) {
 		return this.ownedActionTiles.remove(tile);
+	}
+	
+	/**
+	 * Returns the relevant linked data for this player.
+	 * @return linked data.
+	 */
+	public PlayerData getLinkedData() {
+		return linkedData;
 	}
 
 	@Override

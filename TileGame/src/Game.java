@@ -1,4 +1,3 @@
-
  
 /* Java Doc Not Yet Complete.
  * Class Not Yet Complete.
@@ -84,7 +83,7 @@ public class Game {
 	 * @param curState The state the game should be loaded into.
 	 */
 	private void reconstructGame(GameState curState) {
-		this.board = new Board(curState.getBoard().length, curState.getBoard()[0].length, curState.getBoard(), bag);
+		this.board = new Board(curState.getBoard().length, curState.getBoard()[0].length, curState.getBoard());
 		this.tilesInAction = curState.getTilesInAction();
 		this.curPlayer = curState.getCurPlayer();
 		this.movesRemaingForThisPlayer = curState.getMovedPlayer();
@@ -95,7 +94,6 @@ public class Game {
 			players[i].setBulkActionTiles(curState.getActionTileForPlayer(i));
 		}
 	}
-	
 	public Tile getNewTileForCurrentPlayer() {
 		TileType newTileType = bag.draw();
 		Tile newTile = null;
@@ -118,10 +116,79 @@ public class Game {
 	}
 	
 	
-	public GameState insertTile(Placeable tileToBeInserted, int x, int y, boolean vertical) {
-		board.insertPiece(x, y, vertical, tileToBeInserted);
+	public GameState insertTile(Placeable tileToBeInserted, int x, int y, boolean vertical) throws IllegalInsertionException {
+		boolean isInserted = board.insertPiece(x, y, vertical, tileToBeInserted);
+		if(!isInserted) {
+			throw new IllegalInsertionException("This tile cannot be inserted");
+		}
+		
+		int directionOfInsertion = 0;
+		int affectedRowColumn = 0;
+		if(vertical) {
+			affectedRowColumn = y;
+			if(y == 0) {
+				directionOfInsertion = 2;
+				
+			} else {
+				directionOfInsertion = 0;
+			}
+		} else {
+			affectedRowColumn = x;
+			if(x == 0) {
+				directionOfInsertion = 1;
+			} else {
+				directionOfInsertion = 3;
+			}
+		}
+
+		movePlayersOn(directionOfInsertion, affectedRowColumn);
+		
 		int[] postion = {x,y};
 		return tileAfterInsertion(tileToBeInserted, postion);
+	}
+	
+	private void movePlayersOn(int directionOfInsertion, int affectedRowColumn) {
+		for(PlayerPiece player : players) {
+			//if the inserted tile effects a vertical column
+			if(((directionOfInsertion == 0) || (directionOfInsertion == 2)) && player.getY() == affectedRowColumn) { 
+				int testY = player.getY();
+				//Makes the appropriate change
+				if (directionOfInsertion == 0) {
+					testY -= 1;
+				} else if (directionOfInsertion == 2) {
+					testY += 1;
+				}
+				
+				//If the players position is now illegal, but them back on the board.
+				if(testY >= board.getHeight() || testY < 0) {
+					if (directionOfInsertion == 0) {
+						testY -= (board.getHeight() - 1);
+					} else if (directionOfInsertion == 2) {
+						testY += 0;
+					}
+				}
+				player.setY(testY);
+			//If the inserted tile effects a horizontal row.
+			} else if (((directionOfInsertion == 1) || (directionOfInsertion == 1)) && player.getX() == affectedRowColumn) { 
+				int testX = player.getX();
+				//Makes the appropriate change
+				if (directionOfInsertion == 3) {
+					testX -= 1;
+				} else if (directionOfInsertion == 1) {
+					testX += 1;
+				}
+				
+				//If the players position is now illegal, but them back on the board.
+				if(testX >= board.getWidth() || testX < 0) {
+					if (directionOfInsertion == 3) {
+						testX -= (board.getWidth() - 1);
+					} else if (directionOfInsertion == 1) {
+						testX += 0;
+					}
+				}
+				player.setX(testX);
+			} 
+		}
 	}
 	
 	public void playDoubleMove(ActionTile doubleMove) {
@@ -144,23 +211,28 @@ public class Game {
 			}
 			twoMovesAgo = pastStates.get(i - players.length);
 
+			int backTrackedX = twoMovesAgo.getPlayersPositions()[playerAgainst][0];
+			int backTrackedY = twoMovesAgo.getPlayersPositions()[playerAgainst][1];
 		
-		
-		int backTrackedX = twoMovesAgo.getPlayersPositions()[playerAgainst][0];
-		int backTrackedY = twoMovesAgo.getPlayersPositions()[playerAgainst][1];
-		
-		Placeable testTile = (Placeable) board.getTile(backTrackedX, backTrackedY);
-			while(testTile.isOnFire()) {
-				int gameStateIndex = pastStates.indexOf(twoMovesAgo);
-				gameStateIndex =- players.length;
-				GameState furtherBackState = pastStates.get(gameStateIndex);
-				backTrackedX = furtherBackState.getPlayersPositions()[playerAgainst][0];
-				backTrackedY = furtherBackState.getPlayersPositions()[playerAgainst][1];
+			Placeable testTile = (Placeable) board.getTile(backTrackedX, backTrackedY);
+			
+			if(testTile.isOnFire()) {
+				GameState oneMoveAgo = pastStates.get(i);
+				backTrackedX = oneMoveAgo.getPlayersPositions()[playerAgainst][0];
+				backTrackedY = oneMoveAgo.getPlayersPositions()[playerAgainst][1];
 				testTile = (Placeable) board.getTile(backTrackedX, backTrackedY);
+				if(testTile.isOnFire()) {
+					throw new IllegalBackTrackException("All of the previous places are now on fire");
+				}
+				else {
+					players[playerAgainst].setX(backTrackedX);
+					players[playerAgainst].setY(backTrackedY);
+				}
+			} else {
 				players[playerAgainst].setX(backTrackedX);
 				players[playerAgainst].setY(backTrackedY);
 			}
-			
+			players[playerAgainst].setBacktrack(true);
 		} catch(IndexOutOfBoundsException e) {
 			throw new IllegalBackTrackException("Not enough moves made to conduct backtrack against player " + playerAgainst);
 		} finally {
@@ -245,6 +317,9 @@ public class Game {
 		}
 		GameState newState = makeStateEndTurn();
 		this.pastStates.add(newState);
+		if(pastStates.size() > players.length * 2) {
+			pastStates.remove(0);
+		}
 		
 		return newState;
 		
@@ -294,19 +369,46 @@ public class Game {
 		newState.setPlayerPositions(getPlayerPositions());
 		newState.setBoard(board.getTiles());
 		newState.setTilesInAction(tilesInAction);
+		
+		newState.setCurrentPlayer(curPlayer, movesRemaingForThisPlayer);
+		newState.setMoveableSpaces(board.getMoveableSpaces(players[curPlayer]));
+		return newState;
+	}
+	private ArrayList<ActionTile>[] getActionTilesForPlayers() {
 		@SuppressWarnings("unchecked")
 		ArrayList<ActionTile>[] tilesOwnedByPlayers = new ArrayList[players.length];
 		for(int i = 0; i < players.length; i++) {
 			tilesOwnedByPlayers[i] = players[i].getActionTilesOwned(); 
 		}
-		newState.setCurrentPlayer(curPlayer, movesRemaingForThisPlayer);
-		newState.setMoveableSpaces(board.getMoveableSpaces(players[curPlayer]));
-		return newState;
-		
+		return tilesOwnedByPlayers;
 	}
 	
+	public GameState getInitalGameState() {
+		GameState newState = new GameState();
+		newState.setBoard(board.getTiles());
+		newState.setActionTilesForPlayers(getActionTilesForPlayers());
+		newState.setCurrentPlayer(curPlayer, movesRemaingForThisPlayer);
+		newState.setMoveableSpaces(board.getMoveableSpaces(players[curPlayer]));
+		newState.setPlayerPositions(getPlayerPositions());
+		newState.setInsertableLocation(board.getInsertablePlaces());
+		this.pastStates.add(newState);
+		return newState;
+	}
 	
-	
-	
-
+	public GameState getEndGameState() {
+		GameState newState = new GameState();
+		newState.setActionTilesForPlayers(getActionTilesForPlayers());
+		newState.setBoard(board.getTiles());
+		newState.setCurrentPlayer(curPlayer, movesRemaingForThisPlayer);
+		newState.setPastStates(pastStates);
+		newState.setPlayerPositions(getPlayerPositions());
+		newState.setSilkBag(bag);
+		newState.setTilesInAction(tilesInAction);
+		boolean[] backTrackApplied = new boolean[players.length];
+		for(int i = 0; i < players.length; i++) {
+			backTrackApplied[i] = players[i].getBacktrack();
+		}
+		newState.setBackTrackApplied(backTrackApplied);
+		return newState;
+	}
 }

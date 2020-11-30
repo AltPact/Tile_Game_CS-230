@@ -28,14 +28,9 @@ public class GameState {
 	private int movesLeftForCurrentPlayer;
 	private boolean[][] insertableLocations;
 	private boolean placeableActionTileApplied;
-	
-	public GameState(Placeable[][] boardTiles, int[][] playersPositions, ArrayList<ActionTile>[] actionTilesForEachPlayer, int curPlayer, boolean isGoalHit) {
-		this.boardTiles = boardTiles;
-		this.playersPositions = playersPositions;
-		this.actionTilesForEachPlayer = actionTilesForEachPlayer;
-		this.curPlayer = curPlayer;
-		this.isGoalHit = isGoalHit;
-	}
+	private ArrayList<GameState> pastStates;
+	private SilkBag bag;
+	private boolean [] backTrackApplied;
 	
 	public void setBoard(Placeable[][] board) {
 		this.boardTiles = board;
@@ -139,6 +134,30 @@ public class GameState {
 	
 	public boolean hasPlaceableActionTileApplied() {
 		return placeableActionTileApplied;
+	}
+	
+	public void setPastStates(ArrayList<GameState> pastStates) {
+		this.pastStates = pastStates;
+	}
+	
+	public ArrayList<GameState> getPastStates(){
+		return pastStates;
+	}
+	
+	public void setSilkBag(SilkBag bag) {
+		this.bag = bag;
+	}
+	
+	public SilkBag getSilkBag() {
+		return bag;
+	}
+	
+	public void setBackTrackApplied(boolean[] backTrackApplied) {
+		this.backTrackApplied = backTrackApplied;
+	}
+	
+	public boolean[] getBackTrackApplied() {
+		return backTrackApplied;
 	}
 
 }
