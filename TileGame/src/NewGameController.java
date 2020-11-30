@@ -20,7 +20,9 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
@@ -56,10 +58,11 @@ public class NewGameController extends GameWindow implements Initializable {
     public VBox playerBox;
 	@FXML
     public ComboBox searchBox;
-	
+    @FXML
+    private HBox boardHBox;
 	private int playerNumber=0;
-	
-
+	private ArrayList<RadioButton> boardSelection = new ArrayList<RadioButton>();
+	private ToggleGroup boardGroup;
 	
 	private ArrayList<PlayerData> playerQuene = new ArrayList<PlayerData>();
 	private ArrayList<HBox> playerRows = new ArrayList<HBox>();
@@ -68,11 +71,32 @@ public class NewGameController extends GameWindow implements Initializable {
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		//there was a stupid error without this and I didn't have time to solve it
-
+		initTestArray();
+		makeBoardRadio();
+	}
+	
+	private void makeBoardRadio() {
+		boardGroup = new ToggleGroup();
+		RadioButton boardChoose1 = new RadioButton();
+		boardChoose1.setText("Board1");
+		boardChoose1.setTextFill(Color.WHITE);
+		boardChoose1.setMnemonicParsing(false);
+		boardChoose1.setToggleGroup(boardGroup);
+		boardChoose1.setSelected(true);
+		boardSelection.add(boardChoose1);
+		RadioButton boardChoose2 = new RadioButton();
+		boardChoose2.setText("Board2");
+		boardChoose2.setTextFill(Color.WHITE);
+		boardChoose2.setMnemonicParsing(false);
+		boardChoose2.setToggleGroup(boardGroup);
+		boardSelection.add(boardChoose2);
+		boardHBox.getChildren().addAll(boardChoose1,boardChoose2);
 	}
 	
 	private void addPlayerInQuene(PlayerData playerToAdd) {
+		playerQuene.add(playerToAdd);
 		playerBox.getChildren().add(makePlayerRows(playerToAdd));
+		
 	}
 	
 	private HBox makePlayerRows(PlayerData playerInfo) {
@@ -117,31 +141,39 @@ public class NewGameController extends GameWindow implements Initializable {
 	public void addButtonClick(ActionEvent event) throws IOException {
 		String playerName = (String) searchBox.getValue();
 		if(playerName==null) {
-			wrongInputAnimation();
+			wrongInputAnimation("Incorrect user input");
+		}else if(playerQuene.size()==4) {
+			wrongInputAnimation("Reach the maximum players");
 		}else {
-			PlayerData player = new PlayerData(playerName,9,10,"/img/firefly.png");//<-change this line
-		    addPlayerInQuene(player);
+			PlayerData playerToAdd=getExistPlayer(playerName);
+			if(playerToAdd!=null) {
+		         addPlayerInQuene(playerToAdd);
+			}else {
+				wrongInputAnimation("No such player/Player Already in Queue");
+			}
 		}
+		System.out.println(playerQuene);
 	}
 	
-	private void wrongInputAnimation() {
-		Label errorMess = new Label("Incorrect input");
-		errorMess.setStyle("-fx-background-color: rgba(0, 0, 0, 0.5);");
-		errorMess.setTextFill(Color.RED);
-		errorMess.setFont(new Font("Arial", 24));
-		errorMess.setMouseTransparent(true);
-		homepane.getChildren().add(errorMess);
-		FadeTransition appear = new FadeTransition(Duration.millis(1000),errorMess);
-		appear.setFromValue(0);
-		appear.setToValue(1);
-		appear.setCycleCount(2);
-		appear.setAutoReverse(true);
-		appear.setOnFinished(e->{
-			homepane.getChildren().remove(errorMess);
-		});
-		appear.play();
+	private PlayerData getExistPlayer(String name) {
+		for(PlayerData playerInQueue:playerQuene) {
+			if(playerInQueue.getName().equals(name)) {
+				return null;
+			}
+		}
+		for(PlayerData player:testPlayerList) {
+			if(player.getName().equals(name)) {
+				return player;
+			}
+		}
+		
+		return null;
 	}
-	
+	/*
+	private boolean createGameSucc() {
+		
+	}
+	*/
 	@FXML
 	public void createButtonClick(ActionEvent event) throws IOException {
 		switchPane("/fxml/CreatePlayerPane.fxml",BP, "back");
@@ -157,7 +189,13 @@ public class NewGameController extends GameWindow implements Initializable {
 		
 	}
 	
-	
+	private boolean checkPlayerAmount() {
+		//System.out.println(playerQuene.size());
+		if(playerQuene.size()<2) {
+			return false;
+		}
+		return true;
+	}
 	/**
 	 * This method is called when the back button is click
 	 * it will call the switchPane() method which switch to HomePagePane
@@ -175,8 +213,26 @@ public class NewGameController extends GameWindow implements Initializable {
 	 */
 	@FXML
 	public void buttonOnActionS(ActionEvent event) throws IOException {
-		System.out.println("Click game");
-		switchPane("/fxml/GameBoardPane.fxml",BP, "forward");
+		if(checkPlayerAmount()==true) {
+			int boardSelected=0;
+			int index=0;
+			RadioButton selected = (RadioButton) boardGroup.getSelectedToggle();
+			for(RadioButton eachButton:boardSelection) {
+			    if(selected==eachButton) {
+			    	boardSelected=index;
+			    }
+			    index++;
+			}
+			initBoard(boardSelected);
+		    switchPane("/fxml/GameBoardPane.fxml",BP, "forward");
+		}else {
+			wrongInputAnimation("Not enough player(Minimun: 2)");
+		}
+	}
+	
+	private Board initBoard(int boardNumber) {
+		//working in progress
+		return null;
 	}
 	
 	/**

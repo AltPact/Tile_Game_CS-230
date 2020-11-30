@@ -1,5 +1,7 @@
 import java.io.IOException;
+import java.util.ArrayList;
 
+import javafx.animation.FadeTransition;
 import javafx.animation.Interpolator;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
@@ -8,14 +10,17 @@ import javafx.animation.Timeline;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.media.MediaPlayer;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.HLineTo;
 import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
+import javafx.scene.text.Font;
 import javafx.util.Duration;
 /**
  * File Name: GameSceneController.java Created: 19/11/2020 Modified: 19/11/2020
@@ -32,6 +37,8 @@ public class GameWindow {
 	protected static BorderPane content;
 	protected static MediaPlayer background;
 	protected static Game currentGame;
+	
+	protected static ArrayList<PlayerData> testPlayerList = new ArrayList<PlayerData>();
 	/**
 	 * Constructor of GameWindow
 	 */
@@ -114,7 +121,31 @@ public class GameWindow {
 		tl.play();
 	}
 	
+	protected void wrongInputAnimation(String errorMessage) {
+		Label errorMess = new Label(errorMessage);
+		errorMess.setStyle("-fx-background-color: rgba(0, 0, 0, 0.5);");
+		errorMess.setTextFill(Color.RED);
+		errorMess.setFont(new Font("Arial", 24));
+		errorMess.setMouseTransparent(true);
+		homepane.getChildren().add(errorMess);
+		FadeTransition appear = new FadeTransition(Duration.millis(1000),errorMess);
+		appear.setFromValue(0);
+		appear.setToValue(1);
+		appear.setCycleCount(2);
+		appear.setAutoReverse(true);
+		appear.setOnFinished(e->{
+			homepane.getChildren().remove(errorMess);
+		});
+		appear.play();
+	}
+	
     public void setCurrentGame(Game gameToBeSet) {
     	currentGame=gameToBeSet;
+    }
+    
+    protected static void initTestArray() {
+    	testPlayerList.add(new PlayerData("Mary", 3,6,"/img/firefly.png"));
+		testPlayerList.add(new PlayerData("Tom", 3,6,"/img/firefly.png"));
+		testPlayerList.add(new PlayerData("Sam", 3,6,"/img/firefly.png"));
     }
 }
