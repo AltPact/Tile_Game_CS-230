@@ -38,15 +38,26 @@ public class CreatePlayerController extends GameWindow implements Initializable 
 	}
 	@FXML
 	public void createbuttonOnAction(ActionEvent event) throws IOException {
-		createPlayer();
-		switchPane("/fxml/NewGamePane.fxml",bPane, "back");
+		boolean createSucc=createPlayer();
+		if(createSucc) {
+		    switchPane("/fxml/NewGamePane.fxml",bPane, "back");
+		}else {
+			wrongInputAnimation("Player name already existed");
+		}
 	}
-	private void createPlayer() {
+	private boolean createPlayer() {
 		//default
 		String iconPath = "/img/defaultIcon.png";
 		String playerName = inputBox.getText();
-		//do something here
 		
+		System.out.println(playerName);
+		for(PlayerData player:testPlayerList) {
+			if(player.getName().equals(playerName)) {
+				return false;
+			}
+		}
+		testPlayerList.add(new PlayerData(playerName,0,0,iconPath));
+		return true;
 	}
 
 }
