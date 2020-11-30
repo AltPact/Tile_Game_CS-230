@@ -232,6 +232,7 @@ public class NewGameController extends GameWindow implements Initializable {
 	
 	private Board initBoard(int boardNumber) {
 		//working in progress
+		
 		return null;
 	}
 	
