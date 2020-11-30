@@ -178,5 +178,18 @@ public class GameFileReader {
 
 		return new GameState(stateTiles, playerPositions, curActionTilesForEachPlayer, curPlayer, isGoalHit);
 	}
+	
+	
+	public ArrayList<String> listGameFiles(){
+		ArrayList<String> files = null;
+		
+		return files;
+	}
+	
+	public ArrayList<String> listBoardFiles(){
+		ArrayList<String> files = null;
+		
+		return files;
+	}
 
 }
