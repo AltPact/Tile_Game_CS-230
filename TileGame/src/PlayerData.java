@@ -1,19 +1,16 @@
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-import javax.imageio.ImageIO;
-
 /**
- * File Name: PlayerData.java Created: 14/11/2020 Modified: 16/11/2020
- * 
- * @author Morgan Firkins (852264) Version: 1.0
+ * File Name: PlayerData.java<br>
+ * Created: 14/11/2020<br>
+ * Modified: 30/11/2020<br>
+ * @author Morgan Firkins (852264) 
+ * @version: 1.3(only avatar path and not a bufferedImage)
  */
 public class PlayerData {
 	private String name;
 	private int numberOfWins;
 	private int numberOfLosses;
+	private int numberOfGames;
 	private String avatarPath;
-	private BufferedImage playerAvatar;
 
 	/**
 	 * Constructor to create PlayerData
@@ -27,16 +24,8 @@ public class PlayerData {
 		this.name = name;
 		this.numberOfWins = numberOfWins;
 		this.numberOfLosses = numberOfLosses;
+		this.numberOfGames = numberOfWins + numberOfLosses;
 		this.avatarPath = avatarPath;
-		if (avatarPath == null) {
-			this.playerAvatar = null;
-		} else {
-			try {
-				this.playerAvatar = ImageIO.read(new File(avatarPath));
-
-			} catch (IOException e) {
-			}
-		}
 	}
 
 	/**
@@ -99,40 +88,38 @@ public class PlayerData {
 	 * @return The number of games the player has played
 	 */
 	public int getGames() {
-		return this.getWins() + this.getLosses();
+		return this.numberOfGames;
 
 	}
-
+	
 	/**
-	 * This public method gets the BufferedImage PlayerAvatar object
-	 * 
-	 * @return The player avatar of the PlayerData object
+	 * Adds 1 to the number of wins.
 	 */
-	public BufferedImage getAvatar() {
-		return this.playerAvatar;
+	public void incrementWins() {
+		numberOfWins++;
 	}
-
+	
 	/**
-	 * This public method sets the playerAvatar of the PlayerData object
-	 * 
-	 * @param avatarPath The path where the avatar is located on the system
+	 * Adds 1 to the number of losses.
 	 */
-	public void setAvatar(String avatarPath) {
-		if (avatarPath == null) {
-			this.playerAvatar = null;
-		} else {
-			try {
-				this.playerAvatar = ImageIO.read(new File(avatarPath));
-
-			} catch (IOException e) {
-			}
-		}
+	public void incrementLosses() {
+		numberOfLosses++;
 	}
-
+	
+	/**
+	 * Allows for comparison in leaderBoardController
+	 * @param playerData
+	 * @return int: Comparison of wins
+	 */
+	public int compareTo(PlayerData playerData) {
+		int wins = ((PlayerData)playerData).getWins();
+		return wins-this.numberOfWins;
+	}
+	
 	@Override
 	/**
-	 * Converts the playerData object into a string to be able to be able to be 
-	 * readeasily
+	 * Converts the playerData object into a string to be able to be able to be
+	 * read easily
 	 * 
 	 * @return result The culmination of the playerData attributes as a string
 	 */

@@ -1,31 +1,34 @@
 import java.io.*;
 import java.util.ArrayList;
 public class GameFileWriter {
-
-    public static void writeGameFile(Game g, String filename) {
+	
+	/*
+	 * Does game window have a list of players.
+	 */
+    public static void writeGameFile(GameState g, String filename, PlayerPiece[] players ) {
         try {
             File f = new File(filename);
             f.createNewFile();
             FileWriter w = new FileWriter(filename);
 
             /* write game metadata */
-            int height = g.getBoard().getHeight();
-            int width = g.getBoard().getHeight();
+            int height = g.getHeight();
+            int width = g.getWidth();
 
             w.write(height);
             w.write(width);
-            w.write(g.getNumPlayers());
+            w.write(players.length);
             w.write(g.getCurPlayer());
-            w.write(g.getMovesLeftForCurrent());
-            w.write(String.valueOf(g.isGoalReached()));
+            w.write(g.getMovesLeftForCurrentPlayer());
+            w.write(String.valueOf(g.isGoalHit()));
 
             /* write current game state */
-            writeGameState(g.getCurState(), w, width, height);
+            writeCurrentGameState(g, w, width, height);
 
             /* write past game states */
             ArrayList<GameState> pastGameStates = g.getPastStates();
             for (int stateNum = 0; stateNum < pastGameStates.size(); stateNum++) {
-                writeGameState(pastGameStates.get(stateNum), w, width, height);
+                writePastGameState(pastGameStates.get(stateNum), w);
             }
 
             /* write the silk bag */
@@ -36,8 +39,25 @@ public class GameFileWriter {
             e.printStackTrace();
         }
     }
+    
+    
+    private static void writePastGameState(GameState s, FileWriter w) {
+    	try {
+    		/* write player positions */
+    		int[][] positions = s.getPlayersPositions();
+        	for (int p = 0; p < positions[0].length; p++) {
+            	w.write(positions[p][1]);
+				w.write(positions[p][0]);
+        	}
+        	w.write("ENDPLAYERPOS"); 
+		} catch (IOException e) {
+			System.out.println("An Error Occured");
+			e.printStackTrace();
+		}
 
-    private static void writeGameState(GameState s, FileWriter w, int width, int height) {
+    }
+
+    private static void writeCurrentGameState(GameState s, FileWriter w, int width, int height) {
         try {
             /* write state metadata */
             w.write(String.valueOf(s.isGoalHit()));

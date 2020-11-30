@@ -88,12 +88,14 @@ public class Game {
 		this.curPlayer = curState.getCurPlayer();
 		this.movesRemaingForThisPlayer = curState.getMovedPlayer();
 		this.tilesInAction = curState.getTilesInAction();
-		for(int i = 0; i < players.length ; i++) {
-			players[i].setX(curState.getPlayersPositions()[i][0]);
-			players[i].setX(curState.getPlayersPositions()[i][1]);
-			players[i].setBulkActionTiles(curState.getActionTileForPlayer(i));
-		}
 	}
+	
+	/**
+	 * This method gets a new tile for a player
+	 * If the drawn tile is action tile, then the tile is
+	 * added to their array list. 
+	 * @return The drawn tile.
+	 */
 	public Tile getNewTileForCurrentPlayer() {
 		TileType newTileType = bag.draw();
 		Tile newTile = null;
@@ -115,7 +117,15 @@ public class Game {
 		return newTile;
 	}
 	
-	
+	/**
+	 * This method allows a tile to be inserted into the board. 
+	 * @param tileToBeInserted The tile that is being inserted.
+	 * @param x The x coordinate of the tile.
+	 * @param y The y coordinate of the tile.
+	 * @param vertical If the tile is a vertical insertion or horizontal
+	 * @return A new game state: see the tileAfterInsertion method for details
+	 * @throws IllegalInsertionException
+	 */
 	public GameState insertTile(Placeable tileToBeInserted, int x, int y, boolean vertical) throws IllegalInsertionException {
 		boolean isInserted = board.insertPiece(x, y, vertical, tileToBeInserted);
 		if(!isInserted) {
@@ -147,6 +157,13 @@ public class Game {
 		return tileAfterInsertion(tileToBeInserted, postion);
 	}
 	
+	/**
+	 * @private
+	 * This method moves a players around if a tile is inserted and their 
+	 * position needs to be moved.
+	 * @param directionOfInsertion The direction of the insertion e.g. 0 if it is comming from the bottom.
+	 * @param affectedRowColumn The affected row or column.
+	 */
 	private void movePlayersOn(int directionOfInsertion, int affectedRowColumn) {
 		for(PlayerPiece player : players) {
 			//if the inserted tile effects a vertical column
@@ -191,11 +208,23 @@ public class Game {
 		}
 	}
 	
+	/**
+	 * Allows a player to play a double move tile
+	 * @param doubleMove The tile they wish to play.
+	 */
 	public void playDoubleMove(ActionTile doubleMove) {
 		players[curPlayer].playActionTile(doubleMove);
 		this.movesRemaingForThisPlayer++;
 	}
 	
+	/**
+	 * Method that allows a player to play a backtrack tile as is described in
+	 * the specification.
+	 * @param backtrack The tile that they wish to play
+	 * @param playerAgainst The player they wish to play against (as a int)
+	 * @return A new game state see : actionTileBackTrack for more details.
+	 * @throws IllegalBackTrackException
+	 */
 	public GameState playBackTrack(ActionTile backtrack, int playerAgainst) throws IllegalBackTrackException {
 		if (players[playerAgainst].getBacktrack()) {
 			throw new IllegalBackTrackException(playerAgainst + " Has already had backtrack applied");
@@ -243,6 +272,14 @@ public class Game {
 
 	}
 	
+	/**
+	 * Method that allows the player to play a ice tile.
+	 * @param ice The tile to be played.
+	 * @param x The x coordinate of it's location.
+	 * @param y The y coordinate of it's location.
+	 * @return a new Game State: see actionTilePlayed for more details.
+	 * @throws IncorrectTileTypeException
+	 */
 	public GameState playIce(Ice ice, int x, int y) throws IncorrectTileTypeException {
 		players[curPlayer].playActionTile(ice);
 		Placeable[] tilesToAction= new Placeable[9];
@@ -259,6 +296,14 @@ public class Game {
 		return actionTilePlayed();
 	}
 	
+	/**
+	 * Method that allows the player to play a Fire Tile.
+	 * @param fire The tile they wish to play.
+	 * @param x The x coordinate of it's location
+	 * @param y The y coordinate of it's location.
+	 * @return a new Game State: see actionTilePlayed for more details.
+	 * @throws IncorrectTileTypeException
+	 */
 	public GameState playFire(Fire fire, int x, int y) throws IncorrectTileTypeException {
 		players[curPlayer].playActionTile(fire);
 		Placeable[] tilesToAction= new Placeable[9];
@@ -275,6 +320,12 @@ public class Game {
 		return actionTilePlayed();
 	}
 	
+	/**
+	 * Moves the current player. 
+	 * @param direction The way in which they wish to move note 0 = North etc.
+	 * @return A new game state, see playerMoved for details.
+	 * @throws IllegalMove
+	 */
 	public GameState moveCurrentPlayer(int direction) throws IllegalMove {
 		if (movesRemaingForThisPlayer <= 0) {
 			throw new IllegalMove("This player has no moves remaining");
@@ -301,12 +352,28 @@ public class Game {
 			players[curPlayer].setX(newX);
 			players[curPlayer].setY(newY);
 			movesRemaingForThisPlayer--;
+			Placeable newTile = (Placeable) board.getTile(newX, newY);
+			isGoalReached = newTile.isGoal();
+			if(isGoalReached) {
+				for(int i = 0; i < players.length; i++) {
+					if(i == curPlayer) {
+						players[i].getLinkedData().incrementWins();
+					} else {
+						players[i].getLinkedData().incrementLosses();
+					}
+				}
+			}
 			return playerMoved();
 		} else {
 			throw new IllegalMove("Player Cannot move in this Direction");
 		}
 	}
-		
+	
+	/**
+	 * This method should be called at the end of every turn. 
+	 * It is designed to set the game up for the next turn
+	 * @return a new Game state, see makeStateEndTurn for details.
+	 */
 	public GameState endTurn() {
 		curPlayer ++;
 		if ((curPlayer % players.length) == 0) {
@@ -325,13 +392,25 @@ public class Game {
 		
 	}
 	
+	/**
+	 * @private
+	 * A method that makes a GameState after the actionTile has been played.
+	 * It contains the board and actionTileApplied is set to true.
+	 * @return
+	 */
 	private GameState actionTilePlayed() {
 		GameState newState = new GameState();
-		newState.setBoard(board.getTiles());
+		newState.setBoard(board.getTiles(), board.getWidth(), board.getHeight());
 		newState.setActionTileApplied();
 		return newState;
 	}
 	
+	/**
+	 * @private
+	 * This method put's the player positions in a way that game states 
+	 * can understand 
+	 * @return A new Game State 
+	 */
 	private int[][] getPlayerPositions(){
 		int[][] playerPositions = new int[players.length][2];
 		for(int i = 0; i < players.length; i++) {
@@ -341,6 +420,13 @@ public class Game {
 		return playerPositions;
 	}
 	
+	/**
+	 * This method makes a game state after a player has been moved.
+	 * It contains all the player positions
+	 * The position and number of the specific player that has been moved.
+	 * A boolean value to show if the goal has been reached. 
+	 * @return A new Game State
+	 */
 	private GameState playerMoved() {
 		GameState newState = new GameState();
 		newState.setChangedPlayerPosition(curPlayer, getPlayerPositions()[curPlayer]);
@@ -349,7 +435,14 @@ public class Game {
 		return newState;
 	}
 
-
+	/**
+	 * @private
+	 * This produces a gameState after a backtrack tile has been applied.
+	 * It shows the positions of all players and the positions of the 
+	 * player that has been backtracked.
+	 * @param playerBackTracked the player that has been backtracked
+	 * @return A new GameState
+	 */
 	private GameState actionTileBackTrack(int playerBackTracked) {
 		GameState newState = new GameState();
 		newState.setChangedPlayerPosition(playerBackTracked, getPlayerPositions()[playerBackTracked]);
@@ -357,8 +450,17 @@ public class Game {
 		return newState;
 	}
 	
+	/**
+	 * @private 
+	 * This method should be called after a tile has been placed.
+	 * It produces a game state with specific details about the placed tile and the overall board.
+	 * @param t The specific tile that has been placed.
+	 * @param positionOfInsertedTile a [x,y]} array showing where the tile has been placed
+	 * @return A new game state.
+	 */
 	private GameState tileAfterInsertion(Tile t, int[] positionOfInsertedTile) {
 		GameState newState = new GameState();
+		newState.setBoard(board.getTiles(), board.getWidth(), board.getHeight());
 		newState.setChangedTile(t, positionOfInsertedTile);
 		newState.setPlayerPositions(getPlayerPositions());
 		return newState;	
@@ -367,11 +469,12 @@ public class Game {
 	private GameState makeStateEndTurn() {
 		GameState newState = new GameState();
 		newState.setPlayerPositions(getPlayerPositions());
-		newState.setBoard(board.getTiles());
+		newState.setBoard(board.getTiles(), board.getWidth(), board.getHeight());
 		newState.setTilesInAction(tilesInAction);
 		
 		newState.setCurrentPlayer(curPlayer, movesRemaingForThisPlayer);
 		newState.setMoveableSpaces(board.getMoveableSpaces(players[curPlayer]));
+		newState.setInsertableLocation(board.getInsertablePlaces());
 		return newState;
 	}
 	private ArrayList<ActionTile>[] getActionTilesForPlayers() {
@@ -385,7 +488,7 @@ public class Game {
 	
 	public GameState getInitalGameState() {
 		GameState newState = new GameState();
-		newState.setBoard(board.getTiles());
+		newState.setBoard(board.getTiles(), board.getWidth(), board.getHeight());
 		newState.setActionTilesForPlayers(getActionTilesForPlayers());
 		newState.setCurrentPlayer(curPlayer, movesRemaingForThisPlayer);
 		newState.setMoveableSpaces(board.getMoveableSpaces(players[curPlayer]));
@@ -398,7 +501,7 @@ public class Game {
 	public GameState getEndGameState() {
 		GameState newState = new GameState();
 		newState.setActionTilesForPlayers(getActionTilesForPlayers());
-		newState.setBoard(board.getTiles());
+		newState.setBoard(board.getTiles(), board.getWidth(), board.getHeight());
 		newState.setCurrentPlayer(curPlayer, movesRemaingForThisPlayer);
 		newState.setPastStates(pastStates);
 		newState.setPlayerPositions(getPlayerPositions());

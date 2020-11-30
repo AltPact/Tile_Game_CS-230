@@ -1,6 +1,9 @@
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.ResourceBundle;
 
 import javafx.event.ActionEvent;
@@ -31,19 +34,21 @@ public class LeaderBoardController extends GameWindow implements Initializable {
         
 		makeLeaderBoard();
 	}
+
 	public ArrayList<PlayerData> getPlayerArray(){
 		ArrayList<PlayerData> playerdataArray = new ArrayList<PlayerData>();
-		playerdataArray.add(new PlayerData("Mary",9,10,"/img/firefly.png"));
-		playerdataArray.add(new PlayerData("Mary",9,10,"/img/firefly.png"));
-		playerdataArray.add(new PlayerData("Mary",9,10,"/img/firefly.png"));
-		playerdataArray.add(new PlayerData("Mary",9,10,"/img/firefly.png"));
-		//^ this should be changed, becoz it is just for testing
-		//it should do some array sorting
+		File[] contentsOfDir = new File("data/playerdata").listFiles();
+		for(File file:contentsOfDir) {
+			
+			playerdataArray.add(PlayerDataFileReader.readFile(file));
+			
+		}
+		
 		return sortPlayerWin(playerdataArray);
 	}
 	
 	public ArrayList<PlayerData> sortPlayerWin(ArrayList<PlayerData> unsortedArray){
-		return unsortedArray;
+		return Collections.sort((List<T>) unsortedArray);
 	}
 	
 	

@@ -27,8 +27,12 @@ public class Ice extends ActionTilePlaceable {
 	public void instantiateAction(Placeable[] tilesToAction) throws IncorrectTileTypeException {
 		super.setTimeRemaining();
 		super.tilesToAction = tilesToAction;
-		for(Placeable tile : tilesToAction) {
-			tile.freeze();
+		try {
+			for(Placeable tile : tilesToAction) {
+				tile.freeze();
+			}
+		}  catch(NullPointerException e) {
+			//This occurs when a action tile is close to the border of the game.
 		}
 	}
 	
