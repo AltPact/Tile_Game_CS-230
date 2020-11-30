@@ -5,6 +5,7 @@
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.paint.LinearGradient?>
 <?import javafx.scene.paint.Stop?>
@@ -34,7 +35,7 @@
                   <Font name="System Bold Italic" size="12.0" />
                </font>
             </Label>
-            <Label layoutX="33.0" layoutY="66.0" text="CurrentPlayer" textFill="WHITE" />
+           <!--  <Label layoutX="33.0" layoutY="66.0" text="CurrentPlayer" textFill="WHITE" /></Label>-->
             <ImageView fitHeight="67.0" fitWidth="90.0" layoutX="22.0" layoutY="127.0" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="/img/royalPattern.png" />
@@ -52,15 +53,15 @@
             </ImageView>
             <Button fx:id="BackHomeButton" onAction="#buttonOnActionB" onMouseEntered="#mouseOnB" onMouseExited="#mouseOFFB" layoutX="11.0" layoutY="316.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="110.0" style="-fx-background-color: BLACK; -fx-background-radius: 5px; -fx-border-color: GOLDENROD; -fx-border-radius: 5px; -fx-border-width: 2;" text="To Homepage" textFill="#da9707" />
             <Button fx:id="QuitButton" onAction="#buttonOnActionQ" onMouseEntered="#mouseOnQ" onMouseExited="#mouseOFFQ" layoutX="11.0" layoutY="355.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="110.0" style="-fx-background-color: BLACK; -fx-background-radius: 5px; -fx-border-color: GOLDENROD; -fx-border-radius: 5px; -fx-border-width: 2;" text="Quit" textFill="#da9707" />
-               <textFill>
+               <!-- <textFill>
                   <LinearGradient endX="1.0" endY="1.0">
                      <stops>
                         <Stop color="RED" />
                         <Stop color="#1100ff" offset="1.0" />
                      </stops>
                   </LinearGradient>
-               </textFill>
-            </Label>
+               </textFill> -->
+            
          </children>
       </Pane>
    </right>

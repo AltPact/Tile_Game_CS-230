@@ -53,13 +53,22 @@ public class GameSceneController extends GameWindow implements Initializable {
 	private static ObjFactory objectFactory;
 	private static Group gameObjects;
 	private static Box[][] tileArray;
-	private static Sphere[] playerObjectArray;
+	private static Group[] playerObjectArray;
+	private static Group playerPlaying;
 	private static HashMap<Sphere, PlayerPiece> playerPieceLink;
-	private static Sphere playerPlaying;
 	private static ArrayList<Box> clickAble;
 	private static ParallelTransition clickableAnima;
 	private static ArrayList<ScaleTransition> scaleArray;
 	private static Group tiles;
+	
+	private static GameState currentGameState;
+	private static Placeable[][] tileBoard;
+	private static int boardHeight;
+	private static int boardWidth;
+	private static int initPlayerPos[][];
+	private static int currentPlayerPosX;
+	private static int currentPlayerPosY;
+	
 	@FXML
 	public BorderPane GB;
 	@FXML
@@ -75,6 +84,8 @@ public class GameSceneController extends GameWindow implements Initializable {
 	 */
 	@Override
 	public void initialize(URL url, ResourceBundle resources) {
+		
+		currentGameState=currentGame.getInitalGameState();
 		initVariables();
 		addFloor();
 		addTile();
@@ -97,11 +108,14 @@ public class GameSceneController extends GameWindow implements Initializable {
 	}
 	
 	public void initVariables() {
+		tileBoard=currentGameState.getBoard();
+		boardHeight=tileBoard.length;
+		boardWidth=tileBoard[0].length;
 		subScene = null;
 		objectFactory= new ObjFactory();
 		gameObjects = new Group();
 		tileArray = new Box[9][9];
-		playerObjectArray = new Sphere[4];
+		playerObjectArray = new Group[4];
 		playerPieceLink = new HashMap<Sphere, PlayerPiece>();
 		playerPlaying=null;
 		clickAble = new ArrayList<Box>();
@@ -109,7 +123,7 @@ public class GameSceneController extends GameWindow implements Initializable {
 		scaleArray = new ArrayList<ScaleTransition>();
 		tiles = new Group();
 	}
-
+    
 	public void addFloor() {
 		Box floor = objectFactory.makeFloor();
 		floor.setTranslateX(420);
@@ -118,44 +132,46 @@ public class GameSceneController extends GameWindow implements Initializable {
 		System.out.println(floor.getTranslateZ());
 	}
 	public void addTile() {
+		
 		int y = 0;
-		for (int q = 0; q < 9; q++) {
+		for (int q = 0; q < boardHeight; q++) {
 			int x = 0;
-			for (int i = 0; i < 9; i++) {
-				Box tile = objectFactory.makeCornerTile();
+			for (int i = 0; i < boardWidth; i++) {
+				Box tile = objectFactory.makeTile(tileBoard[q][i]);
 				tile.translateXProperty().set(x);
 				tile.translateYProperty().set(y);
 				tile.translateZProperty().set(0);
-				tileArray[i][q] = tile;
-				tiles.getChildren().add(tile);
-				x += 100;
-				System.out.println(tile.getTranslateZ());
+				tileArray[i][q] = tile;//box array
+				tiles.getChildren().add(tile);//tile group
+				x += 100;//gap between tiles
+				//System.out.println(tile.getTranslateZ());
 			}
-			y += 100;
+			y += 100;//gap between tiles
 		}
-		gameObjects.getChildren().add(tiles);
+		gameObjects.getChildren().add(tiles);//add tile group to game group
 	}
 
 	public void addPlayer() {
-		PlayerPiece pieceArray[] = currentGame.getPlayerPieceArray();
+		initPlayerPos=currentGameState.getPlayersPositions();
+		//PlayerPiece pieceArray[] = currentGame.getPlayerPieceArray();
 		for (int i = 0; i < 4; i++) {
-			// translate grid position to coordinate
-			int x = pieceArray[i].getX();
-			int y = pieceArray[i].getY();
-			Sphere sphere = new Sphere(30);
-			sphere.setMouseTransparent(true);
-			sphere.translateXProperty().set(tileArray[x][y].getTranslateX());
-			sphere.translateYProperty().set(tileArray[x][y].getTranslateY());
-			sphere.translateZProperty().set(-50);
-			playerPieceLink.put(sphere, pieceArray[i]);
-			gameObjects.getChildren().add(sphere);
-			playerObjectArray[i] = sphere;
+			// put player pos in int
+			int x = initPlayerPos[i][0];
+			int y = initPlayerPos[i][1];
+			Group player = objectFactory.makePlayer(i);
+			player.setMouseTransparent(true);
+			player.translateXProperty().set(tileArray[x][y].getTranslateX());
+			player.translateYProperty().set(tileArray[x][y].getTranslateY());
+			player.translateZProperty().set(-50);
+			//playerPieceLink.put(sphere, pieceArray[i]);
+			gameObjects.getChildren().add(player);
+			playerObjectArray[i] = player;
 		}
 		// System.out.println(gameObjects.getChildren());
 	}
 	
 	//Testing method
-	public static void printPlayerHashMap() {
+	/*public static void printPlayerHashMap() {
 		for(Sphere player : playerPieceLink.keySet()) {
             if(playerPlaying==player) {
 				System.out.println("Current player: ");
@@ -163,7 +179,7 @@ public class GameSceneController extends GameWindow implements Initializable {
 			System.out.println("Player: "+player+" PlayerPiece: "+playerPieceLink.get(player));
 			
 		}
-	}
+	}*/
 
 	public void setCamera() {
 		PerspectiveCamera camera = new PerspectiveCamera();
@@ -175,13 +191,17 @@ public class GameSceneController extends GameWindow implements Initializable {
 
 	public static void newTurn() {
 		// displayTurns();
-		playerPlaying = playerObjectArray[currentGame.getPlayingPlayerIndex()];
-		printPlayerHashMap();
-		setPushable();
+		playerPlaying = playerObjectArray[currentGameState.getCurPlayer()];
+		//printPlayerHashMap();
+		//setPushable();
 		// setMoveableTile(xCor, yCor);
 	}
 
-	public static void setMoveableTile(int centerTileX, int centerTileY) {
+	public static void getNewTile() {
+		Tile newTile = currentGame.getNewTileForCurrentPlayer();
+		
+	}
+	/*public static void setMoveableTile(int centerTileX, int centerTileY) {
 		scaleArray = new ArrayList<ScaleTransition>();
 		clickableAnima = new ParallelTransition();
 		if (centerTileY > 0) {
@@ -226,16 +246,45 @@ public class GameSceneController extends GameWindow implements Initializable {
 			System.out.println("Add animate");
 		}
 		clickableAnima.play();
-	}
+	}*/
 
-	public static void setPushable() {
-		clickableAnima = new ParallelTransition();
+
+	/*public static void setPushable() {
+		//clickableAnima = new ParallelTransition();<-animation
 		clickAble = new ArrayList<Box>();
-		for (int rows = 0; rows <= 8; rows++) {
-			/*
-			 * --*---*--
-			 */
-			if (rows == 0 || rows == 8) {
+		boolean moveablePos[][]=currentGameState.getMoveableSpaces();
+		currentPlayerPosX=initPlayerPos[currentGameState.getCurPlayer()][0];
+		currentPlayerPosY=initPlayerPos[currentGameState.getCurPlayer()][1];
+		
+		for (int y = 0; y <= boardWidth; y++) {
+			for(int x = 0; x<=boardHeight;x++) {
+				if(moveablePos[y][x]==true) {
+					Box pushableTile = tileArray[y][x];
+					clickAble.add(pushableTile);
+					int dir;
+					if(currentPlayerPosY<y) {
+						dir=0;
+					}else if(currentPlayerPosX<x) {
+						dir=1;
+					}else if(currentPlayerPosY>y) {
+						dir=2;
+					}else {
+						dir=3;
+					}
+					pushableTile.setOnMouseClicked(e -> {
+						try {
+							currentGameState=currentGame.moveCurrentPlayer(dir);
+							
+						} catch (IllegalMove e1) {
+							System.out.println("Cannot move there");
+						}
+						
+					});
+					//clickableAnima.getChildren().add(animateTile(pushableTile));
+				}
+			}
+		}*/
+			/*if (rows == 0 || rows == 8) {
 				for (int columns = 2; columns < 8; columns += 4) {
 					Box pushableTile = tileArray[columns][rows];
 					pushableTile.setDisable(false);
@@ -254,13 +303,7 @@ public class GameSceneController extends GameWindow implements Initializable {
 					clickableAnima.getChildren().add(animateTile(pushableTile));
 				}
 			}
-			/*
-			 * | |
-			 *
-			 * | | |
-			 *
-			 * | |
-			 */
+
 			if (rows == 2 || rows == 6) {
 				for (int columns = 0; columns <= 8; columns += 8) {
 					Box pushableTile = tileArray[columns][rows];
@@ -280,11 +323,11 @@ public class GameSceneController extends GameWindow implements Initializable {
 					clickableAnima.getChildren().add(animateTile(pushableTile));
 				}
 			}
-		}
-		clickableAnima.play();
-	}
+		
+		//clickableAnima.play();<-play animation
+	}*/
 
-	public static void pushTile(int rows, int columns, String orientation) {
+	/*public static void pushTile(int rows, int columns, String orientation) {
 		System.out.println("Rows: " + rows + " Columns: " + columns + " b: " + orientation);
 		clickableAnima.stop();
 		resetClickable();
@@ -408,7 +451,7 @@ public class GameSceneController extends GameWindow implements Initializable {
 		tileMove.setToY(y);
 		tileMove.play();
 	}
-	
+	*/
 	
 
 	/*
@@ -424,7 +467,7 @@ public class GameSceneController extends GameWindow implements Initializable {
 	 * turnsFade.setAutoReverse(true); turnsFade.play();
 	 * gameObjects.getChildren().remove(numOfTurns); }
 	 */
-	public static Sphere getPlayingPlayer() {
+	/*public static Sphere getPlayingPlayer() {
 		return playerObjectArray[currentGame.getPlayingPlayerIndex()];
 	}
 
@@ -433,7 +476,7 @@ public class GameSceneController extends GameWindow implements Initializable {
 		for (Box tile : clickAble) {
 			tile.setMaterial(greenFill);
 		}
-	}
+	}*/
 
 
 	/**

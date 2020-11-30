@@ -86,7 +86,7 @@ public class HomePageController extends GameWindow implements Initializable {
 	@FXML
 	public void playerIconOnClick(ActionEvent event) throws IOException {
 		// load NewGameScene
-		switchPane("/fxml/PlayerDataPane.fxml", bPane, "forward");
+		switchPane("/fxml/PlayerInfoPane.fxml", bPane, "forward");
 
 	}
 	@FXML
