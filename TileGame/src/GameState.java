@@ -30,6 +30,7 @@ public class GameState {
 	private boolean placeableActionTileApplied;
 	private ArrayList<GameState> pastStates;
 	private SilkBag bag;
+	private boolean [] backTrackApplied;
 	
 	public void setBoard(Placeable[][] board) {
 		this.boardTiles = board;
@@ -151,5 +152,12 @@ public class GameState {
 		return bag;
 	}
 	
+	public void setBackTrackApplied(boolean[] backTrackApplied) {
+		this.backTrackApplied = backTrackApplied;
+	}
+	
+	public boolean[] getBackTrackApplied() {
+		return backTrackApplied;
+	}
 
 }

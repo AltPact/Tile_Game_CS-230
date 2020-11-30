@@ -211,23 +211,28 @@ public class Game {
 			}
 			twoMovesAgo = pastStates.get(i - players.length);
 
+			int backTrackedX = twoMovesAgo.getPlayersPositions()[playerAgainst][0];
+			int backTrackedY = twoMovesAgo.getPlayersPositions()[playerAgainst][1];
 		
-		
-		int backTrackedX = twoMovesAgo.getPlayersPositions()[playerAgainst][0];
-		int backTrackedY = twoMovesAgo.getPlayersPositions()[playerAgainst][1];
-		
-		Placeable testTile = (Placeable) board.getTile(backTrackedX, backTrackedY);
-			while(testTile.isOnFire()) {
-				int gameStateIndex = pastStates.indexOf(twoMovesAgo);
-				gameStateIndex =- players.length;
-				GameState furtherBackState = pastStates.get(gameStateIndex);
-				backTrackedX = furtherBackState.getPlayersPositions()[playerAgainst][0];
-				backTrackedY = furtherBackState.getPlayersPositions()[playerAgainst][1];
+			Placeable testTile = (Placeable) board.getTile(backTrackedX, backTrackedY);
+			
+			if(testTile.isOnFire()) {
+				GameState oneMoveAgo = pastStates.get(i);
+				backTrackedX = oneMoveAgo.getPlayersPositions()[playerAgainst][0];
+				backTrackedY = oneMoveAgo.getPlayersPositions()[playerAgainst][1];
 				testTile = (Placeable) board.getTile(backTrackedX, backTrackedY);
+				if(testTile.isOnFire()) {
+					throw new IllegalBackTrackException("All of the previous places are now on fire");
+				}
+				else {
+					players[playerAgainst].setX(backTrackedX);
+					players[playerAgainst].setY(backTrackedY);
+				}
+			} else {
 				players[playerAgainst].setX(backTrackedX);
 				players[playerAgainst].setY(backTrackedY);
 			}
-			
+			players[playerAgainst].setBacktrack(true);
 		} catch(IndexOutOfBoundsException e) {
 			throw new IllegalBackTrackException("Not enough moves made to conduct backtrack against player " + playerAgainst);
 		} finally {
@@ -312,6 +317,9 @@ public class Game {
 		}
 		GameState newState = makeStateEndTurn();
 		this.pastStates.add(newState);
+		if(pastStates.size() > players.length * 2) {
+			pastStates.remove(0);
+		}
 		
 		return newState;
 		
@@ -383,6 +391,7 @@ public class Game {
 		newState.setMoveableSpaces(board.getMoveableSpaces(players[curPlayer]));
 		newState.setPlayerPositions(getPlayerPositions());
 		newState.setInsertableLocation(board.getInsertablePlaces());
+		this.pastStates.add(newState);
 		return newState;
 	}
 	
@@ -395,6 +404,11 @@ public class Game {
 		newState.setPlayerPositions(getPlayerPositions());
 		newState.setSilkBag(bag);
 		newState.setTilesInAction(tilesInAction);
+		boolean[] backTrackApplied = new boolean[players.length];
+		for(int i = 0; i < players.length; i++) {
+			backTrackApplied[i] = players[i].getBacktrack();
+		}
+		newState.setBackTrackApplied(backTrackApplied);
 		return newState;
 	}
 }
