@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.regex.Pattern;
 
-public class FileReader {
+public class GameFileReader {
 
 	/**
 	 * Reads a file describing a game in progress, constructs a Game using this information.
@@ -100,17 +100,15 @@ public class FileReader {
 
 
 	private static SilkBag readSilkBag(Scanner s) {
-		int[] numActionTiles = new int[] {0, 0, 0, 0};
-		int[] numPlaceableTiles = new int[] {0, 0, 0};
-		int numBagTiles = s.nextInt();
-		for (int bagTile = 0; bagTile < numBagTiles; bagTile++) {
-			int curTile = s.nextInt();
-			if (curTile < 4) {  // if action tile
-				numActionTiles[curTile] = numActionTiles[curTile] + 1;
-			} else {  // if placeable tile
-				numPlaceableTiles[curTile % 3] = numPlaceableTiles[curTile % 3] + 1;
-			}
+		int[] numActionTiles = new int[4];
+		int[] numPlaceableTiles = new int[3];
+		for (int a = 0; a < 4; a++) {
+			numActionTiles[a] = s.nextInt();
 		}
+		for (int p = 0; p < 3; p++) {
+			numPlaceableTiles[p] = s.nextInt();
+		}
+
 		return new SilkBag(numActionTiles, numPlaceableTiles);
 	}
 
