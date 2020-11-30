@@ -306,7 +306,7 @@ public class Game {
 		return tilesOwnedByPlayers;
 	}
 	
-	public GameState getInitalState() {
+	public GameState getInitalGameState() {
 		GameState newState = new GameState();
 		newState.setBoard(board.getTiles());
 		newState.setActionTilesForPlayers(getActionTilesForPlayers());
@@ -317,33 +317,15 @@ public class Game {
 		return newState;
 	}
 	
-	/* These Methods should be deprecated by GameState*/
-	
-	public ArrayList<GameState> getPastStates() {
-		return pastStates;
-	}
-
-	public SilkBag getSilkBag() {
-		return bag;
-	}
-
-	public Board getBoard() {
-		return board;
-	}
-
-	public int getNumPlayers() {
-		return players.length;
-	}
-
-	public int getCurPlayer() {
-		return curPlayer;
-	}
-
-	public int getMovesLeftForCurrent() {
-		return movesRemaingForThisPlayer;
-	}
-
-	public boolean isGoalReached () {
-		return isGoalReached;
+	public GameState getEndGameState() {
+		GameState newState = new GameState();
+		newState.setActionTilesForPlayers(getActionTilesForPlayers());
+		newState.setBoard(board.getTiles());
+		newState.setCurrentPlayer(curPlayer, movesRemaingForThisPlayer);
+		newState.setPastStates(pastStates);
+		newState.setPlayerPositions(getPlayerPositions());
+		newState.setSilkBag(bag);
+		newState.setTilesInAction(tilesInAction);
+		return newState;
 	}
 }
