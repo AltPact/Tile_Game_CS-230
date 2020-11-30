@@ -1,4 +1,3 @@
-
  
 /* Java Doc Not Yet Complete.
  * Class Not Yet Complete.
@@ -84,7 +83,7 @@ public class Game {
 	 * @param curState The state the game should be loaded into.
 	 */
 	private void reconstructGame(GameState curState) {
-		this.board = new Board(curState.getBoard().length, curState.getBoard()[0].length, curState.getBoard(), bag);
+		this.board = new Board(curState.getBoard().length, curState.getBoard()[0].length, curState.getBoard());
 		this.tilesInAction = curState.getTilesInAction();
 		this.curPlayer = curState.getCurPlayer();
 		this.movesRemaingForThisPlayer = curState.getMovedPlayer();
@@ -95,7 +94,6 @@ public class Game {
 			players[i].setBulkActionTiles(curState.getActionTileForPlayer(i));
 		}
 	}
-	
 	public Tile getNewTileForCurrentPlayer() {
 		TileType newTileType = bag.draw();
 		Tile newTile = null;
@@ -294,25 +292,33 @@ public class Game {
 		newState.setPlayerPositions(getPlayerPositions());
 		newState.setBoard(board.getTiles());
 		newState.setTilesInAction(tilesInAction);
+		
+		newState.setCurrentPlayer(curPlayer, movesRemaingForThisPlayer);
+		newState.setMoveableSpaces(board.getMoveableSpaces(players[curPlayer]));
+		return newState;
+	}
+	private ArrayList<ActionTile>[] getActionTilesForPlayers() {
 		@SuppressWarnings("unchecked")
 		ArrayList<ActionTile>[] tilesOwnedByPlayers = new ArrayList[players.length];
 		for(int i = 0; i < players.length; i++) {
 			tilesOwnedByPlayers[i] = players[i].getActionTilesOwned(); 
 		}
-		newState.setCurrentPlayer(curPlayer, movesRemaingForThisPlayer);
-		newState.setMoveableSpaces(board.getMoveableSpaces(players[curPlayer]));
-		return newState;
-		
+		return tilesOwnedByPlayers;
 	}
 	
-	public GameState getCurState() {
-		ArrayList<ActionTile>[] tilesOwnedByPlayers = new ArrayList[players.length];
-		for(int i = 0; i < players.length; i++) {
-			tilesOwnedByPlayers[i] = players[i].getActionTilesOwned();
-		}
-		return new GameState(board.getTiles(), getPlayerPositions(), tilesOwnedByPlayers, curPlayer, isGoalReached);
+	public GameState getInitalState() {
+		GameState newState = new GameState();
+		newState.setBoard(board.getTiles());
+		newState.setActionTilesForPlayers(getActionTilesForPlayers());
+		newState.setCurrentPlayer(curPlayer, movesRemaingForThisPlayer);
+		newState.setMoveableSpaces(board.getMoveableSpaces(players[curPlayer]));
+		newState.setPlayerPositions(getPlayerPositions());
+		newState.setInsertableLocation(board.getInsertablePlaces());
+		return newState;
 	}
-
+	
+	/* These Methods should be deprecated by GameState*/
+	
 	public ArrayList<GameState> getPastStates() {
 		return pastStates;
 	}
