@@ -8,8 +8,6 @@ public class Board {
 	private int width;
 	private int height;
 	private Placeable[][] tiles;
-	private PlayerPiece[] players;
-	private SilkBag bag = new SilkBag();
 	
 	/**
 	 * Constructor for Board
@@ -20,7 +18,6 @@ public class Board {
 		this.width = tiles[0].length;
 		this.height = tiles[1].length;
 		this.tiles = tiles;
-		fillBoard(bag);
 	}
 	
 	/**
@@ -51,23 +48,6 @@ public class Board {
 					tiles[x][y] = new Placeable(bag.drawPlaceable(), false, false);
 				}
 			}
-		}
-	}
-	
-	/**
-	 * @param x the x position to move the player to
-	 * @param y the y position to move the player to
-	 * @param player The player to be moved
-	 * @return a boolean representing if the player has been moved
-	 */
-	public boolean movePlayer(int x, int y, PlayerPiece player) {
-		boolean[][] moveableSpaces = this.getMoveableSpaces(player);
-		if(moveableSpaces[x][y]) {
-			player.setX(x);
-			player.setY(y);
-			return true;
-		} else {
-			return false;
 		}
 	}
 	
@@ -205,60 +185,6 @@ public class Board {
 		return isInsetable;
 	}
 	
-	/**
-	 * Freezes tile at this position
-	 * @param x  x position of tile
-	 * @param y  y position of tile
-	 */
-	public void freezeTile(int x, int y) {
-		tiles[x][y].freeze();
-	}
-	
-	/**
-	 * Sets tile at this position on fire
-	 * @param x  x position of tile
-	 * @param y  y position of tile
-	 */
-	public void fireTile(int x, int y) {
-		tiles[x][y].putOnFire();
-	}
-	
-	/**
-	 * Thaws tile at this position
-	 * @param x  x position of tile
-	 * @param y  y position of tile
-	 */
-	public void thawTile(int x, int y) {
-		tiles[x][y].freeze();
-	}
-	
-	/**
-	 * Extinguishes the tile at this position
-	 * @param x  x position of tile
-	 * @param y  y position of tile
-	 */
-	public void extinguishTile(int x, int y) {
-		tiles[x][y].putOutFire();
-	}
-	
-	/**
-	 * Checks if the tile at this position is on fire
-	 * @param x  x position of tile
-	 * @param y  y position of tile
-	 */
-	public boolean isOnFire(int x, int y) {
-		return tiles[x][y].isOnFire();
-	}
-	
-	/**
-	 * Checks if the tile at this position is frozen
-	 * @param x  x position of tile
-	 * @param y  y position of tile
-	 */
-	public boolean isFrozen(int x, int y) {
-		return tiles[x][y].isFrozen();
-	}
-	
 
 	public Placeable[][] getTiles() {
 		return tiles;
@@ -272,13 +198,6 @@ public class Board {
 		}
 	}
 	
-	public PlayerPiece getPlayerPiece(int p) {
-		if (p > players.length) {
-			return null;
-		} else {
-			return players[p];
-		}
-	}
 
 	public int getWidth() {
 		return width;
