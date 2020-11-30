@@ -29,7 +29,7 @@ public class GameState {
 	private boolean[][] insertableLocations;
 	private boolean placeableActionTileApplied;
 	private ArrayList<GameState> pastStates;
-private SilkBag bag;
+	private SilkBag bag;
 	
 	public void setBoard(Placeable[][] board) {
 		this.boardTiles = board;

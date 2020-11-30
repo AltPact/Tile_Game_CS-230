@@ -116,10 +116,79 @@ public class Game {
 	}
 	
 	
-	public GameState insertTile(Placeable tileToBeInserted, int x, int y, boolean vertical) {
-		board.insertPiece(x, y, vertical, tileToBeInserted);
+	public GameState insertTile(Placeable tileToBeInserted, int x, int y, boolean vertical) throws IllegalInsertionException {
+		boolean isInserted = board.insertPiece(x, y, vertical, tileToBeInserted);
+		if(!isInserted) {
+			throw new IllegalInsertionException("This tile cannot be inserted");
+		}
+		
+		int directionOfInsertion = 0;
+		int affectedRowColumn = 0;
+		if(vertical) {
+			affectedRowColumn = y;
+			if(y == 0) {
+				directionOfInsertion = 2;
+				
+			} else {
+				directionOfInsertion = 0;
+			}
+		} else {
+			affectedRowColumn = x;
+			if(x == 0) {
+				directionOfInsertion = 1;
+			} else {
+				directionOfInsertion = 3;
+			}
+		}
+
+		movePlayersOn(directionOfInsertion, affectedRowColumn);
+		
 		int[] postion = {x,y};
 		return tileAfterInsertion(tileToBeInserted, postion);
+	}
+	
+	private void movePlayersOn(int directionOfInsertion, int affectedRowColumn) {
+		for(PlayerPiece player : players) {
+			//if the inserted tile effects a vertical column
+			if(((directionOfInsertion == 0) || (directionOfInsertion == 2)) && player.getY() == affectedRowColumn) { 
+				int testY = player.getY();
+				//Makes the appropriate change
+				if (directionOfInsertion == 0) {
+					testY -= 1;
+				} else if (directionOfInsertion == 2) {
+					testY += 1;
+				}
+				
+				//If the players position is now illegal, but them back on the board.
+				if(testY >= board.getHeight() || testY < 0) {
+					if (directionOfInsertion == 0) {
+						testY -= (board.getHeight() - 1);
+					} else if (directionOfInsertion == 2) {
+						testY += 0;
+					}
+				}
+				player.setY(testY);
+			//If the inserted tile effects a horizontal row.
+			} else if (((directionOfInsertion == 1) || (directionOfInsertion == 1)) && player.getX() == affectedRowColumn) { 
+				int testX = player.getX();
+				//Makes the appropriate change
+				if (directionOfInsertion == 3) {
+					testX -= 1;
+				} else if (directionOfInsertion == 1) {
+					testX += 1;
+				}
+				
+				//If the players position is now illegal, but them back on the board.
+				if(testX >= board.getWidth() || testX < 0) {
+					if (directionOfInsertion == 3) {
+						testX -= (board.getWidth() - 1);
+					} else if (directionOfInsertion == 1) {
+						testX += 0;
+					}
+				}
+				player.setX(testX);
+			} 
+		}
 	}
 	
 	public void playDoubleMove(ActionTile doubleMove) {
