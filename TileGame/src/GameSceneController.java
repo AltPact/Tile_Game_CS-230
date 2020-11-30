@@ -76,7 +76,6 @@ public class GameSceneController extends GameWindow implements Initializable {
 	@Override
 	public void initialize(URL url, ResourceBundle resources) {
 		initVariables();
-		
 		addFloor();
 		addTile();
 		initLightSource();
