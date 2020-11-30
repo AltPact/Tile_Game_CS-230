@@ -305,8 +305,39 @@ public class Game {
 		
 	}
 	
-	
-	
-	
+	public GameState getCurState() {
+		ArrayList<ActionTile>[] tilesOwnedByPlayers = new ArrayList[players.length];
+		for(int i = 0; i < players.length; i++) {
+			tilesOwnedByPlayers[i] = players[i].getActionTilesOwned();
+		}
+		return new GameState(board.getTiles(), getPlayerPositions(), tilesOwnedByPlayers, curPlayer, isGoalReached);
+	}
 
+	public ArrayList<GameState> getPastStates() {
+		return pastStates;
+	}
+
+	public SilkBag getSilkBag() {
+		return bag;
+	}
+
+	public Board getBoard() {
+		return board;
+	}
+
+	public int getNumPlayers() {
+		return players.length;
+	}
+
+	public int getCurPlayer() {
+		return curPlayer;
+	}
+
+	public int getMovesLeftForCurrent() {
+		return movesRemaingForThisPlayer;
+	}
+
+	public boolean isGoalReached () {
+		return isGoalReached;
+	}
 }
