@@ -327,7 +327,7 @@ public class Game {
 	
 	private GameState actionTilePlayed() {
 		GameState newState = new GameState();
-		newState.setBoard(board.getTiles());
+		newState.setBoard(board.getTiles(), board.getWidth(), board.getHeight());
 		newState.setActionTileApplied();
 		return newState;
 	}
@@ -367,7 +367,7 @@ public class Game {
 	private GameState makeStateEndTurn() {
 		GameState newState = new GameState();
 		newState.setPlayerPositions(getPlayerPositions());
-		newState.setBoard(board.getTiles());
+		newState.setBoard(board.getTiles(), board.getWidth(), board.getHeight());
 		newState.setTilesInAction(tilesInAction);
 		
 		newState.setCurrentPlayer(curPlayer, movesRemaingForThisPlayer);
@@ -385,7 +385,7 @@ public class Game {
 	
 	public GameState getInitalGameState() {
 		GameState newState = new GameState();
-		newState.setBoard(board.getTiles());
+		newState.setBoard(board.getTiles(), board.getWidth(), board.getHeight());
 		newState.setActionTilesForPlayers(getActionTilesForPlayers());
 		newState.setCurrentPlayer(curPlayer, movesRemaingForThisPlayer);
 		newState.setMoveableSpaces(board.getMoveableSpaces(players[curPlayer]));
@@ -398,7 +398,7 @@ public class Game {
 	public GameState getEndGameState() {
 		GameState newState = new GameState();
 		newState.setActionTilesForPlayers(getActionTilesForPlayers());
-		newState.setBoard(board.getTiles());
+		newState.setBoard(board.getTiles(), board.getWidth(), board.getHeight());
 		newState.setCurrentPlayer(curPlayer, movesRemaingForThisPlayer);
 		newState.setPastStates(pastStates);
 		newState.setPlayerPositions(getPlayerPositions());

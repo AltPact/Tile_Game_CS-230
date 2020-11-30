@@ -30,10 +30,14 @@ public class GameState {
 	private boolean placeableActionTileApplied;
 	private ArrayList<GameState> pastStates;
 	private SilkBag bag;
-	private boolean [] backTrackApplied;
+	private boolean[] backTrackApplied;
+	private int width;
+	private int height;
 	
-	public void setBoard(Placeable[][] board) {
+	public void setBoard(Placeable[][] board, int width, int height) {
 		this.boardTiles = board;
+		this.width = width;
+		this.height = height;
 	}
 	
 	public void setPlayerPositions(int[][] playerPositions) { 
@@ -158,6 +162,14 @@ public class GameState {
 	
 	public boolean[] getBackTrackApplied() {
 		return backTrackApplied;
+	}
+
+	public int getWidth() {
+		return width;
+	}
+
+	public int getHeight() {
+		return height;
 	}
 
 }
