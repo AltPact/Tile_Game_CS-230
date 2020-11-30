@@ -2,9 +2,16 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.util.regex.Pattern;
 
 public class FileReader {
 
+	/**
+	 * Reads a file describing a game in progress, constructs a Game using this information.
+	 *
+	 * @param filename The name of the file to read.
+	 * @return An instantiated Game object.
+	 */
 	public static Game readGameFile(String filename) {
 		try {
 			File f = new File(filename);
@@ -18,17 +25,18 @@ public class FileReader {
 			int movesLeftForCurrent = s.nextInt();
 			boolean isGoalHit = s.nextBoolean();
 
-			/* read player data */
-			/* TODO: this data is all duplicates of data in curState (except colour), and can't instantiate an array of ActionTiles so can't construct player pieces */
-			for (int p = 0; p < numPlayers; p++) {
-				int playerX = s.nextInt();
-				int playerY = s.nextInt();
-				String playerColour = s.next();
-				//
-			}
-
 			/* read current game state */
 			GameState curState = readGameState(s, height, width, numPlayers);
+
+			/* read player data */
+			PlayerPiece[] players = new PlayerPiece[numPlayers];
+			for (int p = 0; p < numPlayers; p++) {
+				int playerX = curState.getPlayersPositions()[p][0];  // 0 and 1 may need to be swapped here? not sure if X/Y or Y/X
+				int playerY = curState.getPlayersPositions()[p][1];
+				String playerColour = s.next();
+				Boolean backtrackApplied = s.nextBoolean();
+				players[p] = new PlayerPiece(playerX, playerY, playerColour, backtrackApplied);
+			}
 
 			/* read past game states */
 			ArrayList<GameState> pastStates = new ArrayList<GameState>();
@@ -38,21 +46,51 @@ public class FileReader {
 			}
 
 			/* read the silk bag */
+			SilkBag bag = readSilkBag(s);
 
-			int[] numActionTiles = new int[] {0, 0, 0, 0};
-			int[] numPlaceableTiles = new int[] {0, 0, 0};
-			int numBagTiles = s.nextInt();
-			for (int bagTile = 0; bagTile < numBagTiles; bagTile++) {
-				int curTile = s.nextInt();
-				if (curTile < 4) {  // if action tile
-					numActionTiles[curTile] = numActionTiles[curTile] + 1;
-				} else {  // if placeable tile
-					numPlaceableTiles[curTile % 3] = numPlaceableTiles[curTile % 3] + 1;
-				}
+			return new Game(curState, pastStates, bag, players);
+		} catch (FileNotFoundException e) {
+			System.out.println("An error occurred.");
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	/**
+	 * Reads a file describing a "template" for a game - a board not yet fully populated with tiles that can be used
+	 * to start a new game. Constructs a Game with this information.
+	 *
+	 * @param filename The name of the file to read.
+	 * @param numPlayers The number of players to start the game with.
+	 * @return An instantiated Game object.
+	 */
+	public static Game readBoardFile(String filename, int numPlayers) {
+		try {
+			File f = new File(filename);
+			Scanner s = new Scanner(f);
+
+			/* read board meta data */
+			int height = s.nextInt();
+			int width = s.nextInt();
+
+			/* read the starting state of the game */
+			GameState startState = readGameState(s, height, width, numPlayers);
+
+			/* read player data */
+			PlayerPiece[] players = new PlayerPiece[numPlayers];
+			for (int p = 0; p < numPlayers; p++) {
+				int playerX = startState.getPlayersPositions()[p][0];  // 0 and 1 may need to be swapped here? not sure if X/Y or Y/X
+				int playerY = startState.getPlayersPositions()[p][1];
+				String playerColour = s.next();
+				Boolean backtrackApplied = s.nextBoolean();
+				players[p] = new PlayerPiece(playerX, playerY, playerColour, backtrackApplied);
 			}
-			SilkBag bag = new SilkBag(numActionTiles, numPlaceableTiles);
 
-			return new Game(curState, pastStates, bag, players, curPlayer, movesLeftForCurrent, tilesInAction);
+
+			/* read the silk bag */
+			SilkBag bag = readSilkBag(s);
+
+			return new Game(startState, new ArrayList<GameState> (), bag, players);  // use empty ArrayList for pastStates since there are none
 		} catch (FileNotFoundException e) {
 			System.out.println("An error occurred.");
 			e.printStackTrace();
@@ -61,7 +99,32 @@ public class FileReader {
 	}
 
 
+	private static SilkBag readSilkBag(Scanner s) {
+		int[] numActionTiles = new int[] {0, 0, 0, 0};
+		int[] numPlaceableTiles = new int[] {0, 0, 0};
+		int numBagTiles = s.nextInt();
+		for (int bagTile = 0; bagTile < numBagTiles; bagTile++) {
+			int curTile = s.nextInt();
+			if (curTile < 4) {  // if action tile
+				numActionTiles[curTile] = numActionTiles[curTile] + 1;
+			} else {  // if placeable tile
+				numPlaceableTiles[curTile % 3] = numPlaceableTiles[curTile % 3] + 1;
+			}
+		}
+		return new SilkBag(numActionTiles, numPlaceableTiles);
+	}
 
+
+	/**
+	 * Reads a "GameState" object from a file. When loading a game that is in-progress, this will likely
+	 * be called multiple times, once for each previous state of the game, so that Backtrack can work.
+	 *
+	 * @param s File scanner to read data through
+	 * @param height Height of the board
+	 * @param width Width of the board
+	 * @param numPlayers Number of players in the game
+	 * @return An instantiated GameState object.
+	 */
 	private static GameState readGameState(Scanner s, int height, int width, int numPlayers) {
 		boolean isGoalHit = s.nextBoolean();
 		int curPlayer = s.nextInt();
@@ -69,10 +132,24 @@ public class FileReader {
 		Placeable[][] stateTiles = new Placeable[height][width];
 		for (int y = 0; y < height; y++) {
 			for (int x = 0; x < width; x++) {
-				TileType type = TileType.valueOf(s.next());
-				boolean isFixed = s.nextBoolean();
-				int orientation = s.nextInt();
-				stateTiles[y][x] = new Placeable(type, type == TileType.Goal, isFixed, orientation);
+				boolean isFull = s.nextBoolean();
+				if (isFull) {
+					TileType type = TileType.valueOf(s.next());
+					boolean isFixed = s.nextBoolean();
+					int orientation = s.nextInt();
+					boolean isOnFire = s.nextBoolean();
+					boolean isFrozen = s.nextBoolean();
+					Placeable curTile = new Placeable(type, type == TileType.Goal, isFixed, orientation);
+					if (isOnFire) {
+						curTile.putOnFire();
+					}
+					if (isFrozen) {
+						curTile.freeze();
+					}
+					stateTiles[y][x] = curTile;
+				} else {  // if the space is empty, leave it null to be filled from the silk bag by Board
+					stateTiles[y][x] = null;
+				}
 			}
 		}
 
@@ -81,159 +158,27 @@ public class FileReader {
 			playerPositions[p][0] = s.nextInt();
 			playerPositions[p][1] = s.nextInt();
 		}
+		// if a board file is being read that supports more players than are needed, skip unneeded player positions
+		s.skip(Pattern.compile("..ENDPLAYERPOS"));
 
-		// TODO: action tiles are currently abstract, you can't instantiate them to put them in an array.
+		// TODO: both action tiles and actiontileplacables are currently abstract, you can't instantiate them to put them in an array.
+		// TODO: ActionTilePlacable also has no implementation, so currently serves no purpose. need to talk about whether this is an efficient
+		// TODO: inheritence structure of if ActionTilePlaceable should be a subclass of Placeable (or some other solution)
 		ArrayList<ActionTile>[] curActionTilesForEachPlayer = new ArrayList[numPlayers];
+		/* COMMENTED FOR SAKE OF COMPILING UNTIL THIS IS FIXED
 		for (int p = 0; p < numPlayers; p++) {
 			curActionTilesForEachPlayer[p]= new ArrayList<ActionTile> ();
 			int numActionTilesInHand = s.nextInt();
 			for (int a = 0; a < numActionTilesInHand; a++) {
 				TileType actionTileType = TileType.valueOf(s.next());
-				curActionTilesForEachPlayer[p].add(new ActionTile(actionTileType));
+				curActionTilesForEachPlayer[p].add(new ActionTilePlaceable(actionTileType));
 			}
 		}
+		*/
+		// if a board file is being read that supports more players than are needed, skip unneeded player action tiles
+		s.skip(Pattern.compile("..ENDPLAYERTILES"));
 
 		return new GameState(stateTiles, playerPositions, curActionTilesForEachPlayer, curPlayer, isGoalHit);
 	}
-
-	public static void oldReadBoardFile(String filename) {
-		try {
-			File f = new File(filename);
-			Scanner s = new Scanner(f);
-			int width = s.nextInt();
-			int height = s.nextInt();
-			/* read all fixed tiles */
-			int numFixedTiles = s.nextInt();
-			Tile[] fixedTiles = new Tile[numFixedTiles];
-			int[][] fixedTileCoords = new int[numFixedTiles][2];
-			for (int t = 0; t < numFixedTiles; t++) {
-				int x = s.nextInt();
-				int y = s.nextInt();
-				String tileTypeStr = s.next();
-				TileType tileTypeEnum = TileType.valueOf(tileTypeStr);
-				int orientation = s.nextInt();
-				boolean isGoal = s.nextBoolean();
-				fixedTiles[t] = new Placeable(tileTypeEnum, isGoal, true);
-				fixedTiles[t].setOrientation(orientation);
-				fixedTileCoords[t][0] = x;
-				fixedTileCoords[t][1] = y;
-			}
-			/* read all tiles to go in the silk bag */
-			/* TODO: Tile is an abstract class, can't be constructed using only tileType. Stored as strings for now */
-			int numBagTiles = s.nextInt();
-			String[] bagTiles = new String[numBagTiles];
-			for (int t = 0; t < numBagTiles; t++) {
-				bagTiles[t] = s.next();
-			}
-			/* read all action tiles on the board */
-			/* TODO: these should be read at the same time as fixedTiles. file format should be changed later. */
-			int numActionTiles = s.nextInt();
-			String[] actionTiles = new String[numActionTiles]; // TODO: this needs to be not a string.
-			for (int t = 0; t < numActionTiles; t++) {
-				// TODO: much more information will be needed than just tile type, will need to talk about this
-				actionTiles[t] = s.next();
-			}
-
-			s.close();
-			return;  // TODO: need to construct Game object
-		} catch (FileNotFoundException e) {
-			System.out.println("An error occurred.");
-			e.printStackTrace();
-		}
-	}
-
-	/* public static void oldReadGameFile(String filename) {
-		try {
-			File f = new File(filename);
-			Scanner s = new Scanner(f);
-
-			int numPlayers = s.nextInt();
-			PlayerPiece[] players = new PlayerPiece[numPlayers];
-			TileType[][] playerHands = new String[numPlayers][10]; // assumes max hand size of 10
-			
-			for (int p = 0; p < numPlayers; p++) {
-				String name = s.next();
-				int x = s.nextInt();
-				int y = s.nextInt();
-				String colour = s.next();
-				boolean backtrackApplied = s.nextBoolean();
-				players[p] = new PlayerPiece(name, x, y, colour, backtrackApplied);
-				
-				int actionTilesOwned = s.nextInt();
-				for (int t = 0; t < actionTilesOwned; t++) {
-					String tileTypeStr = s.next();
-					TileType tileTypeEnum = TileType.valueOf(tileTypeStr);
-					String actionTileType = s.next();  // TODO: probably need to remove this
-					boolean drawnThisTurn = s.hasNextBoolean(); // TODO: need to implement this
-					playerHands[p][t] = tileTypeEnum;
-				}
-			}
-			
-			int curTurn = s.nextInt();
-
-			int silkBagSize = s.nextInt();
-			String[] silkBag = new String[silkBagSize];  // TODO: probably need to make this not be a string
-			for (int t = 0; t < silkBagSize; t++) {
-				silkBag[t] = s.next();
-			}			
-
-			int boardWidth = s.nextInt();  // TODO: maybe make reading this data a function to be reused when reading previous states?
-			int boardHeight = s.nextInt();
-			Tile[][] currentBoard = new Tile[boardWidth][boardHeight];
-			for (int x = 0; x < boardWidth; x++) {
-				for (int y = 0; y < boardHeight; y++) {
-					String tileTypeStr = s.next();
-					TileType tileTypeEnum = TileType.valueOf(tileTypeStr);
-					int rotation = s.nextInt();
-					boolean isFixed = s.hasNextBoolean();
-					String owner = s.next();
-					boolean onFire = s.hasNextBoolean();
-					boolean frozen = s.hasNextBoolean();
-					int timeRemaining = s.nextInt();
-					if (tileTypeEnum == TileType.Ice) {
-						currentBoard[x][y] = new Ice(owner, numPlayers);
-						// TODO: no function exists yet for the time remaining to be set on initialisation
-					} else if (tileTypeEnum == TileType.Fire) {
-						currentBoard[x][y] = new Fire(owner, numPlayers);
-						// TODO: see above
-					} else {
-						currentBoard[x][y] = new Placeable(tileType, isGoal, isFixed, orientation);
-					}
-				}
-			}
-
-			int previousBoardStates = s.nextInt();
-			Tile[][][] previousBoards = new Tile[previousBoardStates][boardWidth][boardHeight];
-			for (int b = 0; b < previousBoardStates; b++) {
-				for (int x = 0; x < boardWidth; x++) {
-					for (int y = 0; y < boardHeight; y++) {
-						String tileTypeStr = s.next();
-						TileType tileTypeEnum = TileType.valueOf(tileTypeStr);
-						int rotation = s.nextInt();
-						boolean isFixed = s.hasNextBoolean();
-						String owner = s.next();
-						boolean onFire = s.hasNextBoolean();
-						boolean frozen = s.hasNextBoolean();
-						int timeRemaining = s.nextInt();
-						if (tileTypeEnum == TileType.Ice) {
-							previousBoards[b][x][y] = new Ice(owner, numPlayers);
-							// TODO: no function exists yet for the time remaining to be set on initialisation
-						} else if (tileTypeEnum == TileType.Fire) {
-							previousBoards[b][x][y] = new Fire(owner, numPlayers);
-							// TODO: see above
-						} else {
-							previousBoards[b][x][y] = new Placeable(tileType, isGoal, isFixed, orientation);
-						}
-					}
-				}
-			}
-			
-			s.close();
-			return; // TODO: need to construct Game object
-		} catch (FileNotFoundException e){
-		      System.out.println("An error occurred.");
-		      e.printStackTrace();
-		}
-	} */
 
 }
