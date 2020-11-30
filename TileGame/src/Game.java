@@ -301,6 +301,19 @@ public class Game {
 			players[curPlayer].setX(newX);
 			players[curPlayer].setY(newY);
 			movesRemaingForThisPlayer--;
+			Placeable newTile = (Placeable) board.getTile(newX, newY);
+			isGoalReached = newTile.isGoal();
+			if(isGoalReached) {
+				for(int i = 0; i < players.length; i++) {
+					if(i == curPlayer) {
+						players[i].getLinkedData().incrementWins();
+					} else {
+						players[i].getLinkedData().incrementLosses();
+					}
+				}
+			}
+			
+			
 			return playerMoved();
 		} else {
 			throw new IllegalMove("Player Cannot move in this Direction");

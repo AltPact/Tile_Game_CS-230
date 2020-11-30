@@ -128,7 +128,20 @@ public class PlayerData {
 			}
 		}
 	}
-
+	
+	/**
+	 * Adds 1 to the number of wins.
+	 */
+	public void incrementWins() {
+		numberOfWins++;
+	}
+	
+	/**
+	 * Adds 1 to the number of losses.
+	 */
+	public void incrementLosses() {
+		numberOfLosses++;
+	}
 	@Override
 	/**
 	 * Converts the playerData object into a string to be able to be able to be 
