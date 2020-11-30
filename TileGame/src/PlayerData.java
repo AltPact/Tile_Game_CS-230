@@ -105,6 +105,17 @@ public class PlayerData {
 	public void incrementLosses() {
 		numberOfLosses++;
 	}
+	
+	/**
+	 * Allows for comparison in leaderBoardController
+	 * @param playerData
+	 * @return int: Comparison of wins
+	 */
+	public int compareTo(PlayerData playerData) {
+		int wins = ((PlayerData)playerData).getWins();
+		return wins-this.numberOfWins;
+	}
+	
 	@Override
 	/**
 	 * Converts the playerData object into a string to be able to be able to be
