@@ -27,8 +27,12 @@ public class Fire extends ActionTilePlaceable {
 	public void instantiateAction(Placeable[] tilesToAction) throws IncorrectTileTypeException  {
 		super.setTimeRemaining();
 		super.tilesToAction = tilesToAction;
-		for(Placeable tile : super.tilesToAction) {
-			tile.putOnFire();
+		try {
+			for(Placeable tile : super.tilesToAction) {
+				tile.putOnFire();
+			}
+		} catch (NullPointerException e) {
+			//This is if the tile has been instantiated at the edge of the board.
 		}
 	}
 	

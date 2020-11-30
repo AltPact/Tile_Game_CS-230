@@ -171,5 +171,9 @@ public class GameState {
 	public int getHeight() {
 		return height;
 	}
+	
+	public boolean getIsGoalHit() {
+		return isGoalHit;
+	}
 
 }

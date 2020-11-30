@@ -385,6 +385,7 @@ public class Game {
 		
 		newState.setCurrentPlayer(curPlayer, movesRemaingForThisPlayer);
 		newState.setMoveableSpaces(board.getMoveableSpaces(players[curPlayer]));
+		newState.setInsertableLocation(board.getInsertablePlaces());
 		return newState;
 	}
 	private ArrayList<ActionTile>[] getActionTilesForPlayers() {
