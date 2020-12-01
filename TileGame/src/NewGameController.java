@@ -30,51 +30,78 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.util.Duration;
+
 /**
  * File Name: NewGameController.java Created: 07/11/2020 Modified: 19/11/2020
  * 
  * @author Wan Fai Tong (1909787) and Sam Steadman (1910177) Version: 1.0
  */
 public class NewGameController extends GameWindow implements Initializable {
-	
-	/*private static Parent root;
-	private static StackPane homeContainer;
-	private static Scene currentScene;*/
-	//FXML bindings
-	
+
+	/*
+	 * private static Parent root; private static StackPane homeContainer; private
+	 * static Scene currentScene;
+	 */
+	// FXML bindings
+
 	@FXML
-    public BorderPane BP;
+	public BorderPane BP;
 	@FXML
 	public TextField TestField;
 	@FXML
-    public Button AddButton;
+	public Button AddButton;
 	@FXML
-    public Button BackButton;
+	public Button BackButton;
 	@FXML
-    public Button StartButton;
+	public Button StartButton;
 	@FXML
-    public Button createButton;
+	public Button createButton;
 	@FXML
-    public VBox playerBox;
+	public VBox playerBox;
 	@FXML
-    public ComboBox searchBox;
-    @FXML
-    private HBox boardHBox;
-	private int playerNumber=0;
+	public ComboBox searchBox;
+	@FXML
+	private HBox boardHBox;
+	private int playerNumber = 0;
 	private ArrayList<RadioButton> boardSelection = new ArrayList<RadioButton>();
 	private ToggleGroup boardGroup;
-	
+
 	private ArrayList<PlayerData> playerQuene = new ArrayList<PlayerData>();
 	private ArrayList<HBox> playerRows = new ArrayList<HBox>();
-	
 
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
-		//there was a stupid error without this and I didn't have time to solve it
 		initTestArray();
+		
+		setComboBox("");
 		makeBoardRadio();
 	}
 	
+	private void setListenerComboBox() {
+		searchBox.getEditor().textProperty().addListener((v,oldV,newV)->{
+			//setComboBox();
+		});
+	} 
+
+	private void setComboBox(String searchName) {
+		searchBox.getItems().clear();
+		if (searchName.equals("")) {
+			for (PlayerData player : testPlayerList) {
+				if (!checkIfInQueue(player)) {
+					searchBox.getItems().add(player.getName());
+				}
+			}
+		} else {
+			for (PlayerData player : testPlayerList) {
+				if (!checkIfInQueue(player)) {
+					if(player.getName().equals(searchName)) {
+					   searchBox.getItems().add(player.getName());
+					}
+				}
+			}
+		}
+	}
+
 	private void makeBoardRadio() {
 		boardGroup = new ToggleGroup();
 		RadioButton boardChoose1 = new RadioButton();
@@ -90,43 +117,43 @@ public class NewGameController extends GameWindow implements Initializable {
 		boardChoose2.setMnemonicParsing(false);
 		boardChoose2.setToggleGroup(boardGroup);
 		boardSelection.add(boardChoose2);
-		boardHBox.getChildren().addAll(boardChoose1,boardChoose2);
+		boardHBox.getChildren().addAll(boardChoose1, boardChoose2);
 	}
-	
+
 	private void addPlayerInQuene(PlayerData playerToAdd) {
 		playerQuene.add(playerToAdd);
 		playerBox.getChildren().add(makePlayerRows(playerToAdd));
-		
+
 	}
-	
+
 	private HBox makePlayerRows(PlayerData playerInfo) {
 		HBox row = new HBox();
 		row.setPrefSize(496, 22);
-		
-		row.getChildren().addAll(makeLabel(playerInfo.getName()),makeButton(row, playerInfo));
+
+		row.getChildren().addAll(makeLabel(playerInfo.getName()), makeButton(row, playerInfo));
 		playerRows.add(row);
 		return row;
 	}
-	
+
 	private Button makeButton(HBox row, PlayerData player) {
 		Button removeButton = new Button();
 		removeButton.setText("remove");
 		removeButton.setPrefSize(138, 25);
 		removeButton.setTextFill(Color.WHITE);
 		removeButton.setStyle("-fx-background-color: rgba(128, 128, 128, 0.5);");
-		removeButton.setOnAction(e->{
+		removeButton.setOnAction(e -> {
 			playerQuene.remove(player);
-		    playerBox.getChildren().remove(row);
+			playerBox.getChildren().remove(row);
 		});
-		removeButton.setOnMouseEntered(e->{
+		removeButton.setOnMouseEntered(e -> {
 			removeButton.setStyle("-fx-background-color: rgba(128, 128, 128, 0.5);");
 		});
-		removeButton.setOnMouseExited(e->{
+		removeButton.setOnMouseExited(e -> {
 			removeButton.setStyle("-fx-background-color: rgba(128, 128, 128, 0.5);");
 		});
 		return removeButton;
 	}
-	
+
 	private Label makeLabel(String name) {
 		Label playerName = new Label();
 		playerName.setText(name);
@@ -136,189 +163,204 @@ public class NewGameController extends GameWindow implements Initializable {
 		playerName.setStyle("-fx-background-color: rgba(0, 0, 0, 0.5);");
 		return playerName;
 	}
-	
+
 	@FXML
 	public void addButtonClick(ActionEvent event) throws IOException {
 		String playerName = (String) searchBox.getValue();
-		if(playerName==null) {
+		if (playerName == null) {
 			wrongInputAnimation("Incorrect user input");
-		}else if(playerQuene.size()==4) {
+		} else if (playerQuene.size() == 4) {
 			wrongInputAnimation("Reach the maximum players");
-		}else {
-			PlayerData playerToAdd=getExistPlayer(playerName);
-			if(playerToAdd!=null) {
-		         addPlayerInQuene(playerToAdd);
-			}else {
+		} else {
+			PlayerData playerToAdd = getExistPlayer(playerName);
+			if (playerToAdd != null) {
+				addPlayerInQuene(playerToAdd);
+				setComboBox("");
+			} else {
 				wrongInputAnimation("No such player/Player Already in Queue");
 			}
 		}
 		System.out.println(playerQuene);
 	}
-	
+
+	private boolean checkIfInQueue(PlayerData playerToCheck) {
+		for (PlayerData playerInQueue : playerQuene) {
+			if (playerToCheck == playerInQueue) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	private PlayerData getExistPlayer(String name) {
-		for(PlayerData playerInQueue:playerQuene) {
-			if(playerInQueue.getName().equals(name)) {
+		for (PlayerData playerInQueue : playerQuene) {
+			if (playerInQueue.getName().equals(name)) {
 				return null;
 			}
 		}
-		for(PlayerData player:testPlayerList) {
-			if(player.getName().equals(name)) {
+		for (PlayerData player : testPlayerList) {
+			if (player.getName().equals(name)) {
 				return player;
 			}
 		}
-		
+
 		return null;
 	}
+
 	/*
-	private boolean createGameSucc() {
-		
-	}
-	*/
+	 * private boolean createGameSucc() {
+	 * 
+	 * }
+	 */
 	@FXML
 	public void createButtonClick(ActionEvent event) throws IOException {
-		switchPane("/fxml/CreatePlayerPane.fxml",BP, "back");
+		switchPane("/fxml/CreatePlayerPane.fxml", BP, "back");
 	}
+
 	@FXML
 	public void mouseOnCreate() {
 		createButton.setStyle("-fx-background-color: WHITE; -fx-background-radius: 5em;");
-		
+
 	}
+
 	@FXML
 	public void mouseOffCreate() {
 		createButton.setStyle("-fx-background-color: LIGHTSALMON; -fx-background-radius: 5em;");
-		
+
 	}
-	
+
 	private boolean checkPlayerAmount() {
-		//System.out.println(playerQuene.size());
-		if(playerQuene.size()<2) {
+		// System.out.println(playerQuene.size());
+		if (playerQuene.size() < 2) {
 			return false;
 		}
 		return true;
 	}
+
 	/**
-	 * This method is called when the back button is click
-	 * it will call the switchPane() method which switch to HomePagePane
+	 * This method is called when the back button is click it will call the
+	 * switchPane() method which switch to HomePagePane
+	 * 
 	 * @param event The action event
 	 */
 	@FXML
 	public void buttonOnActionB(ActionEvent event) throws IOException {
-		switchPane("/fxml/HomePagePane.fxml",BP, "back");
+		switchPane("/fxml/HomePagePane.fxml", BP, "back");
 	}
-	
+
 	/**
-	 * This method is called when the start button is click
-	 * it will call the switchPane() method which switch to GameBoardPane
+	 * This method is called when the start button is click it will call the
+	 * switchPane() method which switch to GameBoardPane
+	 * 
 	 * @param event The action event
 	 */
 	@FXML
 	public void buttonOnActionS(ActionEvent event) throws IOException {
-		if(checkPlayerAmount()==true) {
-			int boardSelected=0;
-			int index=0;
+		if (checkPlayerAmount() == true) {
+			int boardSelected = 0;
+			int index = 0;
 			RadioButton selected = (RadioButton) boardGroup.getSelectedToggle();
-			for(RadioButton eachButton:boardSelection) {
-			    if(selected==eachButton) {
-			    	boardSelected=index;
-			    }
-			    index++;
+			for (RadioButton eachButton : boardSelection) {
+				if (selected == eachButton) {
+					boardSelected = index;
+				}
+				index++;
 			}
-			currentGame=initGame(boardSelected);
-		    switchPane("/fxml/GameBoardPane.fxml",BP, "forward");
-		}else {
+			currentGame = initGame(boardSelected);
+			switchPane("/fxml/GameBoardPane.fxml", BP, "forward");
+		} else {
 			wrongInputAnimation("Not enough player(Minimun: 2)");
 		}
 	}
-	
+
 	private Game initGame(int boardNumber) {
-		//working in progress
-		if(boardNumber==0) {
-		    //GameFileReader.readBoardFile(filename, 4);
-			}
+		// working in progress
+		if (boardNumber == 0) {
+			// GameFileReader.readBoardFile(filename, 4);
+		}
 		return null;
 	}
-	
+
 	/**
-	 * This method is called when mouse is on the textfield
-	 * it will change the color of the textfield
+	 * This method is called when mouse is on the textfield it will change the color
+	 * of the textfield
 	 */
 	@FXML
 	public void mouseOnTF() {
-		TestField.setStyle("-fx-background-color: rgba(211, 211, 211, 0.5); -fx-border-color: transparent transparent lightsalmon transparent;");
-		
+		TestField.setStyle(
+				"-fx-background-color: rgba(211, 211, 211, 0.5); -fx-border-color: transparent transparent lightsalmon transparent;");
+
 	}
-	
+
 	/**
-	 * This method is called when mouse is off the textfield
-	 * it will change the color of the textfield back
+	 * This method is called when mouse is off the textfield it will change the
+	 * color of the textfield back
 	 */
 	@FXML
 	public void mouseOFFTF() {
-		TestField.setStyle("-fx-background-color: rgba(128, 128, 128, 0.5); -fx-border-color: transparent transparent lightsalmon transparent;");
-		
+		TestField.setStyle(
+				"-fx-background-color: rgba(128, 128, 128, 0.5); -fx-border-color: transparent transparent lightsalmon transparent;");
+
 	}
-	
+
 	/**
-	 * This method is called when mouse is on the add button
-	 * it will change the color of the button
+	 * This method is called when mouse is on the add button it will change the
+	 * color of the button
 	 */
 	@FXML
 	public void mouseOnA() {
 		AddButton.setStyle("-fx-background-color: WHITE; -fx-background-radius: 5em;");
-		
+
 	}
-	
+
 	/**
-	 * This method is called when mouse is off the add button
-	 * it will change the color of the button back
+	 * This method is called when mouse is off the add button it will change the
+	 * color of the button back
 	 */
 	@FXML
 	public void mouseOFFA() {
 		AddButton.setStyle("-fx-background-color: LIGHTSALMON; -fx-background-radius: 5em;");
-		
+
 	}
-	
+
 	/**
-	 * This method is called when mouse is on the back button
-	 * it will change the color of the button
+	 * This method is called when mouse is on the back button it will change the
+	 * color of the button
 	 */
 	@FXML
 	public void mouseOnB() {
 		BackButton.setStyle("-fx-background-color: WHITE; -fx-background-radius: 5em;");
-		
+
 	}
-	
+
 	/**
-	 * This method is called when mouse is off the back button
-	 * it will change the color of the button back
+	 * This method is called when mouse is off the back button it will change the
+	 * color of the button back
 	 */
 	@FXML
 	public void mouseOFFB() {
 		BackButton.setStyle("-fx-background-color: LIGHTSALMON; -fx-background-radius: 5em;");
-		
+
 	}
-	
+
 	/**
-	 * This method is called when mouse is on the start button
-	 * it will change the color of the button
+	 * This method is called when mouse is on the start button it will change the
+	 * color of the button
 	 */
 	@FXML
 	public void mouseOnS() {
 		StartButton.setStyle("-fx-background-color: WHITE; -fx-background-radius: 5em;");
-		
+
 	}
-	
+
 	/**
-	 * This method is called when mouse is off the start button
-	 * it will change the color of the button back
+	 * This method is called when mouse is off the start button it will change the
+	 * color of the button back
 	 */
 	@FXML
 	public void mouseOFFS() {
 		StartButton.setStyle("-fx-background-color: LIGHTSALMON; -fx-background-radius: 5em;");
-		
+
 	}
-	
-	
-	
 
 }
