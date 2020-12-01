@@ -1,5 +1,9 @@
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.PriorityQueue;
 import java.util.ResourceBundle;
 
 import javafx.animation.Interpolator;
@@ -20,7 +24,8 @@ import javafx.util.Duration;
 /**
  * File Name: LoadGameController.java Created: 07/11/2020 Modified: 19/11/2020
  * 
- * @author Wan Fai Tong (1909787) and Sam Steadman (1910177) Version: 1.0
+ * @author Wan Fai Tong (1909787), Sam Steadman (1910177), Milan Tiji (980334), Morgan Firkins (852264) 
+ * @version: 1.1(Implemented getGames())
  */
 public class LoadGameController extends GameWindow implements Initializable {
 	
@@ -37,17 +42,25 @@ public class LoadGameController extends GameWindow implements Initializable {
 	@FXML
 	public ListView gameSaves;
 	
-	private Game gameSave[];
+	private  Game[] gameSave;
 	
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
-		addGameSave();
+		getGames();
+	}
+	/**
+	 * Gets all available games from directory
+	 * 
+	 */
+	public void getGames() {
+		File [] contentsOfDir = new File("/data/savedgame").listFiles();
+		Arrays.sort(contentsOfDir, (Comparator.comparingLong(File::lastModified).reversed()));
+			for(File file : contentsOfDir) {
+				gameSave.add(GameFileReader.readGameFile(file));
+				
+		}
 	}
 	
-	public void addGameSave() {
-		gameSaves.getItems().add("Game Save");
-		
-	}
 	
 	/**
 	 * This method is called when mouse is on the back button
