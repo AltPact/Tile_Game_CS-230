@@ -4,6 +4,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.PriorityQueue;
 import java.util.ResourceBundle;
 
 import javafx.event.ActionEvent;
@@ -15,7 +16,14 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-
+/**
+ * File: LeaderBoardController.java
+ * Purpose: Implements a leaderboard
+ * Modified: 01/12/2020
+ * @author Wan Fai Tong (1909787), Sam Steadman (1910177), Morgan Firkins (852264)
+ * @version: 1.1
+ *
+ */
 public class LeaderBoardController extends GameWindow implements Initializable {
 	@FXML
 	private BorderPane LB;
@@ -23,6 +31,11 @@ public class LeaderBoardController extends GameWindow implements Initializable {
 	private VBox leaderBoard;
 
 	@FXML
+	/**
+	 * Purpose: To make sure window closes when clicked
+	 * @param event
+	 * @throws IOException
+	 */
 	public void closeOnClick(ActionEvent event) throws IOException {
 		// load NewGameScene
 		switchPane("/fxml/HomePagePane.fxml", LB, "forward");
@@ -34,28 +47,29 @@ public class LeaderBoardController extends GameWindow implements Initializable {
         
 		makeLeaderBoard();
 	}
-
-	public ArrayList<PlayerData> getPlayerArray(){
-		ArrayList<PlayerData> playerdataArray = new ArrayList<PlayerData>();
+	/**
+	 * Purpose: To return a Priority Queue of Players for the leaderboard
+	 * @return: PriorityQueue<PlayerData> : playerDataPriorityQueue
+	 */
+	public PriorityQueue<PlayerData> getPlayerQueue(){
+		PriorityQueue<PlayerData> playerDataPriorityQueue = new PriorityQueue<PlayerData>();
 		File[] contentsOfDir = new File("data/playerdata").listFiles();
 		for(File file:contentsOfDir) {
-			
-			playerdataArray.add(PlayerDataFileReader.readFile(file));
+			playerDataPriorityQueue.add(PlayerDataFileReader.readFile(file));
 			
 		}
 		
-		return sortPlayerWin(playerdataArray);
-	}
-	
-	public ArrayList<PlayerData> sortPlayerWin(ArrayList<PlayerData> unsortedArray){
-		return Collections.sort((List<T>) unsortedArray);
+		return playerDataPriorityQueue;
 	}
 	
 	
+	/**
+	 * Purpose: Creates leaderboard by using the queue in getPlayerQueue()
+	 */
 	public void makeLeaderBoard() {
 		int rank=1;
 		
-		ArrayList<PlayerData> playerdataArray = getPlayerArray();
+		PriorityQueue<PlayerData> playerdataArray = getPlayerQueue();
 		
 		for(PlayerData p : playerdataArray) {
 		HBox playerRow = createUserBox(p,rank);
@@ -63,7 +77,13 @@ public class LeaderBoardController extends GameWindow implements Initializable {
 		rank++;
 		}
 	}
-
+	/**
+	 * Purpose: Creates a box on the leaderboard for the player information
+	 * to be contained in
+	 * @param playerData: PlayerData object to be stored in the box
+	 * @param rank: The rank which the player will hold in the leaderboard
+	 * @return HBox: hbox
+	 */
 	public HBox createUserBox(PlayerData playerData, int rank) {
 		String style="";
 		HBox hbox = new HBox();
@@ -85,7 +105,11 @@ public class LeaderBoardController extends GameWindow implements Initializable {
 				userInfo(Integer.toString(playerData.getWins())));
 		return hbox;
 	}
-	
+	/**
+	 * Purpose: Generates a label from the playerData attribute given
+	 * @param content: playerData attribute converted to a String
+	 * @return Label: label
+	 */
 	public Label userInfo(String content) {
 		Label label = new Label(content);
 		label.setTextFill(Color.WHITE);

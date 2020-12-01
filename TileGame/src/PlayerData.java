@@ -5,7 +5,7 @@
  * @author Morgan Firkins (852264) 
  * @version: 1.3(only avatar path and not a bufferedImage)
  */
-public class PlayerData {
+public class PlayerData implements Comparable<PlayerData>{
 	private String name;
 	private int numberOfWins;
 	private int numberOfLosses;
@@ -106,16 +106,6 @@ public class PlayerData {
 		numberOfLosses++;
 	}
 	
-	/**
-	 * Allows for comparison in leaderBoardController
-	 * @param playerData
-	 * @return int: Comparison of wins
-	 */
-	public int compareTo(PlayerData playerData) {
-		int wins = ((PlayerData)playerData).getWins();
-		return wins-this.numberOfWins;
-	}
-	
 	@Override
 	/**
 	 * Converts the playerData object into a string to be able to be able to be
@@ -130,5 +120,36 @@ public class PlayerData {
 		result += "Avatar Location: " + this.avatarPath;
 		return result;
 	}
+
+	@Override
+	/**
+	 * Purpose: compares player data objects to each other for leaderboard
+	 * @param otherPlayer: An arbritary player object to compare
+	 * @return int: The priority of the object
+	 */
+	public int compareTo(PlayerData otherPlayer) {
+		/**
+		 * if the wins of current player object is greater
+		 * than the wins of the other player object then
+		 * return -1<br>
+		 * if the wins of the current player object is less
+		 * than the wins of the other player object then
+		 * return +1<br>
+		 * if the wins of both objects are the same then
+		 * return 0
+		 */
+		if(this.getWins() > otherPlayer.getWins()){
+			return -1;
+		}
+		else if(this.getWins() < otherPlayer.getWins()) {
+			return +1;
+		}
+		else {
+			return 0;
+			
+		}
+	}
+
+
 
 }
