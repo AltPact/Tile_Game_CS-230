@@ -223,15 +223,18 @@ public class NewGameController extends GameWindow implements Initializable {
 			    }
 			    index++;
 			}
-			initBoard(boardSelected);
+			currentGame=initGame(boardSelected);
 		    switchPane("/fxml/GameBoardPane.fxml",BP, "forward");
 		}else {
 			wrongInputAnimation("Not enough player(Minimun: 2)");
 		}
 	}
 	
-	private Board initBoard(int boardNumber) {
+	private Game initGame(int boardNumber) {
 		//working in progress
+		if(boardNumber==0) {
+		    //GameFileReader.readBoardFile(filename, 4);
+			}
 		return null;
 	}
 	

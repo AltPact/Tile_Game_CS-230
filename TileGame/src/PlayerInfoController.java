@@ -19,7 +19,7 @@ import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.StrokeType;
 
-public class PlayerDataController extends GameWindow implements Initializable {
+public class PlayerInfoController extends GameWindow implements Initializable {
 	@FXML
 	private BorderPane bPane;
 	@FXML

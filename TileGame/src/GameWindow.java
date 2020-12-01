@@ -102,7 +102,7 @@ public class GameWindow {
 		if(fxmlPath.equals("/fxml/GameBoardPane.fxml")) {
 			homepane.getChildren().remove(bgImg);
 			background.stop();
-			//currentGame = new Game();
+			//
 		}
 		content = FXMLLoader.load(getClass().getResource(fxmlPath));
 		homepane.getChildren().remove(current);
