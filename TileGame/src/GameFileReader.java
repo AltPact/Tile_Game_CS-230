@@ -21,33 +21,37 @@ public class GameFileReader {
 			int height = s.nextInt();
 			int width = s.nextInt();
 			int numPlayers = s.nextInt();
+			PlayerPiece[] players = new PlayerPiece[numPlayers];
 			int curPlayer = s.nextInt(); // TODO: DUPLICATE DATA, this is included in curState
 			int movesLeftForCurrent = s.nextInt();
 			boolean isGoalHit = s.nextBoolean();
 
 			/* read current game state */
-			GameState curState = readGameState(s, height, width, numPlayers);
+			GameState curState = readGameState(s, height, width, players);
 
 			/* read player data */
-			PlayerPiece[] players = new PlayerPiece[numPlayers];
 			for (int p = 0; p < numPlayers; p++) {
+				String name = s.next();
+				File pDataFile = new File(name); // TODO: needs to look in correct directory, will work for now
+				PlayerData pData = PlayerDataFileReader.readFile(pDataFile);
 				int playerX = curState.getPlayersPositions()[p][0];  // 0 and 1 may need to be swapped here? not sure if X/Y or Y/X
 				int playerY = curState.getPlayersPositions()[p][1];
 				String playerColour = s.next();
 				Boolean backtrackApplied = s.nextBoolean();
-				players[p] = new PlayerPiece(playerX, playerY, playerColour, backtrackApplied);
+				players[p] = new PlayerPiece(playerX, playerY, playerColour, backtrackApplied, pData);
 			}
 
 			/* read past game states */
 			ArrayList<GameState> pastStates = new ArrayList<GameState>();
 			int numPastStates = s.nextInt();
 			for (int state = 0; state < numPastStates; state++) {
-				pastStates.add(readGameState(s, height, width, numPlayers));
+				pastStates.add(readGameState(s, height, width, players));
 			}
 
 			/* read the silk bag */
 			SilkBag bag = readSilkBag(s);
 
+			s.close();
 			return new Game(curState, pastStates, bag, players);
 		} catch (FileNotFoundException e) {
 			System.out.println("An error occurred.");
@@ -61,35 +65,38 @@ public class GameFileReader {
 	 * to start a new game. Constructs a Game with this information.
 	 *
 	 * @param filename The name of the file to read.
-	 * @param numPlayers The number of players to start the game with.
+	 * @param playerNames The names of players which will be used to refer to PlayerData files.
 	 * @return An instantiated Game object.
 	 */
-	public static Game readBoardFile(String filename, int numPlayers) {
+	public static Game readBoardFile(String filename, String[] playerNames) {
 		try {
 			File f = new File(filename);
 			Scanner s = new Scanner(f);
+			int numPlayers = playerNames.length;
+			PlayerPiece[] players = new PlayerPiece[numPlayers];
 
 			/* read board meta data */
 			int height = s.nextInt();
 			int width = s.nextInt();
 
 			/* read the starting state of the game */
-			GameState startState = readGameState(s, height, width, numPlayers);
+			GameState startState = readGameState(s, height, width, players);
 
 			/* read player data */
-			PlayerPiece[] players = new PlayerPiece[numPlayers];
 			for (int p = 0; p < numPlayers; p++) {
+				File pDataFile = new File(playerNames[p]); // TODO: needs to look in correct directory, will work for now
+				PlayerData pData = PlayerDataFileReader.readFile(pDataFile);
 				int playerX = startState.getPlayersPositions()[p][0];  // 0 and 1 may need to be swapped here? not sure if X/Y or Y/X
 				int playerY = startState.getPlayersPositions()[p][1];
 				String playerColour = s.next();
 				Boolean backtrackApplied = s.nextBoolean();
-				players[p] = new PlayerPiece(playerX, playerY, playerColour, backtrackApplied);
+				players[p] = new PlayerPiece(playerX, playerY, playerColour, backtrackApplied, pData);
 			}
-
 
 			/* read the silk bag */
 			SilkBag bag = readSilkBag(s);
 
+			s.close();
 			return new Game(startState, new ArrayList<GameState> (), bag, players);  // use empty ArrayList for pastStates since there are none
 		} catch (FileNotFoundException e) {
 			System.out.println("An error occurred.");
@@ -120,12 +127,14 @@ public class GameFileReader {
 	 * @param s File scanner to read data through
 	 * @param height Height of the board
 	 * @param width Width of the board
-	 * @param numPlayers Number of players in the game
+	 * @param players Array of players to be referred to as the owners of action tiles.
 	 * @return An instantiated GameState object.
 	 */
-	private static GameState readGameState(Scanner s, int height, int width, int numPlayers) {
+	private static GameState readGameState(Scanner s, int height, int width, PlayerPiece[] players) {
 		boolean isGoalHit = s.nextBoolean();
 		int curPlayer = s.nextInt();
+		int movesLeftForCurPlayer = s.nextInt();
+		int numPlayers = players.length;
 
 		Placeable[][] stateTiles = new Placeable[height][width];
 		for (int y = 0; y < height; y++) {
@@ -159,24 +168,39 @@ public class GameFileReader {
 		// if a board file is being read that supports more players than are needed, skip unneeded player positions
 		s.skip(Pattern.compile("..ENDPLAYERPOS"));
 
-		// TODO: both action tiles and actiontileplacables are currently abstract, you can't instantiate them to put them in an array.
-		// TODO: ActionTilePlacable also has no implementation, so currently serves no purpose. need to talk about whether this is an efficient
-		// TODO: inheritence structure of if ActionTilePlaceable should be a subclass of Placeable (or some other solution)
 		ArrayList<ActionTile>[] curActionTilesForEachPlayer = new ArrayList[numPlayers];
-		/* COMMENTED FOR SAKE OF COMPILING UNTIL THIS IS FIXED
 		for (int p = 0; p < numPlayers; p++) {
 			curActionTilesForEachPlayer[p]= new ArrayList<ActionTile> ();
 			int numActionTilesInHand = s.nextInt();
 			for (int a = 0; a < numActionTilesInHand; a++) {
 				TileType actionTileType = TileType.valueOf(s.next());
-				curActionTilesForEachPlayer[p].add(new ActionTilePlaceable(actionTileType));
+				switch (actionTileType) {
+					case Ice:
+						curActionTilesForEachPlayer[p].add(new Ice(players[p], numPlayers));
+						break;
+					case Fire:
+						curActionTilesForEachPlayer[p].add(new Fire(players[p], numPlayers));
+						break;
+					case BackTrack:
+						curActionTilesForEachPlayer[p].add(new BackTrack(players[p]));
+						break;
+					case DoubleMove:
+						curActionTilesForEachPlayer[p].add(new BackTrack(players[p]));
+						break;
+				}
 			}
 		}
-		*/
 		// if a board file is being read that supports more players than are needed, skip unneeded player action tiles
 		s.skip(Pattern.compile("..ENDPLAYERTILES"));
 
-		return new GameState(stateTiles, playerPositions, curActionTilesForEachPlayer, curPlayer, isGoalHit);
+		GameState returnState = new GameState();  // TODO: should construct this at the start and fill it as the file is read
+		returnState.setBoard(stateTiles, width, height);
+		returnState.setPlayerPositions(playerPositions);
+		returnState.setActionTilesForPlayers(curActionTilesForEachPlayer);
+		returnState.setCurrentPlayer(curPlayer, movesLeftForCurPlayer);
+		returnState.isGoalHit(isGoalHit);
+
+		return returnState;
 	}
 	
 	
