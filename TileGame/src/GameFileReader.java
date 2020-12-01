@@ -131,11 +131,13 @@ public class GameFileReader {
 	 * @return An instantiated GameState object.
 	 */
 	private static GameState readGameState(Scanner s, int height, int width, PlayerPiece[] players) {
+		/* read gamestate metadata */
 		boolean isGoalHit = s.nextBoolean();
 		int curPlayer = s.nextInt();
 		int movesLeftForCurPlayer = s.nextInt();
 		int numPlayers = players.length;
 
+		/* read tiles */
 		Placeable[][] stateTiles = new Placeable[height][width];
 		for (int y = 0; y < height; y++) {
 			for (int x = 0; x < width; x++) {
@@ -160,6 +162,7 @@ public class GameFileReader {
 			}
 		}
 
+		/* read player positions */
 		int[][] playerPositions = new int[numPlayers][2];
 		for (int p = 0; p < numPlayers; p++) {
 			playerPositions[p][0] = s.nextInt();
@@ -168,6 +171,7 @@ public class GameFileReader {
 		// if a board file is being read that supports more players than are needed, skip unneeded player positions
 		s.skip(Pattern.compile("..ENDPLAYERPOS"));
 
+		/* read action tiles */
 		ArrayList<ActionTile>[] curActionTilesForEachPlayer = new ArrayList[numPlayers];
 		for (int p = 0; p < numPlayers; p++) {
 			curActionTilesForEachPlayer[p]= new ArrayList<ActionTile> ();
