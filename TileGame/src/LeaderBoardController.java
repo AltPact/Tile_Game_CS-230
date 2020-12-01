@@ -21,7 +21,7 @@ import javafx.scene.paint.Color;
  * Purpose: Implements a leaderboard
  * Modified: 01/12/2020
  * @author Wan Fai Tong (1909787), Sam Steadman (1910177), Morgan Firkins (852264)
- * @version: 1.1
+ * @version: 1.2
  *
  */
 public class LeaderBoardController extends GameWindow implements Initializable {

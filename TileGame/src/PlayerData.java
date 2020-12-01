@@ -3,7 +3,7 @@
  * Created: 14/11/2020<br>
  * Modified: 30/11/2020<br>
  * @author Morgan Firkins (852264) 
- * @version: 1.3(only avatar path and not a bufferedImage)
+ * @version: 1.4(Added compareTo)
  */
 public class PlayerData implements Comparable<PlayerData>{
 	private String name;
