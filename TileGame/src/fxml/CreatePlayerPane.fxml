@@ -5,15 +5,25 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.Circle?>
-
+<?import javafx.scene.text.Font?>
 
 <BorderPane fx:id="bPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml" fx:controller="CreatePlayerController">
    <center>
       <VBox alignment="CENTER" prefHeight="251.0" prefWidth="319.0" spacing="20.0" style="-fx-background-color: rgba(0,0,0, 0.3);" BorderPane.alignment="CENTER">
          <children>
-            <Circle fx:id="avatar" fill="WHITE" radius="51.0" stroke="BLACK" strokeType="INSIDE" />
+            <Pane>
+               <children>
+                  <Circle fx:id="avatar" fill="WHITE" layoutX="140.0" layoutY="90.0" radius="51.0" stroke="BLACK" strokeType="INSIDE" />
+                  <Button fx:id="upload" onAction="#uploadClick" layoutX="153.0" layoutY="108.0" mnemonicParsing="false" prefHeight="38.0" prefWidth="71.0" style="-fx-background-radius: 15em; -fx-background-color: LIGHTSALMON;" text="Upload" textFill="WHITE">
+                     <font>
+                        <Font name="System Bold" size="12.0" />
+                     </font>
+                  </Button>
+               </children>
+            </Pane>
             <TextField fx:id="inputBox" alignment="CENTER" prefHeight="25.0" prefWidth="200.0" promptText="Enter Name" style="-fx-background-color: transparent; -fx-border-color: transparent transparent orange transparent;" />
          </children>
          <padding>
@@ -33,8 +43,8 @@
    <bottom>
       <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="50.0" BorderPane.alignment="CENTER">
          <children>
-            <Button fx:id="backButton" onAction="#backbuttonOnAction" mnemonicParsing="false" prefHeight="25.0" prefWidth="83.0" style="-fx-background-color: LIGHTSALMON; -fx-background-radius: 5em;" text="Back" />
-            <Button fx:id="createButton" onAction="#createbuttonOnAction" mnemonicParsing="false" prefHeight="25.0" prefWidth="83.0" style="-fx-background-color: LIGHTSALMON; -fx-background-radius: 5em;" text="Create" />
+            <Button fx:id="backButton" mnemonicParsing="false" onAction="#backbuttonOnAction" prefHeight="25.0" prefWidth="83.0" style="-fx-background-color: LIGHTSALMON; -fx-background-radius: 5em;" text="Back" />
+            <Button fx:id="createButton" mnemonicParsing="false" onAction="#createbuttonOnAction" prefHeight="25.0" prefWidth="83.0" style="-fx-background-color: LIGHTSALMON; -fx-background-radius: 5em;" text="Create" />
          </children>
       </HBox>
    </bottom>

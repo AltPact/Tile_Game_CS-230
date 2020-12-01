@@ -30,6 +30,14 @@ public class ObjFactory {
 	private static PhongMaterial straightTileTexture = new PhongMaterial();
 	private static PhongMaterial goalTileTexture = new PhongMaterial();
 	private static PhongMaterial boardTexture = new PhongMaterial();
+	
+	private static PhongMaterial fixedCornerTexture = new PhongMaterial();
+	private static PhongMaterial fixedTTexture = new PhongMaterial();
+	private static PhongMaterial fixedStraightTexture = new PhongMaterial();
+	private static PhongMaterial frozenCornerTexture = new PhongMaterial();
+	private static PhongMaterial frozenTTexture = new PhongMaterial();
+	private static PhongMaterial frozenStraightTexture = new PhongMaterial();
+	private static PhongMaterial fireTexture = new PhongMaterial();
 
 	public ObjFactory() {
 		initTTileTexture();
@@ -37,6 +45,13 @@ public class ObjFactory {
 		initStraightTileTexture();
 		initGoalTileTexture();
 		initFloorTexture();
+		initFixedCornerTexture();
+		initFixedTTexture();
+		initFixedStraightTexture();
+		initFrozenCornerTexture();
+		initFrozenTTexture();
+		initFrozenStraightTexture();
+		initFireTexture();
 	}
 	
 	private void initTTileTexture() {
@@ -56,10 +71,45 @@ public class ObjFactory {
 	private void initFloorTexture() {
 		boardTexture.setDiffuseMap(new Image(getClass().getResourceAsStream("/img/texture/Garden.jpg")));
 	}
+	private void initFixedCornerTexture() {
+		fixedCornerTexture.setDiffuseMap(new Image(getClass().getResourceAsStream("/img/texture/FixedCorner.jpg")));
+	}
+	private void initFixedTTexture() {
+		fixedTTexture.setDiffuseMap(new Image(getClass().getResourceAsStream("/img/texture/FixedT.jpg")));
+	}
+	private void initFixedStraightTexture() {
+		fixedStraightTexture.setDiffuseMap(new Image(getClass().getResourceAsStream("/img/texture/FixedStraight.jpg")));
+	}
+	private void initFrozenCornerTexture() {
+		frozenCornerTexture.setDiffuseMap(new Image(getClass().getResourceAsStream("/img/texture/FrozenCorner.jpg")));
+	}
+	private void initFrozenTTexture() {
+		frozenTTexture.setDiffuseMap(new Image(getClass().getResourceAsStream("/img/texture/FrozenTShaped.jpg")));
+	}
+	private void initFrozenStraightTexture() {
+		frozenStraightTexture.setDiffuseMap(new Image(getClass().getResourceAsStream("/img/texture/FrozenStraight.jpg")));
+	}
+	private void initFireTexture() {
+		fireTexture.setDiffuseMap(new Image(getClass().getResourceAsStream("/img/texture/fire.jpg")));
+	}
+	
 	
 	public Box makeTile(Placeable tileType) {
 		Box tile = new Box(tileLength,tileLength,tiledepth);
-		if(tileType.getType()==TileType.TShaped) {
+		
+		if(tileType.getType()==TileType.Straight&&tileType.isFrozen()) {
+			tile.setMaterial(frozenStraightTexture);
+		}else if(tileType.getType()==TileType.Corner&&tileType.isFrozen()) {
+			tile.setMaterial(frozenCornerTexture);
+		}else if(tileType.getType()==TileType.TShaped&&tileType.isFrozen()) {
+			tile.setMaterial(frozenTTexture);
+		}else if(tileType.getType()==TileType.Straight&&tileType.isFixed()) {
+			tile.setMaterial(fixedStraightTexture);
+		}else if(tileType.getType()==TileType.Corner&&tileType.isFixed()) {
+			tile.setMaterial(fixedCornerTexture);
+		}else if(tileType.getType()==TileType.TShaped&&tileType.isFixed()) {
+			tile.setMaterial(fixedTTexture);
+		}else if(tileType.getType()==TileType.TShaped) {
 		    tile.setMaterial(tTileTexture);
 		}else if(tileType.getType()==TileType.Straight) {
 			tile.setMaterial(straightTileTexture);
@@ -67,16 +117,36 @@ public class ObjFactory {
 			tile.setMaterial(cornerTileTexture);
 		}else if(tileType.getType()==TileType.Goal) {
 			tile.setMaterial(goalTileTexture);
-		}/*else if(tileType.equals("FrozenT")) {
-			//tile.setMaterial(tTileTexture);
-		}else if(tileType.equals("FrozenStraight")) {
-			//tile.setMaterial(tTileTexture);
-		}else if(tileType.equals("FrozenCorner")) {
-			//tile.setMaterial(tTileTexture);
-		}else if(tileType.equals("Fire")) {
-			//
-		}*/
+		}else if(tileType.getType()==TileType.Fire) {
+			tile.setMaterial(fireTexture);
+		}
 		return tile;
+	}
+	
+	public void textureTheTile(Box tile, Placeable tileType) {
+		if(tileType.getType()==TileType.Straight&&tileType.isFrozen()) {
+			tile.setMaterial(frozenStraightTexture);
+		}else if(tileType.getType()==TileType.Corner&&tileType.isFrozen()) {
+			tile.setMaterial(frozenCornerTexture);
+		}else if(tileType.getType()==TileType.TShaped&&tileType.isFrozen()) {
+			tile.setMaterial(frozenTTexture);
+		}else if(tileType.getType()==TileType.Straight&&tileType.isFixed()) {
+			tile.setMaterial(fixedStraightTexture);
+		}else if(tileType.getType()==TileType.Corner&&tileType.isFixed()) {
+			tile.setMaterial(fixedCornerTexture);
+		}else if(tileType.getType()==TileType.TShaped&&tileType.isFixed()) {
+			tile.setMaterial(fixedTTexture);
+		}else if(tileType.getType()==TileType.TShaped) {
+		    tile.setMaterial(tTileTexture);
+		}else if(tileType.getType()==TileType.Straight) {
+			tile.setMaterial(straightTileTexture);
+		}else if(tileType.getType()==TileType.Corner) {
+			tile.setMaterial(cornerTileTexture);
+		}else if(tileType.getType()==TileType.Goal) {
+			tile.setMaterial(goalTileTexture);
+		}else if(tileType.getType()==TileType.Fire) {
+			tile.setMaterial(fireTexture);
+		}
 	}
 	
 	

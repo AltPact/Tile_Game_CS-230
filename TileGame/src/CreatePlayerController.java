@@ -24,6 +24,8 @@ public class CreatePlayerController extends GameWindow implements Initializable 
 	private Circle avatar;
 	@FXML
 	private TextField inputBox;
+	@FXML
+	private Button upload;
 	
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
@@ -58,6 +60,11 @@ public class CreatePlayerController extends GameWindow implements Initializable 
 		}
 		testPlayerList.add(new PlayerData(playerName,0,0,iconPath));
 		return true;
+	}
+	
+	@FXML
+	public void uploadClick(ActionEvent event) throws IOException {
+		//load image
 	}
 
 }
