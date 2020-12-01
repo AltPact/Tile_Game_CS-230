@@ -6,9 +6,9 @@ import java.io.IOException;
  * File Name: PlayerDataFileWriter.java<br>
  * Purpose: To generate playerData files<br>
  * Created: 01/12/2020<br>
- * 
+ * Modified: 01/12/2020
  * @author Morgan Firkins (852264)
- * @version 1.0
+ * @version 1.1(Added commas inbetween values)
  */
 public class PlayerDataFileWriter {
 
@@ -18,9 +18,9 @@ public class PlayerDataFileWriter {
 			File newFile = new File(fileName);
 			if (newFile.createNewFile()) {
 				FileWriter writer = new FileWriter(fileName);
-				String name = playerData.getName() + " ";
-				String wins = Integer.toString(playerData.getWins()) + " ";
-				String losses = Integer.toString(playerData.getLosses()) + " ";
+				String name = playerData.getName() + ",";
+				String wins = Integer.toString(playerData.getWins()) + ",";
+				String losses = Integer.toString(playerData.getLosses()) + ",";
 				String path = playerData.getPath();
 				writer.write(name + wins + losses + path);
 				writer.close();
