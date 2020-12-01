@@ -15,7 +15,7 @@ public class GameFileReader {
 	public static Game readGameFile(String filename) {
 		try {
 			File f = new File(filename);
-			Scanner s = new Scanner(f);
+			Scanner s = new Scanner(f).useDelimiter(",");
 
 			/* read game meta data */
 			int height = s.nextInt();
