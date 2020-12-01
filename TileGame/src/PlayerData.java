@@ -93,6 +93,25 @@ public class PlayerData implements Comparable<PlayerData>{
 	}
 	
 	/**
+	 * This public method sets the avatarPath of the PlayerData object
+	 * 
+	 * @param newPath The new location path
+	 */
+	public void setPath(String newPath) {
+		this.avatarPath = newPath;
+	}
+
+	/**
+	 * This public method gets the path of the avatar of the PlayerData object
+	 * 
+	 * @return String: The path of the avatar of the player
+	 */
+	public String getPath() {
+		return this.avatarPath;
+
+	}
+	
+	/**
 	 * Adds 1 to the number of wins.
 	 */
 	public void incrementWins() {
