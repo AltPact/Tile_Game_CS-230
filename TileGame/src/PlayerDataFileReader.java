@@ -17,17 +17,22 @@ public class PlayerDataFileReader {
 	 * @return PlayerData: Returns a constructed PlayerData Object
 	 */
 	public static PlayerData readFile(File dataFile) {
+		Scanner fileIn;
 		try {
-			Scanner fileIn = new Scanner(dataFile);
+			fileIn = new Scanner(dataFile);
 			String name = fileIn.next();
 			int numOfWins = fileIn.nextInt();
 			int numOfLosses = fileIn.nextInt();
 			String avatarPath = fileIn.next();
+			fileIn.close();
 			return new PlayerData(name,numOfWins,numOfLosses,avatarPath);
 		} catch (FileNotFoundException e) {
 			System.out.println("Player Data File Not Found");
 			return null;
 		}
+		
+		
+		
 		
 		
 		
