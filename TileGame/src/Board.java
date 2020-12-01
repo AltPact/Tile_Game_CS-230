@@ -15,8 +15,8 @@ public class Board {
 	 * @param tiles The initial state of the board, likely only containing fixed tiles
 	 */
 	public Board(int width, int height, Placeable[][] tiles) {
-		this.width = tiles[0].length;
-		this.height = tiles[1].length;
+		this.width = tiles.length;
+		this.height = tiles[0].length;
 		this.tiles = tiles;
 	}
 	

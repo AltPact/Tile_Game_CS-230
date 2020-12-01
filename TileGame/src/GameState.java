@@ -34,6 +34,11 @@ public class GameState {
 	private int width;
 	private int height;
 	
+	
+	public ArrayList<ActionTile>[] getActionTilesForEachPlayer() {
+		return actionTilesForEachPlayer; 
+	}
+	
 	public void setBoard(Placeable[][] board, int width, int height) {
 		this.boardTiles = board;
 		this.width = width;
@@ -50,6 +55,10 @@ public class GameState {
 		
 	public void setActionTilesForPlayers(ArrayList<ActionTile>[] actionTilesForEachPlayer) {
 		this.actionTilesForEachPlayer = actionTilesForEachPlayer;
+	}
+	
+	public void setActionTilesByPlayerNumber(ArrayList<ActionTile> actionTiles, int playerNum) {
+		this.actionTilesForEachPlayer[playerNum] = actionTiles;
 	}
 	
 	public void setChangedTile(Tile changedTile, int[] insertedTilePostion) {
@@ -154,10 +163,6 @@ public class GameState {
 	
 	public SilkBag getSilkBag() {
 		return bag;
-	}
-	
-	public void setBackTrackApplied(boolean[] backTrackApplied) {
-		this.backTrackApplied = backTrackApplied;
 	}
 	
 	public boolean[] getBackTrackApplied() {

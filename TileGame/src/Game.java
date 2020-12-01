@@ -65,7 +65,7 @@ public class Game {
 	 * @param curState The state the game should be loaded into
 	 * @param pastStates The past states of the game.
 	 * @param bag The silk bag.
-	 * @param players The players, the they do not need to have their positions loaded.
+	 * @param players The players
 	 */
 	public Game(GameState curState, ArrayList<GameState> pastStates, SilkBag bag, PlayerPiece[] players) {
 		this.bag = bag;
@@ -87,7 +87,6 @@ public class Game {
 		this.tilesInAction = curState.getTilesInAction();
 		this.curPlayer = curState.getCurPlayer();
 		this.movesRemaingForThisPlayer = curState.getMovedPlayer();
-		this.tilesInAction = curState.getTilesInAction();
 	}
 	
 	/**
@@ -500,18 +499,11 @@ public class Game {
 	
 	public GameState getEndGameState() {
 		GameState newState = new GameState();
-		newState.setActionTilesForPlayers(getActionTilesForPlayers());
 		newState.setBoard(board.getTiles(), board.getWidth(), board.getHeight());
 		newState.setCurrentPlayer(curPlayer, movesRemaingForThisPlayer);
 		newState.setPastStates(pastStates);
-		newState.setPlayerPositions(getPlayerPositions());
 		newState.setSilkBag(bag);
 		newState.setTilesInAction(tilesInAction);
-		boolean[] backTrackApplied = new boolean[players.length];
-		for(int i = 0; i < players.length; i++) {
-			backTrackApplied[i] = players[i].getBacktrack();
-		}
-		newState.setBackTrackApplied(backTrackApplied);
 		return newState;
 	}
 }

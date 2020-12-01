@@ -27,6 +27,14 @@ public abstract class ActionTilePlaceable extends ActionTile {
 		this.NUM_OF_PLAYERS = numOfPlayers;
 	}
 	
+	public void setTimeRemaining(int timeRemaing) {
+		this.timeRemaing = timeRemaing;
+	}
+	
+	public int getTimeRemaining() {
+		return timeRemaing;
+	}
+	
 	/**
 	 * Sets the time remaining for this tile. 
 	 * It should be used when the tile is played.
