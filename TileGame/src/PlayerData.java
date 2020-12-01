@@ -93,6 +93,15 @@ public class PlayerData implements Comparable<PlayerData>{
 	}
 	
 	/**
+	 * This public method gets the path of the avatar of the player
+	 *
+	 * @return The path of the avatar of the player
+	 */
+	public String getAvatarPath() {
+		return avatarPath;
+	}
+
+	/**
 	 * This public method sets the avatarPath of the PlayerData object
 	 * 
 	 * @param newPath The new location path
