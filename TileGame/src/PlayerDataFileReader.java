@@ -6,8 +6,9 @@ import java.util.Scanner;
  * File Name: PlayerDataFileReader.java<br>
  * Purpose: To just read player data files<br>
  * @author Morgan Firkins (852264)<br>
- * @version 1.0<br>
+ * @version 1.1(Implemented useDelimneter())<br>
  * Created: 30/11/2020
+ * Modified: 01/12/2020
  *
  */
 public class PlayerDataFileReader {
@@ -19,7 +20,7 @@ public class PlayerDataFileReader {
 	public static PlayerData readFile(File dataFile) {
 		Scanner fileIn;
 		try {
-			fileIn = new Scanner(dataFile);
+			fileIn = new Scanner(dataFile).useDelimiter(",");
 			String name = fileIn.next();
 			int numOfWins = fileIn.nextInt();
 			int numOfLosses = fileIn.nextInt();

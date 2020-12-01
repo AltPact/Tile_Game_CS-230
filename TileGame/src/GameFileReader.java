@@ -15,44 +15,36 @@ public class GameFileReader {
 	public static Game readGameFile(String filename) {
 		try {
 			File f = new File(filename);
-			Scanner s = new Scanner(f);
-
-			/* read game meta data */
-			int height = s.nextInt();
-			int width = s.nextInt();
+			Scanner s = new Scanner(f).useDelimiter(",");
+			GameState curState = new GameState();
+			
+			curState.isGoalHit(s.nextBoolean());
+			curState.setCurrentPlayer(s.nextInt(), s.nextInt());
+			
 			int numPlayers = s.nextInt();
+			
 			PlayerPiece[] players = new PlayerPiece[numPlayers];
-			int curPlayer = s.nextInt(); // TODO: DUPLICATE DATA, this is included in curState
-			int movesLeftForCurrent = s.nextInt();
-			boolean isGoalHit = s.nextBoolean();
-
-			/* read current game state */
-			GameState curState = readGameState(s, height, width, players);
-
+			
 			/* read player data */
 			for (int p = 0; p < numPlayers; p++) {
 				String name = s.next();
-				File pDataFile = new File(name); // TODO: needs to look in correct directory, will work for now
-				PlayerData pData = PlayerDataFileReader.readFile(pDataFile);
-				int playerX = curState.getPlayersPositions()[p][0];  // 0 and 1 may need to be swapped here? not sure if X/Y or Y/X
-				int playerY = curState.getPlayersPositions()[p][1];
+				int playerX = s.nextInt();  // 0 and 1 may need to be swapped here? not sure if X/Y or Y/X
+				int playerY = s.nextInt();
 				String playerColour = s.next();
 				Boolean backtrackApplied = s.nextBoolean();
+				File pDataFile = new File(name); // TODO: needs to look in correct directory, will work for now
+				PlayerData pData = PlayerDataFileReader.readFile(pDataFile);
 				players[p] = new PlayerPiece(playerX, playerY, playerColour, backtrackApplied, pData);
 			}
+			
+			readCurrentGameState(curState, s, players);
 
-			/* read past game states */
-			ArrayList<GameState> pastStates = new ArrayList<GameState>();
-			int numPastStates = s.nextInt();
-			for (int state = 0; state < numPastStates; state++) {
-				pastStates.add(readGameState(s, height, width, players));
-			}
 
 			/* read the silk bag */
 			SilkBag bag = readSilkBag(s);
 
 			s.close();
-			return new Game(curState, pastStates, bag, players);
+			return new Game(curState, curState.getPastStates(), bag, players);
 		} catch (FileNotFoundException e) {
 			System.out.println("An error occurred.");
 			e.printStackTrace();
@@ -128,15 +120,14 @@ public class GameFileReader {
 	 * @param height Height of the board
 	 * @param width Width of the board
 	 * @param players Array of players to be referred to as the owners of action tiles.
+	 * @return 
 	 * @return An instantiated GameState object.
 	 */
-	private static GameState readGameState(Scanner s, int height, int width, PlayerPiece[] players) {
-		/* read gamestate metadata */
-		boolean isGoalHit = s.nextBoolean();
-		int curPlayer = s.nextInt();
-		int movesLeftForCurPlayer = s.nextInt();
-		int numPlayers = players.length;
-
+	private static void readCurrentGameState(GameState curState, Scanner s, PlayerPiece[] players) {
+		
+		int width = s.nextInt();
+		int height = s.nextInt();
+		
 		/* read tiles */
 		Placeable[][] stateTiles = new Placeable[height][width];
 		for (int y = 0; y < height; y++) {
@@ -162,52 +153,73 @@ public class GameFileReader {
 			}
 		}
 
-		/* read player positions */
-		int[][] playerPositions = new int[numPlayers][2];
-		for (int p = 0; p < numPlayers; p++) {
-			playerPositions[p][0] = s.nextInt();
-			playerPositions[p][1] = s.nextInt();
-		}
-		// if a board file is being read that supports more players than are needed, skip unneeded player positions
-		s.skip(Pattern.compile("..ENDPLAYERPOS"));
-
-		/* read action tiles */
-		ArrayList<ActionTile>[] curActionTilesForEachPlayer = new ArrayList[numPlayers];
-		for (int p = 0; p < numPlayers; p++) {
-			curActionTilesForEachPlayer[p]= new ArrayList<ActionTile> ();
-			int numActionTilesInHand = s.nextInt();
-			for (int a = 0; a < numActionTilesInHand; a++) {
-				TileType actionTileType = TileType.valueOf(s.next());
-				switch (actionTileType) {
-					case Ice:
-						curActionTilesForEachPlayer[p].add(new Ice(players[p], numPlayers));
-						break;
-					case Fire:
-						curActionTilesForEachPlayer[p].add(new Fire(players[p], numPlayers));
-						break;
-					case BackTrack:
-						curActionTilesForEachPlayer[p].add(new BackTrack(players[p]));
-						break;
-					case DoubleMove:
-						curActionTilesForEachPlayer[p].add(new BackTrack(players[p]));
-						break;
-				}
+		curState.setBoard(stateTiles, width, height);
+		
+		/* Read the action tiles for each player */
+		for(int p = 0; p < players.length; p++) {
+			int numOfActionTilesOwned = s.nextInt();
+			ArrayList<ActionTile> actionTilesOwned = new ArrayList<ActionTile>();
+			for (int i = 0; i < numOfActionTilesOwned; i++) {
+				TileType t = (TileType.valueOf(s.next()));
+				if (t == TileType.BackTrack) {
+					actionTilesOwned.add(new BackTrack(players[p]));
+				} else if (t == TileType.DoubleMove) {
+					actionTilesOwned.add(new DoubleMove(players[p]));
+				} else if (t == TileType.Ice) {
+					actionTilesOwned.add(new Ice(players[p], players.length));
+				} else if (t == TileType.Fire) {
+					actionTilesOwned.add(new Fire(players[p], players.length));
+				} 		
 			}
+			curState.setActionTilesByPlayerNumber(actionTilesOwned, p);
 		}
-		// if a board file is being read that supports more players than are needed, skip unneeded player action tiles
-		s.skip(Pattern.compile("..ENDPLAYERTILES"));
+		
+		/* Reads all of the action tiles in play at save time */
+		int numOfTilesInAction = s.nextInt();
+		ArrayList<ActionTilePlaceable> tilesInAction = new ArrayList<ActionTilePlaceable>();
+		for(int i = 0; i < numOfTilesInAction; i++) {
+			TileType t = (TileType.valueOf(s.next()));
+			int owner = s.nextInt();
+			int timeRemaing = s.nextInt();
+			ActionTilePlaceable tile = null;
+			if (t == TileType.Ice) {
+				tile = new Ice(players[owner], players.length);
+				tile.setTimeRemaining(timeRemaing);
+				tilesInAction.add(tile);
+			} else if (t == TileType.Fire) {
+				tile = new Fire(players[owner], players.length);
+				
+			}
+			tile.setTimeRemaining(timeRemaing);
+			tilesInAction.add(tile);
+		}
+		curState.setTilesInAction(tilesInAction);
+		
+		ArrayList<GameState> pastStates = new ArrayList<GameState>();
+		
+		int numOfPastStates = s.nextInt();
+		for(int i = 0; i < numOfPastStates; i++) {
+			pastStates.add(readPastState(s, players.length));
+		}
+		
+		curState.setPastStates(pastStates);
 
-		GameState returnState = new GameState();  // TODO: should construct this at the start and fill it as the file is read
-		returnState.setBoard(stateTiles, width, height);
-		returnState.setPlayerPositions(playerPositions);
-		returnState.setActionTilesForPlayers(curActionTilesForEachPlayer);
-		returnState.setCurrentPlayer(curPlayer, movesLeftForCurPlayer);
-		returnState.isGoalHit(isGoalHit);
-
-		return returnState;
+		return;
 	}
 	
 	
+	private static GameState readPastState(Scanner s, int numOfPlayers) {
+		GameState pastState = new GameState();
+		pastState.setCurrentPlayer(s.nextInt(), s.nextInt());
+		int[][] playerPos = new int[numOfPlayers][2];
+		for(int p = 0; p < numOfPlayers; p++) {
+			playerPos[p][0] = s.nextInt();
+			playerPos[p][1] = s.nextInt();
+		}
+		pastState.setPlayerPositions(playerPos);
+		return pastState;
+	}
+
 	public ArrayList<String> listGameFiles(){
 		ArrayList<String> files = null;
 		
