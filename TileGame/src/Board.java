@@ -45,7 +45,8 @@ public class Board {
 		for (int x = 0; x < height; x++) {
 			for (int y = 0; y < width; y++) {
 				if (tiles[x][y] == null) {
-					tiles[x][y] = new Placeable(bag.drawPlaceable(), false, false);
+					int direction = ((int)(Math.random() * (4)));
+					tiles[x][y] =  new Placeable(bag.drawPlaceable(), false, false, direction);
 				}
 			}
 		}
@@ -67,23 +68,28 @@ public class Board {
 		boolean[] tileDirections = tiles[playerX][playerY].getDirections();
 		
 		//Checks if player can move up
-		if(tileDirections[0] &&  tiles[playerX - 1][playerY].canMove(2)) {
-			moveableSpaces[playerX][playerY - 1] = true;
+		if(playerX > 0){
+			if(tileDirections[0] &&  tiles[playerX - 1][playerY].canMove(2)) {
+				moveableSpaces[playerX - 1][playerY] = true;
+			}
 		}
-		
 		//Checks if player can move right
-		if(tileDirections[1] &&  tiles[playerX][playerY + 1].canMove(3)) {
-			moveableSpaces[playerX][playerY - 1] = true;
+		if(playerY < width){
+			if(tileDirections[1] &&  tiles[playerX][playerY + 1].canMove(3)) {
+				moveableSpaces[playerX][playerY + 1] = true;
+			}
 		}
-		
 		//Checks if player can move down
-		if(tileDirections[2] &&  tiles[playerX + 1][playerY].canMove(0)) {
-			moveableSpaces[playerX][playerY - 1] = true;
+		if(playerX < height){
+			if(tileDirections[2] &&  tiles[playerX + 1][playerY].canMove(0)) {
+				moveableSpaces[playerX + 1][playerY] = true;
+			}
 		}
-		
 		//Checks if player can move left
-		if(tileDirections[3] &&  tiles[playerX][playerY - 1].canMove(1)) {
-			moveableSpaces[playerX][playerY - 1] = true;
+		if(playerY > 0){
+			if(tileDirections[3] &&  tiles[playerX][playerY - 1].canMove(1)) {
+				moveableSpaces[playerX][playerY - 1] = true;
+			}
 		}
 		return moveableSpaces;
 	}
@@ -164,18 +170,20 @@ public class Board {
 	
 	private boolean isInsertable (int x, int y) {
 		boolean isInsetable = true;
-		
-		//Check for fixed tiles
-		if (x == 0 || x == height - 1) {
-			for(int i = 0; i > height; i++) {
-				if(tiles[i][y].isFixed()) {
-					isInsetable = false;
+		if(y == 0 || y == width - 1 || x == 0 || x == height - 1) {
+			//Check for fixed tiles
+			if (x == 0 || x == height - 1) {
+				for(int i = 0; i > height; i++) {
+					if(tiles[i][y].isFixed()) {
+						isInsetable = false;
+					}
 				}
 			}
-		} else if(y == 0 || y == width - 1) {
-			for(int i = 0; i > width; i++) {
-				if(tiles[x][i].isFixed()) {
-					isInsetable = false;
+			if(y == 0 || y == width - 1) {
+				for(int i = 0; i > width; i++) {
+					if(tiles[x][i].isFixed()) {
+						isInsetable = false;
+					}
 				}
 			}
 		//false if not an edge piece
@@ -206,4 +214,5 @@ public class Board {
 	public int getHeight() {
 		return height;
 	}
+	
 }
