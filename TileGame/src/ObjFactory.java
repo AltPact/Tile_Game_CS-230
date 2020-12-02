@@ -97,7 +97,9 @@ public class ObjFactory {
 	public Box makeTile(Placeable tileType) {
 		Box tile = new Box(tileLength,tileLength,tiledepth);
 		
-		if(tileType.getType()==TileType.Straight&&tileType.isFrozen()) {
+		if(tileType.getType()==TileType.Fire) {
+			tile.setMaterial(fireTexture);
+		}else if(tileType.getType()==TileType.Straight&&tileType.isFrozen()) {
 			tile.setMaterial(frozenStraightTexture);
 		}else if(tileType.getType()==TileType.Corner&&tileType.isFrozen()) {
 			tile.setMaterial(frozenCornerTexture);
@@ -117,14 +119,14 @@ public class ObjFactory {
 			tile.setMaterial(cornerTileTexture);
 		}else if(tileType.getType()==TileType.Goal) {
 			tile.setMaterial(goalTileTexture);
-		}else if(tileType.getType()==TileType.Fire) {
-			tile.setMaterial(fireTexture);
 		}
 		return tile;
 	}
 	
 	public void textureTheTile(Box tile, Placeable tileType) {
-		if(tileType.getType()==TileType.Straight&&tileType.isFrozen()) {
+		if(tileType.getType()==TileType.Fire) {
+			tile.setMaterial(fireTexture);
+		}else if(tileType.getType()==TileType.Straight&&tileType.isFrozen()) {
 			tile.setMaterial(frozenStraightTexture);
 		}else if(tileType.getType()==TileType.Corner&&tileType.isFrozen()) {
 			tile.setMaterial(frozenCornerTexture);
@@ -144,8 +146,6 @@ public class ObjFactory {
 			tile.setMaterial(cornerTileTexture);
 		}else if(tileType.getType()==TileType.Goal) {
 			tile.setMaterial(goalTileTexture);
-		}else if(tileType.getType()==TileType.Fire) {
-			tile.setMaterial(fireTexture);
 		}
 	}
 	
