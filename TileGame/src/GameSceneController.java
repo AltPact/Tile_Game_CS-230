@@ -84,7 +84,7 @@ public class GameSceneController extends GameWindow implements Initializable {
 	 */
 	@Override
 	public void initialize(URL url, ResourceBundle resources) {
-		
+		currentGame = FileReaderWriterTest.generateTestGame();
 		currentGameState=currentGame.getInitalGameState();
 		initVariables();
 		addFloor();
@@ -108,6 +108,7 @@ public class GameSceneController extends GameWindow implements Initializable {
 	}
 	
 	public void initVariables() {
+		currentGame = FileReaderWriterTest.generateTestGame();
 		tileBoard=currentGameState.getBoard();
 		boardHeight=tileBoard.length;
 		boardWidth=tileBoard[0].length;
@@ -154,7 +155,7 @@ public class GameSceneController extends GameWindow implements Initializable {
 	public void addPlayer() {
 		initPlayerPos=currentGameState.getPlayersPositions();
 		//PlayerPiece pieceArray[] = currentGame.getPlayerPieceArray();
-		for (int i = 0; i < 4; i++) {
+		for (int i = 0; i < 2; i++) {
 			// put player pos in int
 			int x = initPlayerPos[i][0];
 			int y = initPlayerPos[i][1];
