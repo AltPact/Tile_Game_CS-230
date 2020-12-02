@@ -15,19 +15,22 @@ public class GameFileWriter {
             
             /* write game metadata */
             w.write(String.valueOf(g.isGoalHit()) + DEL);
-            w.write(g.getCurPlayer() + DEL);
-            w.write(g.getMovesLeftForCurrentPlayer() + DEL);
-            
-            w.write(players.length + DEL);
+            w.write(String.valueOf(g.getCurPlayer()) + DEL);
+            w.write(String.valueOf(g.getMovesLeftForCurrentPlayer()) + DEL);
+            w.write(String.valueOf(players.length) + DEL);
             
             
             /* write player piece data */
             for (int p = 0; p < players.length; p++) {
-            	w.write(players[p].getX() + DEL);
-            	w.write(players[p].getY() + DEL);
-                w.write(players[p].getColour() + DEL);
+            	w.write(String.valueOf(players[p].getX()) + DEL);
+            	w.write(String.valueOf(players[p].getY()) + DEL);
+                w.write(String.valueOf(players[p].getColour()) + DEL);
                 w.write(String.valueOf(players[p].getBacktrack()) + DEL);
-                w.write(players[p].getLinkedData().getName() + DEL);
+                try {
+                	w.write(players[p].getLinkedData().getName() + DEL);
+                } catch(NullPointerException e) {
+                	
+                }
             }
             
             /* write current game state */
@@ -53,8 +56,8 @@ public class GameFileWriter {
             int width = tiles.length;
     		int height = tiles[0].length;
     		
-    		w.write(width + DEL);
-    		w.write(height+ DEL);
+    		w.write(String.valueOf(width) + DEL);
+    		w.write(String.valueOf(height)+ DEL);
             
             for (int y = 0; y < height; y++) {
                 for (int x = 0; x < width; x++) {
@@ -64,7 +67,7 @@ public class GameFileWriter {
                         w.write("true" + DEL);
                         w.write(tiles[y][x].getType().toString() + DEL);
                         w.write(String.valueOf(tiles[y][x].isFixed()) + DEL);
-                        w.write(tiles[y][x].getOrientation() + DEL);
+                        w.write(String.valueOf(tiles[y][x].getOrientation()) + DEL);
                         w.write(String.valueOf(tiles[y][x].isOnFire()) + DEL);
                         w.write(String.valueOf(tiles[y][x].isFrozen()) + DEL);
                     }
@@ -74,7 +77,7 @@ public class GameFileWriter {
             /* write action tiles in players hand */
             ArrayList<ActionTile>[] actionTilesOwnedTotal = s.getActionTilesForEachPlayer();
             for(ArrayList<ActionTile> actionTilesOwned : actionTilesOwnedTotal) {
-            	w.write(actionTilesOwned.size()+ DEL);
+            	w.write(String.valueOf(actionTilesOwned.size())+ DEL);
             	for(ActionTile actionTile : actionTilesOwned) {
             		w.write(String.valueOf(actionTile.getType()) + DEL);
             		
@@ -83,7 +86,7 @@ public class GameFileWriter {
             
             /* Write the Tiles in Action */
             ArrayList<ActionTilePlaceable> tilesInAction = s.getTilesInAction();
-            w.write(tilesInAction.size() + DEL);
+            w.write(String.valueOf(tilesInAction.size()) + DEL);
             for(ActionTilePlaceable tile : tilesInAction) {
             	PlayerPiece owner = tile.getOwner();
             	int i = 0;
@@ -91,14 +94,14 @@ public class GameFileWriter {
             	while (i < players.length && !correctPlayerFound) {
             		if(owner == players[i]) {
             			w.write(String.valueOf(tile.getType()) + DEL);
-            			w.write(i + DEL);
-            			w.write(tile.getTimeRemaining() + DEL);
+            			w.write(String.valueOf(i) + DEL);
+            			w.write(String.valueOf(tile.getTimeRemaining()) + DEL);
             		}
             	}
             }
             
             ArrayList<GameState> pastStates = s.getPastStates();
-            w.write(pastStates.size() + DEL);
+            w.write(String.valueOf(pastStates.size()) + DEL);
             for(GameState pastState : pastStates) {
             	writePastState(pastState, w);
             }
@@ -111,12 +114,12 @@ public class GameFileWriter {
     }
     
     private static void writePastState(GameState pastState, FileWriter w) throws IOException {
-    	w.write(pastState.getCurPlayer() + DEL);
-    	w.write(pastState.getMovesLeftForCurrentPlayer() + DEL);
+    	w.write(String.valueOf(pastState.getCurPlayer()) + DEL);
+    	w.write(String.valueOf(pastState.getMovesLeftForCurrentPlayer()) + DEL);
     	int[][] playerPos = pastState.getPlayersPositions();
     	for(int i = 0; i < playerPos.length; i++) {
-    		w.write(playerPos[i][0] + DEL);
-    		w.write(playerPos[i][1] + DEL);
+    		w.write(String.valueOf(playerPos[i][0]) + DEL);
+    		w.write(String.valueOf(playerPos[i][1]) + DEL);
     	}
     	
     }
@@ -127,10 +130,10 @@ public class GameFileWriter {
             int[] numPlaceableTiles = bag.getNumPlaceableTiles();
 
             for (int a = 0; a < 4; a++) {
-                w.write(numActionTiles[a] + DEL);
+                w.write(String.valueOf(numActionTiles[a]) + DEL);
             }
             for (int p = 0; p < 3; p++) {
-                w.write(numPlaceableTiles[p] + DEL);
+                w.write(String.valueOf(numPlaceableTiles[p]) + DEL);
             }
         } catch (IOException e) {
             System.out.println("An error occurred.");

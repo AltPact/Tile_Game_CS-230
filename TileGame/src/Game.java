@@ -36,7 +36,7 @@ public class Game {
 	private int movesRemaingForThisPlayer = 1;
 	private ArrayList<ActionTilePlaceable> tilesInAction;
 	private boolean isGoalReached;
-	private ArrayList<GameState> pastStates;
+	private ArrayList<GameState> pastStates = new ArrayList<GameState>();
 	
 	
 	/**

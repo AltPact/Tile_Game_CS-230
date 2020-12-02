@@ -12,15 +12,14 @@ public class GameFileReader {
 	 * @param filename The name of the file to read.
 	 * @return An instantiated Game object.
 	 */
-	public static Game readGameFile(String filename) {
+	public static Game readGameFile(File f) {
 		Scanner s = null;
 		try {
-			File f = new File("./data/savedgames" + filename);
 			s = new Scanner(f).useDelimiter(",");
 			GameState curState = new GameState();
 			
 			curState.isGoalHit(s.nextBoolean());
-			//Current player and moves remaing.
+			//Current player and moves remaining.
 			curState.setCurrentPlayer(s.nextInt(), s.nextInt());
 			
 			int numPlayers = s.nextInt();
@@ -29,14 +28,14 @@ public class GameFileReader {
 			
 			/* read player data */
 			for (int p = 0; p < numPlayers; p++) {
-				String name = s.next();
 				int playerX = s.nextInt();  
 				int playerY = s.nextInt();
 				String playerColour = s.next();
 				Boolean backtrackApplied = s.nextBoolean();
+				String name = s.next();
 				File pDataFile = new File("./data/playerdata/" + name);
 				PlayerData pData = PlayerDataFileReader.readFile(pDataFile);
-				players[p] = new PlayerPiece(playerX, playerY, playerColour, backtrackApplied, pData);
+				players[p] = new PlayerPiece(playerX, playerY, playerColour, backtrackApplied, null);
 			}
 			
 			readCurrentGameState(curState, s, players);
@@ -63,19 +62,23 @@ public class GameFileReader {
 	 * @param players Player Pieces, should instantiated but can have X and Y set to 0.   
 	 * @return An instantiated Game object.
 	 */
-	public static Game readBoardFile(String filename, PlayerPiece[] players) {
+	public static Game readBoardFile(File f, PlayerPiece[] players) {
 		Scanner s = null;
 		try {
-			File f = new File("./data/gameboard" + filename);
 			s = new Scanner(f).useDelimiter(",");
 			int numPlayers = players.length;
-
-			for(int p = 0; p < numPlayers; p++) {
+			
+			int p;
+			for(p = 0; p < numPlayers; p++) {
 				players[p].setX(s.nextInt());
 				players[p].setY(s.nextInt());
 			}
 			// if a board file is being read that supports more players than are needed, skip unneeded player positions
-			s.skip(Pattern.compile("..ENDPLAYERPOS"));
+			
+			while(p < 4) {
+				s.nextInt();
+				s.nextInt();
+			}
 			
 			/* read board meta data */
 			int height = s.nextInt();
@@ -139,6 +142,7 @@ public class GameFileReader {
 		int width = s.nextInt();
 		int height = s.nextInt();
 		
+		
 		/* read tiles */
 		Placeable[][] stateTiles = new Placeable[height][width];
 		for (int y = 0; y < height; y++) {
@@ -163,8 +167,10 @@ public class GameFileReader {
 				}
 			}
 		}
-
+		
+		
 		curState.setBoard(stateTiles, width, height);
+		ArrayList<ActionTile>[] actionTilesOwnedForEachPlayer = new ArrayList[players.length];
 		
 		/* Read the action tiles for each player */
 		for(int p = 0; p < players.length; p++) {
@@ -182,8 +188,11 @@ public class GameFileReader {
 					actionTilesOwned.add(new Fire(players[p], players.length));
 				} 		
 			}
-			curState.setActionTilesByPlayerNumber(actionTilesOwned, p);
+
+			actionTilesOwnedForEachPlayer[p] = actionTilesOwned;
 		}
+		
+		curState.setActionTilesForPlayers(actionTilesOwnedForEachPlayer);
 		
 		/* Reads all of the action tiles in play at save time */
 		int numOfTilesInAction = s.nextInt();
