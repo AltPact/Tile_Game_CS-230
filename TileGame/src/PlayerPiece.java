@@ -4,11 +4,8 @@ import java.util.ArrayList;
  * File Name: PlayerPiece.java<br>
  * Created: 20/11/2020<br>
  * Modified: 24/11/2020<br>
- * 
- * 24/11/2020 - Added ability to own action tiles.
- * 
  * @author Morgan Firkins (852264)<br>
- * Version: 1.0<br>
+ * Version: 1.3(Added linkedData to constructor, updated JavaDoc & toString method)<br>
  *
  */
 public class PlayerPiece {
@@ -30,6 +27,7 @@ public class PlayerPiece {
 	 * @param colour:           Colour of the piece
 	 * @param backtrackApplied: Used to store state of if the backtrack function has
 	 *                          been used
+	 * @param linkedData:		Stores the playerData associated with piece
 	 */
 	public PlayerPiece(int x, int y, String colour, boolean backtrackApplied, PlayerData linkedData) {
 		this.x = x;
@@ -37,6 +35,8 @@ public class PlayerPiece {
 		this.colour = colour;
 		this.backtrackApplied = backtrackApplied;
 		this.ownedActionTiles = new ArrayList<ActionTile>();
+		this.linkedData = linkedData;
+		
 		
 	}
 	
@@ -163,6 +163,12 @@ public class PlayerPiece {
 		result += "Y co-ordinate: " + this.getY() + "\n";
 		result += "Colour: " + this.getColour() + "\n";
 		result += "BackTrack: " + this.getBacktrack() + "\n";
+		result += "Action Tiles Owned: " + "\n";
+		for(ActionTile a : this.getActionTilesOwned()) {
+			result += a.getType() + "\n";
+		}
+		result += "playerData: " + "\n";
+		result += this.getLinkedData().toString();
 		return result;
 
 	}
