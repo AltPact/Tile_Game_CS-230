@@ -13,12 +13,14 @@ public class GameFileReader {
 	 * @return An instantiated Game object.
 	 */
 	public static Game readGameFile(String filename) {
+		Scanner s = null;
 		try {
 			File f = new File(filename);
-			Scanner s = new Scanner(f).useDelimiter(",");
+			s = new Scanner(f).useDelimiter(",");
 			GameState curState = new GameState();
 			
 			curState.isGoalHit(s.nextBoolean());
+			//Current player and moves remaing.
 			curState.setCurrentPlayer(s.nextInt(), s.nextInt());
 			
 			int numPlayers = s.nextInt();
@@ -28,7 +30,7 @@ public class GameFileReader {
 			/* read player data */
 			for (int p = 0; p < numPlayers; p++) {
 				String name = s.next();
-				int playerX = s.nextInt();  // 0 and 1 may need to be swapped here? not sure if X/Y or Y/X
+				int playerX = s.nextInt();  
 				int playerY = s.nextInt();
 				String playerColour = s.next();
 				Boolean backtrackApplied = s.nextBoolean();
@@ -43,12 +45,13 @@ public class GameFileReader {
 			/* read the silk bag */
 			SilkBag bag = readSilkBag(s);
 
-			s.close();
 			return new Game(curState, curState.getPastStates(), bag, players);
 		} catch (FileNotFoundException e) {
 			System.out.println("An error occurred.");
 			e.printStackTrace();
 			return null;
+		} finally {
+			s.close();
 		}
 	}
 
@@ -57,43 +60,51 @@ public class GameFileReader {
 	 * to start a new game. Constructs a Game with this information.
 	 *
 	 * @param filename The name of the file to read.
-	 * @param playerNames The names of players which will be used to refer to PlayerData files.
+	 * @param players Player Pieces, should instantiated but can have X and Y set to 0.   
 	 * @return An instantiated Game object.
 	 */
-	public static Game readBoardFile(String filename, String[] playerNames) {
+	public static Game readBoardFile(String filename, PlayerPiece[] players) {
+		Scanner s = null;
 		try {
 			File f = new File(filename);
-			Scanner s = new Scanner(f);
-			int numPlayers = playerNames.length;
-			PlayerPiece[] players = new PlayerPiece[numPlayers];
+			s = new Scanner(f).useDelimiter(",");
+			int numPlayers = players.length;
 
+			for(int p = 0; p < numPlayers; p++) {
+				players[p].setX(s.nextInt());
+				players[p].setY(s.nextInt());
+			}
+			// if a board file is being read that supports more players than are needed, skip unneeded player positions
+			s.skip(Pattern.compile("..ENDPLAYERPOS"));
+			
 			/* read board meta data */
 			int height = s.nextInt();
 			int width = s.nextInt();
-
-			/* read the starting state of the game */
-			GameState startState = readGameState(s, height, width, players);
-
-			/* read player data */
-			for (int p = 0; p < numPlayers; p++) {
-				File pDataFile = new File(playerNames[p]); // TODO: needs to look in correct directory, will work for now
-				PlayerData pData = PlayerDataFileReader.readFile(pDataFile);
-				int playerX = startState.getPlayersPositions()[p][0];  // 0 and 1 may need to be swapped here? not sure if X/Y or Y/X
-				int playerY = startState.getPlayersPositions()[p][1];
-				String playerColour = s.next();
-				Boolean backtrackApplied = s.nextBoolean();
-				players[p] = new PlayerPiece(playerX, playerY, playerColour, backtrackApplied, pData);
+			int numOfFixedTiles = s.nextInt();
+			Placeable[][] tiles = new Placeable[height][width];
+			for(int t = 0; t < numOfFixedTiles; t++) {
+				int x = s.nextInt();
+				int y = s.nextInt();
+				int orientation = s.nextInt();
+				boolean isGoal = s.nextBoolean();
+				TileType type = TileType.valueOf(s.next());
+				Placeable newTile = new Placeable(type, isGoal, true, orientation);
+				tiles[y][x] = newTile;
 			}
-
+			
 			/* read the silk bag */
 			SilkBag bag = readSilkBag(s);
+			
+			Board board = new Board(width, height, tiles);
+			board.fillBoard(bag);
 
-			s.close();
-			return new Game(startState, new ArrayList<GameState> (), bag, players);  // use empty ArrayList for pastStates since there are none
+			return new Game(bag, players, board);
 		} catch (FileNotFoundException e) {
 			System.out.println("An error occurred.");
 			e.printStackTrace();
 			return null;
+		} finally {
+			s.close();
 		}
 	}
 
@@ -184,11 +195,8 @@ public class GameFileReader {
 			ActionTilePlaceable tile = null;
 			if (t == TileType.Ice) {
 				tile = new Ice(players[owner], players.length);
-				tile.setTimeRemaining(timeRemaing);
-				tilesInAction.add(tile);
 			} else if (t == TileType.Fire) {
 				tile = new Fire(players[owner], players.length);
-				
 			}
 			tile.setTimeRemaining(timeRemaing);
 			tilesInAction.add(tile);
@@ -210,6 +218,7 @@ public class GameFileReader {
 	
 	private static GameState readPastState(Scanner s, int numOfPlayers) {
 		GameState pastState = new GameState();
+		//Current Player and the moves remaining
 		pastState.setCurrentPlayer(s.nextInt(), s.nextInt());
 		int[][] playerPos = new int[numOfPlayers][2];
 		for(int p = 0; p < numOfPlayers; p++) {
@@ -220,16 +229,14 @@ public class GameFileReader {
 		return pastState;
 	}
 
-	public ArrayList<String> listGameFiles(){
-		ArrayList<String> files = null;
-		
-		return files;
+	public String[] listGameFiles(){
+		File f = new File ("./src/games");
+		return f.list();
 	}
 	
-	public ArrayList<String> listBoardFiles(){
-		ArrayList<String> files = null;
-		
-		return files;
+	public String[] listBoardFiles(){
+		File f = new File ("./src/boards");
+		return f.list();
 	}
 
 }

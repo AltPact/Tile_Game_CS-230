@@ -502,6 +502,7 @@ public class Game {
 		newState.setBoard(board.getTiles(), board.getWidth(), board.getHeight());
 		newState.setCurrentPlayer(curPlayer, movesRemaingForThisPlayer);
 		newState.setPastStates(pastStates);
+		newState.setActionTilesForPlayers(getActionTilesForPlayers());
 		newState.setSilkBag(bag);
 		newState.setTilesInAction(tilesInAction);
 		return newState;

@@ -73,7 +73,6 @@ public class GameFileWriter {
 
             /* write action tiles in players hand */
             ArrayList<ActionTile>[] actionTilesOwnedTotal = s.getActionTilesForEachPlayer();
-            int playerCounter = 0;
             for(ArrayList<ActionTile> actionTilesOwned : actionTilesOwnedTotal) {
             	w.write(actionTilesOwned.size()+ DEL);
             	for(ActionTile actionTile : actionTilesOwned) {
