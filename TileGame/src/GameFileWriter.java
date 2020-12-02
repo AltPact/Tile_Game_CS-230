@@ -9,7 +9,7 @@ public class GameFileWriter {
 	 */
     public static void writeGameFile(GameState g, String filename, PlayerPiece[] players ) {
         try {
-            File f = new File(filename);
+            File f = new File("./data/savedgames" + filename);
             f.createNewFile();
             FileWriter w = new FileWriter(filename); 
             

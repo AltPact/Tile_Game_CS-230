@@ -15,7 +15,7 @@ public class GameFileReader {
 	public static Game readGameFile(String filename) {
 		Scanner s = null;
 		try {
-			File f = new File(filename);
+			File f = new File("./data/savedgames" + filename);
 			s = new Scanner(f).useDelimiter(",");
 			GameState curState = new GameState();
 			
@@ -34,7 +34,7 @@ public class GameFileReader {
 				int playerY = s.nextInt();
 				String playerColour = s.next();
 				Boolean backtrackApplied = s.nextBoolean();
-				File pDataFile = new File(name); // TODO: needs to look in correct directory, will work for now
+				File pDataFile = new File("./data/playerdata/" + name);
 				PlayerData pData = PlayerDataFileReader.readFile(pDataFile);
 				players[p] = new PlayerPiece(playerX, playerY, playerColour, backtrackApplied, pData);
 			}
@@ -66,7 +66,7 @@ public class GameFileReader {
 	public static Game readBoardFile(String filename, PlayerPiece[] players) {
 		Scanner s = null;
 		try {
-			File f = new File(filename);
+			File f = new File("./data/gameboard" + filename);
 			s = new Scanner(f).useDelimiter(",");
 			int numPlayers = players.length;
 
@@ -230,12 +230,12 @@ public class GameFileReader {
 	}
 
 	public String[] listGameFiles(){
-		File f = new File ("./src/games");
+		File f = new File ("./data/savedgames");
 		return f.list();
 	}
 	
 	public String[] listBoardFiles(){
-		File f = new File ("./src/boards");
+		File f = new File ("./data/gameboard");
 		return f.list();
 	}
 
