@@ -32,10 +32,10 @@ import javafx.scene.text.Font;
 import javafx.util.Duration;
 
 /**
- * File Name: NewGameController.java Created: 07/11/2020 Modified: 19/11/2020
+ * File Name: NewGameController.java Created: 07/11/2020 Modified: 03/12/2020
  * 
  * @author Wan Fai Tong (1909787) and Sam Steadman (1910177) and Morgan Firkins(852264)
- * @version: 1.1
+ * @version: 1.2(Implemented playerDataQueue from Game Window)
  */
 public class NewGameController extends GameWindow implements Initializable {
 
@@ -72,11 +72,10 @@ public class NewGameController extends GameWindow implements Initializable {
 
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
-		initTestArray();
+		initPlayerDataQueue();
 		
 		setComboBox("");
 		makeBoardRadio();
-		System.out.println("Length of list" + testPlayerList.size());
 		
 	}
 	
@@ -89,13 +88,13 @@ public class NewGameController extends GameWindow implements Initializable {
 	private void setComboBox(String searchName) {
 		searchBox.getItems().clear();
 		if (searchName.equals("")) {
-			for (PlayerData player : testPlayerList) {
+			for (PlayerData player : playerDataQueue) {
 				if (!checkIfInQueue(player)) {
 					searchBox.getItems().add(player.getName());
 				}
 			}
 		} else {
-			for (PlayerData player : testPlayerList) {
+			for (PlayerData player : playerDataQueue) {
 				if (!checkIfInQueue(player)) {
 					if(player.getName().equals(searchName)) {
 					   searchBox.getItems().add(player.getName());
@@ -145,8 +144,9 @@ public class NewGameController extends GameWindow implements Initializable {
 		removeButton.setTextFill(Color.WHITE);
 		removeButton.setStyle("-fx-background-color: rgba(128, 128, 128, 0.5);");
 		removeButton.setOnAction(e -> {
-			playerQueue.remove(player);
 			playerBox.getChildren().remove(row);
+			playerQueue.remove(player);
+			searchBox.getItems().add(player.getName());
 		});
 		removeButton.setOnMouseEntered(e -> {
 			removeButton.setStyle("-fx-background-color: rgba(128, 128, 128, 0.5);");
@@ -201,7 +201,7 @@ public class NewGameController extends GameWindow implements Initializable {
 				return null;
 			}
 		}
-		for (PlayerData player : testPlayerList) {
+		for (PlayerData player : playerDataQueue) {
 			if (player.getName().equals(name)) {
 				return player;
 			}

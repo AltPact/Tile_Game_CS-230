@@ -1,6 +1,7 @@
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.PriorityQueue;
@@ -42,7 +43,7 @@ public class LoadGameController extends GameWindow implements Initializable {
 	@FXML
 	public ListView gameSaves;
 	
-	private  Game[] gameSave;
+	private  ArrayList<File> gameSave = new ArrayList<File>();
 	
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
@@ -53,11 +54,10 @@ public class LoadGameController extends GameWindow implements Initializable {
 	 * 
 	 */
 	public void getGames() {
-		File [] contentsOfDir = new File("/data/savedgame").listFiles();
+		File [] contentsOfDir = new File("./data/savedgame").listFiles();
 		Arrays.sort(contentsOfDir, (Comparator.comparingLong(File::lastModified).reversed()));
 			for(File file : contentsOfDir) {
-				gameSave.add(GameFileReader.readGameFile(file));
-				
+				gameSave.add(file);
 		}
 	}
 	

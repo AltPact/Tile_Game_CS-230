@@ -1,5 +1,7 @@
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.PriorityQueue;
 
 import javafx.animation.FadeTransition;
 import javafx.animation.Interpolator;
@@ -25,7 +27,8 @@ import javafx.util.Duration;
 /**
  * File Name: GameSceneController.java Created: 19/11/2020 Modified: 19/11/2020
  * 
- * @author Wan Fai Tong (1909787) and Sam Steadman (1910177) Version: 1.0
+ * @author Wan Fai Tong (1909787) and Sam Steadman (1910177) and Morgan Firkins(852264)
+ * @version: 1.1(Implemented reading playerData files)
  */
 public class GameWindow {
 
@@ -38,7 +41,7 @@ public class GameWindow {
 	protected static MediaPlayer background;
 	protected static Game currentGame;
 	
-	protected static ArrayList<PlayerData> testPlayerList = new ArrayList<PlayerData>();
+	protected static PriorityQueue<PlayerData> playerDataQueue = new PriorityQueue<PlayerData>();
 	/**
 	 * Constructor of GameWindow
 	 */
@@ -143,11 +146,12 @@ public class GameWindow {
     	currentGame=gameToBeSet;
     }
     
-    protected static void initTestArray() {
-    	if (testPlayerList.size() == 0) {
-    		testPlayerList.add(new PlayerData("Mary", 3,6,"/img/firefly.png"));
-    		testPlayerList.add(new PlayerData("Tom", 3,6,"/img/firefly.png"));
-    		testPlayerList.add(new PlayerData("Sam", 3,6,"/img/firefly.png"));
+    protected static void initPlayerDataQueue() {
+    	if (playerDataQueue.size() == 0) {
+    		File[] contentsOfDir = new File("data/playerdata").listFiles();
+    		for(File file:contentsOfDir) {
+    			playerDataQueue.add(PlayerDataFileReader.readFile(file));
+    		}
     	}
     	else {
     		

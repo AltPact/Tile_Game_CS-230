@@ -53,12 +53,12 @@ public class CreatePlayerController extends GameWindow implements Initializable 
 		String playerName = inputBox.getText();
 		
 		System.out.println(playerName);
-		for(PlayerData player:testPlayerList) {
+		for(PlayerData player:playerDataQueue) {
 			if(player.getName().equals(playerName)) {
 				return false;
 			}
 		}
-		testPlayerList.add(new PlayerData(playerName,0,0,iconPath));
+		playerDataQueue.add(new PlayerData(playerName,0,0,iconPath));
 		return true;
 	}
 	

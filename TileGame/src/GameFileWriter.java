@@ -1,11 +1,20 @@
 import java.io.*;
 import java.util.ArrayList;
+/**
+ * This class is designed to write a game to file.
+ * All of its methods are static.
+ * @author  Sam Steadman (1910177), Alex Ullman (851732) and Joshua Sinderberry (851800)
+ * @version 2
+ */
 public class GameFileWriter {
 
     final static char DEL = ',';
 
-	/*
-	 * Does game window have a list of players.
+	/**
+	 * A public static method that saves a game to file
+	 * @param g The current state of the game.
+	 * @param filename The file name to be saved.
+	 * @param players The player array.
 	 */
     public static void writeGameFile(GameState g, String filename, PlayerPiece[] players ) {
         try {
@@ -26,12 +35,10 @@ public class GameFileWriter {
             	w.write(String.valueOf(players[p].getY()) + DEL);
                 w.write(String.valueOf(players[p].getColour()) + DEL);
                 w.write(String.valueOf(players[p].getBacktrack()) + DEL);
-                try {
-                	w.write(players[p].getLinkedData().getName() + DEL);
-                } catch(NullPointerException e) {
-                	
-                }
+                //w.write(players[p].getLinkedData().getName() + DEL);
             }
+            
+            //TODO - UNCOMMENT SAVE THE LINKED DATA.
             
             /* write current game state */
             writeCurrentGameState(g, w, players);
@@ -47,7 +54,15 @@ public class GameFileWriter {
             e.printStackTrace();
         }
     }
-
+    
+    /**
+     * @private
+     * This method writes a game state to file. It is designed to write 
+     * all of the data to file that game needs to reconstruct the game. 
+     * @param s The state to be written.
+     * @param w The file writer 
+     * @param players The Players
+     */
     private static void writeCurrentGameState(GameState s, FileWriter w, PlayerPiece[] players) {
         try {
             
@@ -59,6 +74,7 @@ public class GameFileWriter {
     		w.write(String.valueOf(width) + DEL);
     		w.write(String.valueOf(height)+ DEL);
             
+    		/* Write Tile Data to file */
             for (int y = 0; y < height; y++) {
                 for (int x = 0; x < width; x++) {
                     if (tiles[y][x] == null) {  // is the tile full?
@@ -100,6 +116,7 @@ public class GameFileWriter {
             	}
             }
             
+            /* Write the past states to file */
             ArrayList<GameState> pastStates = s.getPastStates();
             w.write(String.valueOf(pastStates.size()) + DEL);
             for(GameState pastState : pastStates) {
@@ -113,6 +130,13 @@ public class GameFileWriter {
         }
     }
     
+    /**
+     * @private 
+     * This method writes past states to file.
+     * @param pastState The state to write
+     * @param w The file writer
+     * @throws IOException
+     */
     private static void writePastState(GameState pastState, FileWriter w) throws IOException {
     	w.write(String.valueOf(pastState.getCurPlayer()) + DEL);
     	w.write(String.valueOf(pastState.getMovesLeftForCurrentPlayer()) + DEL);
@@ -123,15 +147,20 @@ public class GameFileWriter {
     	}
     	
     }
-
+    /**
+     * Writes the silk bag to file. 
+     * @param bag the bag to be written
+     * @param w The file writer. 
+     */
     private static void writeSilkBag(SilkBag bag, FileWriter w) {
         try {
             int[] numActionTiles = bag.getNumActionTiles();
             int[] numPlaceableTiles = bag.getNumPlaceableTiles();
-
+            /* Write action tiles */
             for (int a = 0; a < 4; a++) {
                 w.write(String.valueOf(numActionTiles[a]) + DEL);
             }
+            /* Write placeable tiles */
             for (int p = 0; p < 3; p++) {
                 w.write(String.valueOf(numPlaceableTiles[p]) + DEL);
             }

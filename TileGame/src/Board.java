@@ -15,8 +15,8 @@ public class Board {
 	 * @param tiles The initial state of the board, likely only containing fixed tiles
 	 */
 	public Board(int width, int height, Placeable[][] tiles) {
-		this.width = tiles.length;
-		this.height = tiles[0].length;
+		this.width = tiles[0].length;
+		this.height = tiles.length;
 		this.tiles = tiles;
 	}
 	
@@ -49,9 +49,9 @@ public class Board {
 	public void fillBoard(SilkBag bag) {
 		for (int x = 0; x < height; x++) {
 			for (int y = 0; y < width; y++) {
-				if (tiles[x][y] == null) {
+				if (tiles[y][x] == null) {
 					int direction = ((int)(Math.random() * (4)));
-					tiles[x][y] =  new Placeable(bag.drawPlaceable(), false, false, direction);
+					tiles[y][x] =  new Placeable(bag.drawPlaceable(), false, false, direction);
 				}
 			}
 		}
@@ -67,33 +67,33 @@ public class Board {
 		boolean[][] moveableSpaces = new boolean[height][width];
 		for (int x = 0; x < height; x++) {
 			for (int y = 0; y < width; y++) {
-				moveableSpaces[x][y] = false;
+				moveableSpaces[y][x] = false;
 			}
 		}
-		boolean[] tileDirections = tiles[playerX][playerY].getDirections();
+		boolean[] tileDirections = tiles[playerY][playerX].getDirections();
 		
 		//Checks if player can move up
 		if(playerX > 0){
-			if(tileDirections[0] &&  tiles[playerX - 1][playerY].canMove(2)) {
-				moveableSpaces[playerX - 1][playerY] = true;
+			if(tileDirections[0] &&  tiles[playerY][playerX - 1].canMove(2)) {
+				moveableSpaces[playerY][playerX - 1] = true;
 			}
 		}
 		//Checks if player can move right
 		if(playerY < width){
-			if(tileDirections[1] &&  tiles[playerX][playerY + 1].canMove(3)) {
-				moveableSpaces[playerX][playerY + 1] = true;
+			if(tileDirections[1] &&  tiles[playerY + 1][playerX].canMove(3)) {
+				moveableSpaces[playerY + 1][playerX] = true;
 			}
 		}
 		//Checks if player can move down
 		if(playerX < height){
-			if(tileDirections[2] &&  tiles[playerX + 1][playerY].canMove(0)) {
+			if(tileDirections[2] &&  tiles[playerY][playerX + 1].canMove(0)) {
 				moveableSpaces[playerX + 1][playerY] = true;
 			}
 		}
 		//Checks if player can move left
 		if(playerY > 0){
-			if(tileDirections[3] &&  tiles[playerX][playerY - 1].canMove(1)) {
-				moveableSpaces[playerX][playerY - 1] = true;
+			if(tileDirections[3] &&  tiles[playerY - 1][playerX].canMove(1)) {
+				moveableSpaces[playerY - 1][playerX] = true;
 			}
 		}
 		return moveableSpaces;
@@ -117,21 +117,21 @@ public class Board {
 					
 					//Shifts tiles down 1
 					for(int i = height - 2; i >= 0; i--) {
-						tiles[i + 1][y] = tiles[i][y];
+						tiles[y][i + 1] = tiles[y][i];
 						System.out.println("hi");
 					}
 					
-					tiles[0][y] = tile;
+					tiles[y][0] = tile;
 					
 				//Inserting from below
 				} else if(x == height - 1){
 					
 					//Shifts tiles up 1
 					for(int i = 1; i < height; i++) {
-						tiles[i - 1][y] = tiles[i][y];
+						tiles[y][i - 1] = tiles[y][i];
 					}
 					
-					tiles[height - 1][y] = tile;
+					tiles[y][width - 1] = tile;
 					
 				//Returns false if tile can not be inserted vertically
 				} else {
@@ -145,17 +145,17 @@ public class Board {
 				if(y == 0) {
 					//Shifts tiles right 1
 					for(int i = width - 2; i >= 0; i--) {
-						tiles[x][i + 1] = tiles[x][i];
+						tiles[i + 1][x] = tiles[i][x];
 					}
-					tiles[x][0] = tile;
+					tiles[0][x] = tile;
 					
 				//inserting from right
 				} else if(x == width - 1){
 					//Shifts tiles left 1
 					for(int i = 1; i < width; i++) {
-						tiles[x][i - 1] = tiles[x][i];
+						tiles[i - 1][x] = tiles[i][x];
 					}
-					tiles[x][width - 1] = tile;
+					tiles[height - 1][x] = tile;
 				
 				//Returns false if tile can not be inserted horizontally
 				} else {
@@ -187,27 +187,34 @@ public class Board {
 		}
 		boolean insertable = true;
 		for (int x = 0; x < checkLen; x++) {
-			if ((vertical && tiles[i][x].isFixed()) || (!vertical && tiles[x][i].isFixed())) {
+			if ((vertical && tiles[x][i].isFixed()) || (!vertical && tiles[i][x].isFixed())) {
 				insertable = false;
 			}
 		}
 		return insertable;
 	}
 	
-	private boolean isInsertable (int x, int y) {  // TODO: probably don't need this anymore, kept incase it's used somewhere
+	/**
+	 * @private
+	 * Checks to see if a particular coordinate is insert-able.
+	 * @param x the x coordinate
+	 * @param y the y coordinate
+	 * @return if this location is insert-able.
+	 */
+	private boolean isInsertable (int x, int y) {  
 		boolean isInsetable = true;
-		if(y == 0 || y == width - 1 || x == 0 || x == height - 1) {
+		if(y == 0 || y == height - 1 || x == 0 || x == width - 1) {
 			//Check for fixed tiles
-			if (x == 0 || x == height - 1) {
-				for(int i = 0; i > height; i++) {
-					if(tiles[i][y].isFixed()) {
+			if (x == 0 || x == width - 1) {
+				for(int i = 0; i > width; i++) {
+					if(tiles[y][i].isFixed()) {
 						isInsetable = false;
 					}
 				}
 			}
-			if(y == 0 || y == width - 1) {
-				for(int i = 0; i > width; i++) {
-					if(tiles[x][i].isFixed()) {
+			if(y == 0 || y == height - 1) {
+				for(int i = 0; i > height; i++) {
+					if(tiles[i][x].isFixed()) {
 						isInsetable = false;
 					}
 				}
@@ -219,24 +226,38 @@ public class Board {
 		return isInsetable;
 	}
 	
-
+	/**
+	 * @return the tiles on the board
+	 */
 	public Placeable[][] getTiles() {
 		return tiles;
 	}
-
+	/**
+	 * Gets the tile out of tile list.
+	 * @param x the x coordinate
+	 * @param y the y coordinate
+	 * @return
+	 */
 	public Tile getTile(int x, int y) {
 		if (x > width || y > height) {
-			return null; // should throw an exception here maybe
+			throw new IllegalStateException("This tile is out of the boundry of the board");
 		} else {
-			return tiles[x][y];
+			return tiles[y][x];
 		}
 	}
 	
-
+	/**
+	 * The width of the board
+	 * @return width
+	 */
 	public int getWidth() {
 		return width;
 	}
-
+	
+	/**
+	 * The height of the board.
+	 * @return height
+	 */
 	public int getHeight() {
 		return height;
 	}
