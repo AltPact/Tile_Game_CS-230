@@ -515,4 +515,12 @@ public class Game {
 		newState.setTilesInAction(tilesInAction);
 		return newState;
 	}
+	
+	/**
+	 * A toString method to ensure that the game has been created correctly. 
+	 */
+	public String toString() {
+		return "Number of Players: " + players.length + " Current Player: " + curPlayer;
+		
+	}
 }

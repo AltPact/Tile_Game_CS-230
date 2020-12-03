@@ -1,9 +1,11 @@
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.PriorityQueue;
 import java.util.ResourceBundle;
 
@@ -48,6 +50,23 @@ public class LoadGameController extends GameWindow implements Initializable {
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		getGames();
+		//Lists files in the table on screen.
+		for(File file : gameSave) {
+			String temp = file.getName();
+			String fileName = temp.substring(0, temp.length() - 4);
+			Date date = new Date(file.lastModified());
+			fileName += "    -    " + date.toString();
+			gameSaves.getItems().add(fileName);
+		}
+		
+		
+		
+		
+		
+		
+		
+		
+		
 	}
 	/**
 	 * Gets all available games from directory
@@ -60,6 +79,7 @@ public class LoadGameController extends GameWindow implements Initializable {
 				gameSave.add(file);
 		}
 	}
+	
 	
 	
 	/**
@@ -117,7 +137,32 @@ public class LoadGameController extends GameWindow implements Initializable {
 	 */
 	@FXML
 	public void selectOnAction(ActionEvent event) throws IOException {
+		Game g  = makeGame((String) gameSaves.getSelectionModel().getSelectedItem());
+		
 		switchPane("/fxml/GameBoardPane.fxml",BP, "forward");
+	}
+	
+	/**
+	 * This method will create a game object from a string file. It looks 
+	 * through the files in the directory to find the correct file. It then uses 
+	 * gameFileReader to read the file.
+	 * @param fileNameFromList name of the requested file. 
+	 * @return a game object. 
+	 * @throws FileNotFoundException
+	 */
+	private Game makeGame(String fileNameFromList) throws FileNotFoundException {
+		Game g = null;
+		for(File file : gameSave) {
+			String fileNameFromFile = file.getName().substring(0, file.getName().length() - 4);
+			Date date = new Date(file.lastModified());
+			fileNameFromFile += "    -    " + date.toString();
+			if(fileNameFromList.equals(fileNameFromFile)) {
+				g = GameFileReader.readGameFile(file);
+				//System.out.println(g.toString());
+				return g;
+			}
+		}
+		throw new FileNotFoundException();
 	}
 
 
