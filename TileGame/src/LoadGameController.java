@@ -58,8 +58,6 @@ public class LoadGameController extends GameWindow implements Initializable {
 		Arrays.sort(contentsOfDir, (Comparator.comparingLong(File::lastModified).reversed()));
 			for(File file : contentsOfDir) {
 				gameSave.add(file.getName());
-				
-				
 		}
 	}
 	
