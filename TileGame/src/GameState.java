@@ -23,6 +23,7 @@ public class GameState {
 	private boolean isGoalHit;
 	private ArrayList<ActionTile>[] actionTilesForEachPlayer;
 	private ArrayList<ActionTilePlaceable> tilesInAction;
+	private Tile tileDrawn;
 	
 	private int[] positionOfInsertedTile;
 	private Tile insertedTile;
@@ -37,6 +38,14 @@ public class GameState {
 	private boolean[] backTrackApplied;
 	private int width;
 	private int height;
+	
+	public void setTileDrawn(Tile tileDrawn) {
+		this.tileDrawn = tileDrawn;
+	}
+	
+	public Tile getTileDrawn() {
+		return tileDrawn;
+	}
 	
 	
 	public ArrayList<ActionTile>[] getActionTilesForEachPlayer() {

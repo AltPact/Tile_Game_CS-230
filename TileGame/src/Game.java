@@ -72,7 +72,7 @@ public class Game {
 	 * This method gets a new tile for a player
 	 * If the drawn tile is action tile, then the tile is
 	 * added to their array list. 
-	 * @return The drawn tile.
+	 * @return A game state with a updated list of action tiles and the tile that has been drawn.
 	 */
 	public Tile getNewTileForCurrentPlayer() {
 		TileType newTileType = bag.draw();
@@ -92,6 +92,10 @@ public class Game {
 		} else {
 			newTile = new Placeable(newTileType);
 		}
+		
+		GameState newState = new GameState();
+		newState.setTileDrawn(newTile);
+		newState.setActionTilesForPlayers(getActionTilesForPlayers());
 		return newTile;
 	}
 	
