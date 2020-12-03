@@ -74,7 +74,7 @@ public class Game {
 	 * added to their array list. 
 	 * @return A game state with a updated list of action tiles and the tile that has been drawn.
 	 */
-	public Tile getNewTileForCurrentPlayer() {
+	public GameState getNewTileForCurrentPlayer() {
 		TileType newTileType = bag.draw();
 		Tile newTile = null;
 		if(newTileType == TileType.BackTrack) {
@@ -96,7 +96,7 @@ public class Game {
 		GameState newState = new GameState();
 		newState.setTileDrawn(newTile);
 		newState.setActionTilesForPlayers(getActionTilesForPlayers());
-		return newTile;
+		return newState;
 	}
 	
 	/**
