@@ -144,8 +144,14 @@ public class GameWindow {
     }
     
     protected static void initTestArray() {
-    	testPlayerList.add(new PlayerData("Mary", 3,6,"/img/firefly.png"));
-		testPlayerList.add(new PlayerData("Tom", 3,6,"/img/firefly.png"));
-		testPlayerList.add(new PlayerData("Sam", 3,6,"/img/firefly.png"));
+    	if (testPlayerList.size() == 0) {
+    		testPlayerList.add(new PlayerData("Mary", 3,6,"/img/firefly.png"));
+    		testPlayerList.add(new PlayerData("Tom", 3,6,"/img/firefly.png"));
+    		testPlayerList.add(new PlayerData("Sam", 3,6,"/img/firefly.png"));
+    	}
+    	else {
+    		
+    	}
+    	
     }
 }

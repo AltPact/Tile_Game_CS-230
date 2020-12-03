@@ -66,7 +66,7 @@ public class NewGameController extends GameWindow implements Initializable {
 	private ArrayList<RadioButton> boardSelection = new ArrayList<RadioButton>();
 	private ToggleGroup boardGroup;
 
-	private ArrayList<PlayerData> playerQuene = new ArrayList<PlayerData>();
+	private ArrayList<PlayerData> playerQueue = new ArrayList<PlayerData>();
 	private ArrayList<HBox> playerRows = new ArrayList<HBox>();
 
 	@Override
@@ -75,6 +75,8 @@ public class NewGameController extends GameWindow implements Initializable {
 		
 		setComboBox("");
 		makeBoardRadio();
+		System.out.println("Length of list" + testPlayerList.size());
+		
 	}
 	
 	private void setListenerComboBox() {
@@ -120,8 +122,8 @@ public class NewGameController extends GameWindow implements Initializable {
 		boardHBox.getChildren().addAll(boardChoose1, boardChoose2);
 	}
 
-	private void addPlayerInQuene(PlayerData playerToAdd) {
-		playerQuene.add(playerToAdd);
+	private void addPlayerInQueue(PlayerData playerToAdd) {
+		playerQueue.add(playerToAdd);
 		playerBox.getChildren().add(makePlayerRows(playerToAdd));
 
 	}
@@ -142,7 +144,7 @@ public class NewGameController extends GameWindow implements Initializable {
 		removeButton.setTextFill(Color.WHITE);
 		removeButton.setStyle("-fx-background-color: rgba(128, 128, 128, 0.5);");
 		removeButton.setOnAction(e -> {
-			playerQuene.remove(player);
+			playerQueue.remove(player);
 			playerBox.getChildren().remove(row);
 		});
 		removeButton.setOnMouseEntered(e -> {
@@ -169,22 +171,22 @@ public class NewGameController extends GameWindow implements Initializable {
 		String playerName = (String) searchBox.getValue();
 		if (playerName == null) {
 			wrongInputAnimation("Incorrect user input");
-		} else if (playerQuene.size() == 4) {
+		} else if (playerQueue.size() == 4) {
 			wrongInputAnimation("Reach the maximum players");
 		} else {
 			PlayerData playerToAdd = getExistPlayer(playerName);
 			if (playerToAdd != null) {
-				addPlayerInQuene(playerToAdd);
+				addPlayerInQueue(playerToAdd);
 				setComboBox("");
 			} else {
 				wrongInputAnimation("No such player/Player Already in Queue");
 			}
 		}
-		System.out.println(playerQuene);
+		System.out.println(playerQueue);
 	}
 
 	private boolean checkIfInQueue(PlayerData playerToCheck) {
-		for (PlayerData playerInQueue : playerQuene) {
+		for (PlayerData playerInQueue : playerQueue) {
 			if (playerToCheck == playerInQueue) {
 				return true;
 			}
@@ -193,7 +195,7 @@ public class NewGameController extends GameWindow implements Initializable {
 	}
 
 	private PlayerData getExistPlayer(String name) {
-		for (PlayerData playerInQueue : playerQuene) {
+		for (PlayerData playerInQueue : playerQueue) {
 			if (playerInQueue.getName().equals(name)) {
 				return null;
 			}
@@ -230,8 +232,8 @@ public class NewGameController extends GameWindow implements Initializable {
 	}
 
 	private boolean checkPlayerAmount() {
-		// System.out.println(playerQuene.size());
-		if (playerQuene.size() < 2) {
+		// System.out.println(playerQueue.size());
+		if (playerQueue.size() < 2) {
 			return false;
 		}
 		return true;
