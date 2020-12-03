@@ -34,7 +34,8 @@ import javafx.util.Duration;
 /**
  * File Name: NewGameController.java Created: 07/11/2020 Modified: 19/11/2020
  * 
- * @author Wan Fai Tong (1909787) and Sam Steadman (1910177) Version: 1.0
+ * @author Wan Fai Tong (1909787) and Sam Steadman (1910177) and Morgan Firkins(852264)
+ * @version: 1.1
  */
 public class NewGameController extends GameWindow implements Initializable {
 
