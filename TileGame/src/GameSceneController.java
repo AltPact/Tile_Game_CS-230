@@ -81,6 +81,7 @@ public class GameSceneController extends GameWindow implements Initializable {
 	private static int turns=1;
 	private static ArrayList<Box> tileInventory;
 	private static Group inventory;
+	private static Placeable activePlaceable;  // the floor tile drawn from the silk bag which must be placed by the current player (if they drew a floor tile)
 	
 	@FXML
 	public BorderPane GB;
@@ -269,6 +270,71 @@ public class GameSceneController extends GameWindow implements Initializable {
 		//printPlayerHashMap();
 		//setPushable();
 		// setMoveableTile(xCor, yCor);
+	}
+	
+	/**
+	 * pushes the current activePlaceable tile into the given row/column
+	 * TODO: when setPushable is updated to animate opposite tiles, this will need to be updated with another paramater, the "direction" of the shift.
+	 */
+	public static void pushTile(int i, boolean vertical) {
+		int newX;  // x/y of the tile being added
+		int newY;
+		int remX;  // x/y of the tile being pushed off the board
+		int remY;
+		if (vertical) {
+			for (int y = boardHeight - 1; y > 0; y--) {
+				tileArray[y][i] = tileArray[y-1][i];
+			}
+			remX = i;
+			remY = boardHeight - 1;
+			newX = i;
+			newY = 0;
+		} else {
+			for (int x = boardWidth - 1; x > 0; x--) {
+				tileArray[i][x] = tileArray[i][x-1];
+			}
+			remX = boardWidth - 1;
+			remY = i;
+			newX = 0;
+			newY = i;
+		}
+
+		Box newBox = objectFactory.makeTile(activePlaceable);
+		tileArray[newY][newX] = newBox;
+		int displayX = (400-(boardWidth*100)/2) + (100 * newX);  //copied from addTile()
+		int displayY = (400-(boardHeight*100)/2) + (100 * newY);
+		newBox.translateXProperty().set(displayX);
+		newBox.translateYProperty().set(displayY);
+		newBox.translateZProperty().set(0);
+		tiles.getChildren().remove(tileArray[remY][remX]);  // remove tile being pushed off the board from tiles, will no longer be drawn
+		tiles.getChildren().add(newBox);  // add new tile to tiles to be drawn
+	}
+
+	/**
+	 * animates and makes clickable all columns/rows that a tile can be pushed into
+	 * TODO: also needs to animate and make clickable the tiles on the opposite side of the board. currently will only work for tiles on left/top sides
+	 */
+	public static void setPushable() {
+		ArrayList<Box> pushableTiles = new ArrayList<Box>();
+		boolean[][] insertablePlaces = currentGameState.getInsertableLocations();
+		for (int x = 0; x < boardWidth; x++) { // for each column
+			final int finalX = x;
+			if (insertablePlaces[1][x]) {
+				pushableTiles.add(tileArray[x][0]);
+				tileArray[0][x].setOnMouseClicked(e -> {
+					pushTile(finalX, true);
+				});
+			}
+		}
+		for (int y = 0; y < boardHeight; y++) {  // for each row
+			final int finalY = y;
+			if (insertablePlaces[0][y]) {
+				pushableTiles.add(tileArray[y][0]);
+				tileArray[y][0].setOnMouseClicked(e -> {
+					pushTile(finalY, false);
+				});
+			}
+		}
 	}
 	
 	
