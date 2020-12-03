@@ -3,13 +3,19 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.regex.Pattern;
-
+/**
+ * A class that reads a game board file or a game file and constructs a game object.
+ * 
+ * @author Sam Steadman (1910177), Alex Ullman (851732) and Joshua Sinderberry (851800)
+ * @version 2
+ *
+ */
 public class GameFileReader {
 
 	/**
 	 * Reads a file describing a game in progress, constructs a Game using this information.
 	 *
-	 * @param filename The name of the file to read.
+	 * @param a file that should be read.
 	 * @return An instantiated Game object.
 	 */
 	public static Game readGameFile(File f) {
@@ -32,9 +38,9 @@ public class GameFileReader {
 				int playerY = s.nextInt();
 				String playerColour = s.next();
 				Boolean backtrackApplied = s.nextBoolean();
-				String name = s.next();
-				File pDataFile = new File("./data/playerdata/" + name);
-				PlayerData pData = PlayerDataFileReader.readFile(pDataFile);
+				//String name = s.next();
+				//File pDataFile = new File("./data/playerdata/" + name);
+				//PlayerData pData = PlayerDataFileReader.readFile(pDataFile);
 				players[p] = new PlayerPiece(playerX, playerY, playerColour, backtrackApplied, null);
 			}
 			
@@ -58,7 +64,7 @@ public class GameFileReader {
 	 * Reads a file describing a "template" for a game - a board not yet fully populated with tiles that can be used
 	 * to start a new game. Constructs a Game with this information.
 	 *
-	 * @param filename The name of the file to read.
+	 * @param f the file that should be read.
 	 * @param players Player Pieces, should instantiated but can have X and Y set to 0.   
 	 * @return An instantiated Game object.
 	 */
@@ -111,7 +117,12 @@ public class GameFileReader {
 		}
 	}
 
-
+	/**
+	 * @private 
+	 * Reads a silk bag file. The amount of tiles of each type that should be present.
+	 * @param s Scanner
+	 * @return The new silk bag.
+	 */
 	private static SilkBag readSilkBag(Scanner s) {
 		int[] numActionTiles = new int[4];
 		int[] numPlaceableTiles = new int[3];
@@ -127,15 +138,13 @@ public class GameFileReader {
 
 
 	/**
+	 * @private
 	 * Reads a "GameState" object from a file. When loading a game that is in-progress, this will likely
 	 * be called multiple times, once for each previous state of the game, so that Backtrack can work.
-	 *
+	 * 
+	 * @param curState a game state object, that can be filled. 
 	 * @param s File scanner to read data through
-	 * @param height Height of the board
-	 * @param width Width of the board
 	 * @param players Array of players to be referred to as the owners of action tiles.
-	 * @return 
-	 * @return An instantiated GameState object.
 	 */
 	private static void readCurrentGameState(GameState curState, Scanner s, PlayerPiece[] players) {
 		
@@ -224,12 +233,18 @@ public class GameFileReader {
 		return;
 	}
 	
-	
+	/**
+	 * A method that reads a past game state 
+	 * @param s
+	 * @param numOfPlayers
+	 * @return
+	 */
 	private static GameState readPastState(Scanner s, int numOfPlayers) {
 		GameState pastState = new GameState();
 		//Current Player and the moves remaining
 		pastState.setCurrentPlayer(s.nextInt(), s.nextInt());
 		int[][] playerPos = new int[numOfPlayers][2];
+		//Read the player positions in this game state.
 		for(int p = 0; p < numOfPlayers; p++) {
 			playerPos[p][0] = s.nextInt();
 			playerPos[p][1] = s.nextInt();
@@ -237,12 +252,17 @@ public class GameFileReader {
 		pastState.setPlayerPositions(playerPos);
 		return pastState;
 	}
-
+	/**
+	 * @return a list of stored games files
+	 */
 	public String[] listGameFiles(){
 		File f = new File ("./data/savedgames");
 		return f.list();
 	}
 	
+	/**
+	 * @return a list of stored game boards.
+	 */
 	public String[] listBoardFiles(){
 		File f = new File ("./data/gameboard");
 		return f.list();

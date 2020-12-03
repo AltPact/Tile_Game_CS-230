@@ -43,7 +43,7 @@ public class LoadGameController extends GameWindow implements Initializable {
 	@FXML
 	public ListView gameSaves;
 	
-	private  ArrayList<String> gameSave;
+	private  ArrayList<File> gameSave = new ArrayList<File>();
 	
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
@@ -54,10 +54,10 @@ public class LoadGameController extends GameWindow implements Initializable {
 	 * 
 	 */
 	public void getGames() {
-		File [] contentsOfDir = new File("/data/savedgame").listFiles();
+		File [] contentsOfDir = new File("./data/savedgame").listFiles();
 		Arrays.sort(contentsOfDir, (Comparator.comparingLong(File::lastModified).reversed()));
 			for(File file : contentsOfDir) {
-				gameSave.add(file.getName());
+				gameSave.add(file);
 		}
 	}
 	
