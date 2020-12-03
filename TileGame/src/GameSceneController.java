@@ -11,7 +11,10 @@ import javafx.animation.Interpolator;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.ParallelTransition;
+import javafx.animation.PauseTransition;
+import javafx.animation.RotateTransition;
 import javafx.animation.ScaleTransition;
+import javafx.animation.SequentialTransition;
 import javafx.animation.Timeline;
 import javafx.animation.TranslateTransition;
 import javafx.event.ActionEvent;
@@ -31,10 +34,15 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.ImagePattern;
 import javafx.scene.paint.PhongMaterial;
 import javafx.scene.shape.Box;
+import javafx.scene.shape.Cylinder;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Sphere;
 import javafx.scene.text.Font;
+import javafx.scene.transform.Rotate;
+import javafx.scene.transform.Transform;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
@@ -45,9 +53,9 @@ import javafx.util.Duration;
  */
 public class GameSceneController extends GameWindow implements Initializable {
 
-	private static final int sceneWidth = 470;
+	private static final int sceneWidth = 480;
 	private static final int sceneHeight = 400;
-	private static final int cameraX = 180;
+	private static final int cameraX = 200;
 	private static final int cameraY = 200;
 	private static SubScene subScene;
 	private static ObjFactory objectFactory;
@@ -68,6 +76,7 @@ public class GameSceneController extends GameWindow implements Initializable {
 	private static int initPlayerPos[][];
 	private static int currentPlayerPosX;
 	private static int currentPlayerPosY;
+	private static GridPane inventory;
 	
 	@FXML
 	public BorderPane GB;
@@ -91,12 +100,14 @@ public class GameSceneController extends GameWindow implements Initializable {
 		addTile();
 		initLightSource();
 		addPlayer();
+		
 		//gameObjects.getChildren().add(objectFactory.makeFireFly());
 		// setScene
 		subScene = new SubScene(gameObjects, sceneWidth, sceneHeight);
 		setCamera();
 		// addScene
 		GB.setCenter(subScene);
+		showInventory();
 		newTurn();
 		
 	}
@@ -125,6 +136,27 @@ public class GameSceneController extends GameWindow implements Initializable {
 		tiles = new Group();
 	}
     
+	public void showInventory() {
+		/*GridPane inventory = objectFactory.makeInventory();
+		inventory.setLayoutX(900);
+		inventory.setLayoutY(180);
+		
+		for(int i = 0;i<6;i++) {
+			Image icon = new Image("/img/texture/fire.jpg");
+			Rectangle box = new Rectangle();
+			box.setWidth(70);
+			box.setHeight(70);
+			box.setFill(new ImagePattern(icon));
+			box.setOnMouseClicked(e->{
+				box.setRotate(box.getRotate()+90);
+				System.out.print("rotate");
+			});
+			inventory.add(box, 0, i);
+		}
+		
+		gameObjects.getChildren().add(inventory);*/
+	}
+	
 	public void addFloor() {
 		Box floor = objectFactory.makeFloor();
 		floor.setTranslateX(420);
@@ -133,10 +165,12 @@ public class GameSceneController extends GameWindow implements Initializable {
 		System.out.println(floor.getTranslateZ());
 	}
 	public void addTile() {
-		
-		int y = 0;
+		int y = 400-(boardHeight*100)/2;
+		//System.out.println("Starting X: "+(400-boardWidth/2));
+		//System.out.println("Starting Y: "+y);
 		for (int q = 0; q < boardHeight; q++) {
-			int x = 0;
+			int x = 400-(boardWidth*100)/2;
+			
 			for (int i = 0; i < boardWidth; i++) {
 				Box tile = objectFactory.makeTile(tileBoard[q][i]);
 				tile.translateXProperty().set(x);
@@ -197,6 +231,8 @@ public class GameSceneController extends GameWindow implements Initializable {
 		//setPushable();
 		// setMoveableTile(xCor, yCor);
 	}
+	
+	
 
 	public static void getNewTile() {
 		Tile newTile = currentGame.getNewTileForCurrentPlayer();
@@ -446,14 +482,14 @@ public class GameSceneController extends GameWindow implements Initializable {
 		return enlarge;
 	}
 
+	
+	*/
 	public static void moveTile(double x, double y, Box moveTile) {
 		TranslateTransition tileMove = new TranslateTransition(Duration.millis(500), moveTile);
 		tileMove.setToX(x);
 		tileMove.setToY(y);
 		tileMove.play();
 	}
-	*/
-	
 
 	/*
 	 * public static void displayTurns() { //incomplete Label numOfTurns = new
@@ -479,6 +515,88 @@ public class GameSceneController extends GameWindow implements Initializable {
 		}
 	}*/
 
+	public void animationPlayTile(double x, double y,String playerType) {
+		Box elementType = new Box(200,200,2);
+		elementType.translateXProperty().set(x);
+		elementType.translateYProperty().set(y);
+		elementType.translateZProperty().set(-55);
+		elementType.setMouseTransparent(true);
+		Cylinder magicCircle = new Cylinder(200,1);
+		magicCircle.translateXProperty().set(x);
+		magicCircle.translateYProperty().set(y);
+		magicCircle.translateZProperty().set(-50);
+		Transform rotateMC = new Rotate(90, Rotate.X_AXIS);
+		magicCircle.getTransforms().add(rotateMC);
+		magicCircle.setMouseTransparent(true);
+		
+		PhongMaterial imageTextureElement = new PhongMaterial();
+		PhongMaterial imageTextureMC = new PhongMaterial();
+		if(playerType.equals("fire")) {
+		    imageTextureElement.setDiffuseMap(new Image("fireMagic.png"));
+            imageTextureMC.setDiffuseMap(new Image("fireMagicCircle.png"));
+            imageTextureMC.setSelfIlluminationMap(new Image("fireMagicCircle.png"));
+		}else if(playerType.equals("ice")){
+			imageTextureElement.setDiffuseMap(new Image("frozenMagic.png"));
+            imageTextureMC.setDiffuseMap(new Image("iceMagicCircle.png"));
+            imageTextureMC.setSelfIlluminationMap(new Image("iceMagicCircle.png"));
+		}else if(playerType.equals("wind")){
+			imageTextureElement.setDiffuseMap(new Image("windMagic.png"));
+            imageTextureMC.setDiffuseMap(new Image("windMagicCircle.png"));
+            imageTextureMC.setSelfIlluminationMap(new Image("windMagicCircle.png"));
+		}else{
+			imageTextureElement.setDiffuseMap(new Image("backTrackMagic.png"));
+            imageTextureMC.setDiffuseMap(new Image("portalMagicCircle.png"));
+            imageTextureMC.setSelfIlluminationMap(new Image("portalMagicCircle.png"));
+		}
+		elementType.setMaterial(imageTextureElement);
+		magicCircle.setMaterial(imageTextureMC);
+		
+		
+		ScaleTransition elementFade = new ScaleTransition(Duration.millis(200),elementType);    
+		elementFade.setFromX(0);
+		elementFade.setFromY(0);
+		elementFade.setToX(1);
+		elementFade.setToY(1);
+
+		
+		ScaleTransition mcFade = new ScaleTransition(Duration.millis(1000),magicCircle);    
+		mcFade.setFromX(0);
+		mcFade.setFromY(0);
+		mcFade.setToX(1);
+		mcFade.setToY(1);
+		
+		RotateTransition mcRotate = new RotateTransition(Duration.millis(1000),magicCircle);  
+		mcRotate.setByAngle(360);
+		
+		ParallelTransition mcTrans = new ParallelTransition(elementFade,mcFade,mcRotate);
+		
+		PauseTransition hold = new PauseTransition(Duration.millis(1000));
+		
+		ScaleTransition mcBackFade = new ScaleTransition(Duration.millis(500),magicCircle);    
+		mcBackFade.setFromX(1);
+		mcBackFade.setFromY(1);
+		mcBackFade.setToX(0);
+		mcBackFade.setToY(0);
+		
+		ScaleTransition elementBackFade = new ScaleTransition(Duration.millis(200),elementType);    
+		elementBackFade.setFromX(1);
+		elementBackFade.setFromY(1);
+		elementBackFade.setToX(0);
+		elementBackFade.setToY(0);
+		
+		ParallelTransition mcBackTrans = new ParallelTransition(mcBackFade,elementBackFade);
+		
+		SequentialTransition seqTransition = new SequentialTransition(mcTrans,hold,mcBackTrans);
+		seqTransition.setOnFinished(e->{
+			gameObjects.getChildren().removeAll(elementType,magicCircle);
+		});
+		
+		seqTransition.play();
+		gameObjects.getChildren().addAll(elementType,magicCircle);
+		
+	
+}
+	
 
 	/**
 	 * This method is called when the back button is click it will call the

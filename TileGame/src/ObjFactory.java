@@ -3,16 +3,23 @@ import java.util.Random;
 import javafx.animation.Animation;
 import javafx.animation.ScaleTransition;
 import javafx.animation.TranslateTransition;
+import javafx.geometry.Pos;
 import javafx.scene.AmbientLight;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.PointLight;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.ColumnConstraints;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.RowConstraints;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.ImagePattern;
 import javafx.scene.paint.PhongMaterial;
 import javafx.scene.shape.Box;
 import javafx.scene.shape.Cylinder;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Sphere;
 import javafx.scene.transform.Rotate;
 import javafx.scene.transform.Transform;
@@ -120,6 +127,25 @@ public class ObjFactory {
 		}else if(tileType.getType()==TileType.Goal) {
 			tile.setMaterial(goalTileTexture);
 		}
+		
+		return setTileOrien(tile,tileType);
+	}
+	
+	private Box setTileOrien(Box tile, Placeable tileObject) {
+		int orient = tileObject.getOrientation();
+		Transform rotate =null;
+		if(orient==1) {
+			rotate=new Rotate(90, Rotate.Z_AXIS);
+		}else if(orient==2) {
+			rotate=new Rotate(180, Rotate.Z_AXIS);
+		}else if(orient==3) {
+			rotate=new Rotate(270, Rotate.Z_AXIS);
+		}
+		if(rotate!=null) {
+		tile.getTransforms().add(rotate);
+		}
+		
+		System.out.println("Box ori: "+tile.getTransforms()+" Place ori: "+tileObject.getOrientation());
 		return tile;
 	}
 	
@@ -246,7 +272,20 @@ public class ObjFactory {
 		lightSource.getChildren().addAll(light,firefly);
 		return lightSource;
 	}
-	
+	/*
+	public GridPane makeInventory() {
+		GridPane inventory = new GridPane();
+		inventory.setPrefWidth(80);
+		inventory.setPrefHeight(500);
+		inventory.setGridLinesVisible(true);
+		inventory.setAlignment(Pos.TOP_CENTER);
+		inventory.setVgap(10);
+		inventory.setStyle("-fx-background-color: darkgoldenrod; -fx-border-color: goldenrod;");
+
+		
+		return inventory;
+	}
+	*/
 	public void setAnimation(ImageView firefly) {
 		ScaleTransition fireFlyMoving = new ScaleTransition(Duration.millis(500), firefly);
 		fireFlyMoving.setByX(firefly.getScaleX()*0.05);
