@@ -144,6 +144,7 @@ public class NewGameController extends GameWindow implements Initializable {
 		removeButton.setTextFill(Color.WHITE);
 		removeButton.setStyle("-fx-background-color: rgba(128, 128, 128, 0.5);");
 		removeButton.setOnAction(e -> {
+			playerQueue.remove(player);
 			playerBox.getChildren().remove(row);
 		});
 		removeButton.setOnMouseEntered(e -> {
