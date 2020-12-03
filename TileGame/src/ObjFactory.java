@@ -100,6 +100,21 @@ public class ObjFactory {
 		fireTexture.setDiffuseMap(new Image(getClass().getResourceAsStream("/img/texture/fire.jpg")));
 	}
 	
+	public Box makeTileInInventory(ActionTile tileType) {
+		Box tile = new Box(70,70,10);
+		PhongMaterial tileTexture = new PhongMaterial();
+		if(tileType.getType()==TileType.Fire) {
+			tileTexture.setDiffuseMap(new Image(getClass().getResourceAsStream("/img/texture/fireTile.jpg")));
+		}else if(tileType.getType()==TileType.Ice) {
+			tileTexture.setDiffuseMap(new Image(getClass().getResourceAsStream("/img/texture/IceTile.jpg")));
+		}else if(tileType.getType()==TileType.DoubleMove) {
+			tileTexture.setDiffuseMap(new Image(getClass().getResourceAsStream("/img/texture/doubleMoveTile.jpg")));
+		}else if(tileType.getType()==TileType.BackTrack) {
+			tileTexture.setDiffuseMap(new Image(getClass().getResourceAsStream("/img/texture/backTrackTile.jpg")));
+		}
+		tile.setMaterial(tileTexture);
+		return tile;
+	}
 	
 	public Box makeTile(Placeable tileType) {
 		Box tile = new Box(tileLength,tileLength,tiledepth);
@@ -272,20 +287,12 @@ public class ObjFactory {
 		lightSource.getChildren().addAll(light,firefly);
 		return lightSource;
 	}
-	/*
-	public GridPane makeInventory() {
-		GridPane inventory = new GridPane();
-		inventory.setPrefWidth(80);
-		inventory.setPrefHeight(500);
-		inventory.setGridLinesVisible(true);
-		inventory.setAlignment(Pos.TOP_CENTER);
-		inventory.setVgap(10);
-		inventory.setStyle("-fx-background-color: darkgoldenrod; -fx-border-color: goldenrod;");
-
-		
-		return inventory;
+	public Box makeActionTileInventory() {
+		Box actionTileInventory = new Box(100,500,10);
+		PhongMaterial Lcolor = new PhongMaterial(Color.BROWN);
+		actionTileInventory.setMaterial(Lcolor);
+		return actionTileInventory;
 	}
-	*/
 	public void setAnimation(ImageView firefly) {
 		ScaleTransition fireFlyMoving = new ScaleTransition(Duration.millis(500), firefly);
 		fireFlyMoving.setByX(firefly.getScaleX()*0.05);

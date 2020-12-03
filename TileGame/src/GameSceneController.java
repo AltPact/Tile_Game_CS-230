@@ -30,8 +30,10 @@ import javafx.scene.SubScene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
@@ -76,7 +78,9 @@ public class GameSceneController extends GameWindow implements Initializable {
 	private static int initPlayerPos[][];
 	private static int currentPlayerPosX;
 	private static int currentPlayerPosY;
-	private static GridPane inventory;
+	private static int turns=1;
+	private static ArrayList<Box> tileInventory;
+	private static Group inventory;
 	
 	@FXML
 	public BorderPane GB;
@@ -84,6 +88,12 @@ public class GameSceneController extends GameWindow implements Initializable {
 	public Button BackHomeButton;
 	@FXML
 	public Button QuitButton;
+	@FXML
+	public Label turnLabel;
+	@FXML
+	public ImageView playerIndicator;
+	@FXML
+	public Pane rightMenuPane;
 
 	/**
 	 * This method initialize this page
@@ -100,14 +110,14 @@ public class GameSceneController extends GameWindow implements Initializable {
 		addTile();
 		initLightSource();
 		addPlayer();
-		
+		setRightMenu();
 		//gameObjects.getChildren().add(objectFactory.makeFireFly());
 		// setScene
 		subScene = new SubScene(gameObjects, sceneWidth, sceneHeight);
 		setCamera();
 		// addScene
 		GB.setCenter(subScene);
-		showInventory();
+		
 		newTurn();
 		
 	}
@@ -137,6 +147,27 @@ public class GameSceneController extends GameWindow implements Initializable {
 	}
     
 	public void showInventory() {
+		inventory = new Group();
+		Box inventoryBase = new Box(90,500,10);
+		PhongMaterial baseTexture = new PhongMaterial(Color.BROWN);
+		inventoryBase.setMaterial(baseTexture);
+		inventory.setTranslateX(900);
+		inventory.setTranslateY(400);
+		inventory.setTranslateZ(-100);
+		ArrayList<ActionTile> tilesOwned = currentGameState.getActionTileForPlayer(currentGameState.getCurPlayer());
+		double y = inventoryBase.getTranslateY()+10;
+		for(ActionTile actionTile:tilesOwned) {
+			Box acTile = objectFactory.makeTileInInventory(actionTile);
+			acTile.setTranslateX(inventoryBase.getTranslateX());
+			acTile.setTranslateY(y);
+			acTile.setTranslateZ(inventoryBase.getTranslateZ()-10);
+			tileInventory.add(acTile);
+			inventory.getChildren().add(acTile);
+			y+=50;
+		}
+		inventory.getChildren().add(inventoryBase);
+		gameObjects.getChildren().add(inventory);		
+		
 		/*GridPane inventory = objectFactory.makeInventory();
 		inventory.setLayoutX(900);
 		inventory.setLayoutY(180);
@@ -597,7 +628,91 @@ public class GameSceneController extends GameWindow implements Initializable {
 	
 }
 	
+	private void setRightMenu() {
+		turnLabel.setText(Integer.toString(turns));
+		showCurPlayer();
+		Tile drawTile=currentGame.getNewTileForCurrentPlayer();
+		
+		showDrawTile(drawTile);
+		showInventory();
+	}
+	
+	private void showCurPlayer() {
+		int curPlayerNum = currentGameState.getCurPlayer();
+		if(curPlayerNum==0) {
+			playerIndicator.setImage(new Image("/img/redWizard.png"));
+		}else if(curPlayerNum==1) {
+			playerIndicator.setImage(new Image("/img/yellowWizard.png"));
+		}else if(curPlayerNum==2) {
+			playerIndicator.setImage(new Image("/img/blueWizard.png"));
+		}else{
+			playerIndicator.setImage(new Image("/img/purpleWizard.png"));
+		}
+		TranslateTransition changePlayer = new TranslateTransition(Duration.seconds(0.8),playerIndicator);
+		changePlayer.setFromX(0);
+		changePlayer.setFromY(-50);
+		changePlayer.setToX(0);
+		changePlayer.setToY(0);
+		changePlayer.play();
+	}
+	
+	private void showDrawTile(Tile drawTile) {
+		Image tileImage=null;
+		if(drawTile.getType()==TileType.Straight) {
+			tileImage = new Image("/img/texture/Straight.png");
+		}else if(drawTile.getType()==TileType.Corner) {
+			tileImage = new Image("/img/texture/Corner.png");
+		}else if(drawTile.getType()==TileType.TShaped) {
+			tileImage = new Image("/img/texture/Corner.png");
+		}else if(drawTile.getType()==TileType.Fire) {
+			tileImage = new Image("/img/texture/fireTile.jpg");
+		}else if(drawTile.getType()==TileType.Ice) {
+			tileImage = new Image("/img/texture/IceTile.jpg");
+		}else if(drawTile.getType()==TileType.BackTrack) {
+			tileImage = new Image("/img/texture/backTrackTile.jpg");
+		}else if(drawTile.getType()==TileType.DoubleMove) {
+			tileImage = new Image("/img/texture/doubleMoveTile.jpg");
+		}
+		Label tileType = showTileType(drawTile);
+		ImageView tileIcon = new ImageView();
+		tileIcon.setImage(tileImage);
+		tileIcon.setFitHeight(50);
+		tileIcon.setFitWidth(50);
+		tileIcon.setLayoutX(42);
+		tileIcon.setLayoutY(225);
+		rightMenuPane.getChildren().add(tileIcon);
+		ScaleTransition appearTile = new ScaleTransition(Duration.seconds(1),tileIcon);
+		appearTile.setFromX(0);
+		appearTile.setFromY(0);
+		appearTile.setToX(1);
+		appearTile.setToY(1);
+		appearTile.setOnFinished(e->{
+			rightMenuPane.getChildren().add(tileType);
+		});
+		PauseTransition hold = new PauseTransition(Duration.millis(1000));
+		hold.setOnFinished(e->{
+			rightMenuPane.getChildren().remove(tileType);
+		});
+		
+		ScaleTransition disappearTile = new ScaleTransition(Duration.seconds(1),tileIcon);
+		disappearTile.setFromX(1);
+		disappearTile.setFromY(1);
+		disappearTile.setToX(0);
+		disappearTile.setToY(0);
+		SequentialTransition showTileSeq = new SequentialTransition(appearTile,hold,disappearTile);
+		showTileSeq.play();
+	}
+	
+	public Label showTileType(Tile drawTile) {
+		Label typeType = new Label(drawTile.getType().name());
+		typeType.setTextFill(Color.WHITE);
+		typeType.setAlignment(Pos.CENTER);
+		typeType.setLayoutX(37);
+		typeType.setLayoutY(205);
+		return typeType;
+	}
 
+	
 	/**
 	 * This method is called when the back button is click it will call the
 	 * switchPane() method which switch to HomePagePane
