@@ -19,9 +19,9 @@ import javafx.scene.paint.Color;
 /**
  * File: LeaderBoardController.java
  * Purpose: Implements a leaderboard
- * Modified: 01/12/2020
+ * Modified: 03/12/2020
  * @author Wan Fai Tong (1909787), Sam Steadman (1910177), Morgan Firkins (852264)
- * @version: 1.2
+ * @version: 1.3(Removed directoryIteration and added it to GameWindow)
  *
  */
 public class LeaderBoardController extends GameWindow implements Initializable {
@@ -47,31 +47,13 @@ public class LeaderBoardController extends GameWindow implements Initializable {
         
 		makeLeaderBoard();
 	}
-	/**
-	 * Purpose: To return a Priority Queue of Players for the leaderboard
-	 * @return: PriorityQueue<PlayerData> : playerDataPriorityQueue
-	 */
-	public PriorityQueue<PlayerData> getPlayerQueue(){
-		PriorityQueue<PlayerData> playerDataPriorityQueue = new PriorityQueue<PlayerData>();
-		File[] contentsOfDir = new File("data/playerdata").listFiles();
-		for(File file:contentsOfDir) {
-			playerDataPriorityQueue.add(PlayerDataFileReader.readFile(file));
-			
-		}
-		
-		return playerDataPriorityQueue;
-	}
-	
 	
 	/**
-	 * Purpose: Creates leaderboard by using the queue in getPlayerQueue()
+	 * Purpose: Creates leaderboard by using the playerDataQueue in GameWindow()
 	 */
 	public void makeLeaderBoard() {
 		int rank=1;
-		
-		PriorityQueue<PlayerData> playerdataArray = getPlayerQueue();
-		
-		for(PlayerData p : playerdataArray) {
+		for(PlayerData p : playerDataQueue) {
 		HBox playerRow = createUserBox(p,rank);
 		leaderBoard.getChildren().add(playerRow);
 		rank++;
