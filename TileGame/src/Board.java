@@ -21,22 +21,27 @@ public class Board {
 	}
 	
 	/**
-	 * @return a array of places a tile can be inserted
+	 * Checks which rows and columns are free of fixed tiles and can have a tile inserted into them
+	 * @return a array of the rows and columns where tiles can be inserted. [0 = rows, 1 = columns][index]
 	 */
 	public boolean[][] getInsertablePlaces(){
-		boolean[][] insertablePlaces = new boolean[height][width] ;
-		for (int x = 0; x < height; x++) {
-			for (int y = 0; y < width; y++) {
-				if (isInsertable(x, y)) {
-					insertablePlaces[x][y] = true;
-				} else {
-					insertablePlaces[x][y] = false;
-				}
-			}
+		int arrayLen;
+		if (width > height) {
+			arrayLen = width;
+		} else {
+			arrayLen = height;
 		}
+		boolean[][] insertablePlaces = new boolean[2][arrayLen]; // [rows, columns][tile index]
+		for (int x = 0; x < width; x++) {  // check rows
+			insertablePlaces[0][x] = isInsertable(x, true);
+		}
+		for (int y = 0; y < height; y++) {  // check columns
+			insertablePlaces[1][y] = isInsertable(y, false);
+		}
+
 		return insertablePlaces;
 	}
-	
+
 	/**
 	 * Fills any empty spaces in the board using floor tiles from the silk bag.
 	 * @param bag The bag to draw floor tiles from.
@@ -166,9 +171,30 @@ public class Board {
 			return false;
 		}
 	}
+
+	/**
+	 * Checks if a specific row/column is free of any fixed tiles
+	 * @param i the index of the row/column to check
+	 * @param vertical whether it is a row or column that should be checked (true = column, false = row)
+	 * @return whether the row/column specified is free for a tile to be inserted
+	 */
+	private boolean isInsertable (int i, boolean vertical) {
+		int checkLen;
+		if (vertical) {
+			checkLen = height;
+		} else {
+			checkLen = width;
+		}
+		boolean insertable = true;
+		for (int x = 0; x < checkLen; x++) {
+			if ((vertical && tiles[i][x].isFixed()) || (!vertical && tiles[x][i].isFixed())) {
+				insertable = false;
+			}
+		}
+		return insertable;
+	}
 	
-	
-	private boolean isInsertable (int x, int y) {
+	private boolean isInsertable (int x, int y) {  // TODO: probably don't need this anymore, kept incase it's used somewhere
 		boolean isInsetable = true;
 		if(y == 0 || y == width - 1 || x == 0 || x == height - 1) {
 			//Check for fixed tiles
