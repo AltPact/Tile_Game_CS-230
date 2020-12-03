@@ -148,24 +148,25 @@ public class GameSceneController extends GameWindow implements Initializable {
     
 	public void showInventory() {
 		inventory = new Group();
+		tileInventory = new ArrayList<Box>();
 		Box inventoryBase = new Box(90,500,10);
 		PhongMaterial baseTexture = new PhongMaterial(Color.BROWN);
 		inventoryBase.setMaterial(baseTexture);
 		inventory.setTranslateX(900);
 		inventory.setTranslateY(400);
-		inventory.setTranslateZ(-100);
+		inventory.setTranslateZ(-50);
+		inventory.getChildren().add(inventoryBase);
 		ArrayList<ActionTile> tilesOwned = currentGameState.getActionTileForPlayer(currentGameState.getCurPlayer());
-		double y = inventoryBase.getTranslateY()+10;
+		double y = inventoryBase.getTranslateY()/2+10;
 		for(ActionTile actionTile:tilesOwned) {
 			Box acTile = objectFactory.makeTileInInventory(actionTile);
-			acTile.setTranslateX(inventoryBase.getTranslateX());
+			acTile.setTranslateX(inventoryBase.getTranslateX()-10);
 			acTile.setTranslateY(y);
-			acTile.setTranslateZ(inventoryBase.getTranslateZ()-10);
+			acTile.setTranslateZ(inventoryBase.getTranslateZ()-50);
 			tileInventory.add(acTile);
 			inventory.getChildren().add(acTile);
 			y+=50;
 		}
-		inventory.getChildren().add(inventoryBase);
 		gameObjects.getChildren().add(inventory);		
 		
 		/*GridPane inventory = objectFactory.makeInventory();
@@ -236,6 +237,13 @@ public class GameSceneController extends GameWindow implements Initializable {
 		// System.out.println(gameObjects.getChildren());
 	}
 	
+	public void movePlayer(Group player, double x, double y) {
+		TranslateTransition playerMove = new TranslateTransition(Duration.seconds(1),player);
+		playerMove.setToX(x);
+		playerMove.setToY(y);
+		playerMove.play();
+	}
+	
 	//Testing method
 	/*public static void printPlayerHashMap() {
 		for(Sphere player : playerPieceLink.keySet()) {
@@ -265,11 +273,11 @@ public class GameSceneController extends GameWindow implements Initializable {
 	
 	
 
-	public static void getNewTile() {
+	/*public static void getNewTile() {
 		Tile newTile = currentGame.getNewTileForCurrentPlayer();
 		
 	}
-	/*public static void setMoveableTile(int centerTileX, int centerTileY) {
+	public static void setMoveableTile(int centerTileX, int centerTileY) {
 		scaleArray = new ArrayList<ScaleTransition>();
 		clickableAnima = new ParallelTransition();
 		if (centerTileY > 0) {
@@ -631,7 +639,8 @@ public class GameSceneController extends GameWindow implements Initializable {
 	private void setRightMenu() {
 		turnLabel.setText(Integer.toString(turns));
 		showCurPlayer();
-		Tile drawTile=currentGame.getNewTileForCurrentPlayer();
+		currentGameState=currentGame.getNewTileForCurrentPlayer();
+		Tile drawTile=currentGameState.getTileDrawn();
 		
 		showDrawTile(drawTile);
 		showInventory();

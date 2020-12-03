@@ -254,6 +254,8 @@ public class ObjFactory {
 		return wholeHat;
 	}
 	
+	
+	
 	public Group colorWand(Cylinder c, Sphere g) {
 		Group wand = new Group();
 		PhongMaterial Gcolor = new PhongMaterial(Color.CYAN);
