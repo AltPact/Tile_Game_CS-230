@@ -297,6 +297,43 @@ public class GameSceneController extends GameWindow implements Initializable {
 		}
 	}
 	
+	public static void setMoveableTiles() {
+		boolean[][] moveableSpaces = currentGameState.getMoveableSpaces();
+		for (int y = 0; y < boardHeight; y++) {
+			final int finalY = y;
+			for (int x = 0; x < boardWidth; x++) {
+				final int finalX = x;
+				if(moveableSpaces[y][x]) {
+					animateTile(tileArray[y][x]);
+					tileArray[y][x].setOnMouseClicked(e -> {
+						movePlayer(playerPlaying, finalY, finalX);
+					});
+					clickAble.add(tileArray[y][x]);
+				}
+			}
+		}
+	}
+	
+	public static void movePlayer(Group player, int y, int x) {
+		int playerNum = currentGameState.getCurPlayer();
+		int[][] playerPositions = currentGameState.getPlayersPositions();
+		playerPositions[playerNum][0] = y;
+		playerPositions[playerNum][1] = x;
+		currentGameState.setPlayerPositions(playerPositions);
+		TranslateTransition playerMove = new TranslateTransition(Duration.seconds(1),player);
+		playerMove.setToX(x);
+		playerMove.setToY(y);
+		playerMove.play();
+	}
+	
+	private static ScaleTransition animateTile(Box tile) {
+		ScaleTransition enlarge = new ScaleTransition(Duration.millis(500), tile);
+		enlarge.setToX(0.8);
+		enlarge.setToY(0.8);
+		enlarge.setCycleCount(Animation.INDEFINITE);
+		enlarge.setAutoReverse(true);
+		return enlarge;
+	}
 	
 
 	/*public static void getNewTile() {
@@ -528,7 +565,7 @@ public class GameSceneController extends GameWindow implements Initializable {
 		currentGame.newTurns();
 		newTurn();
 	}
-
+*/
 	public static void resetClickable() {
 		for (Box tile : clickAble) {
 			tile.setOnMouseClicked(null);
@@ -538,17 +575,10 @@ public class GameSceneController extends GameWindow implements Initializable {
 		clickAble.clear();
 	}
 
-	private static ScaleTransition animateTile(Box tile) {
-		ScaleTransition enlarge = new ScaleTransition(Duration.millis(500), tile);
-		enlarge.setToX(0.8);
-		enlarge.setToY(0.8);
-		enlarge.setCycleCount(Animation.INDEFINITE);
-		enlarge.setAutoReverse(true);
-		return enlarge;
-	}
+
 
 	
-	*/
+
 	public static void moveTile(double x, double y, Box moveTile) {
 		TranslateTransition tileMove = new TranslateTransition(Duration.millis(500), moveTile);
 		tileMove.setToX(x);
