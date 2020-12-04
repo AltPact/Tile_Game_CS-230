@@ -308,30 +308,12 @@ public class Game {
 	 * @return A new game state, see playerMoved for details.
 	 * @throws IllegalMove
 	 */
-	public GameState moveCurrentPlayer(int direction) throws IllegalMove {
+	public GameState moveCurrentPlayer(int newX, int newY) throws IllegalMove {
 		//If the number of moves left is <= 0.
 		if (movesRemaingForThisPlayer <= 0) {
 			throw new IllegalMove("This player has no moves remaining");
 		}
-		//Move the direction of the player. 
-		int curY = players[curPlayer].getY();
-		int curX = players[curPlayer].getX();
 		boolean[][] moveableSpaces = board.getMoveableSpaces(players[curPlayer]);
-		int newY = 0;
-		int newX = 0;
-		if(direction == 0) {
-			newX = curX;
-			newY = curY - 1;
-		} else if(direction == 1) {
-			newX = curX + 1;
-			newY = curY;
-		} else if(direction == 2) {
-			newX = curX;
-			newY = curY + 1;
-		} else if(direction == 3) {
-			newX = curX - 1;
-			newY = curY;
-		}
 		//If the player can move properly
 		if(moveableSpaces[newY][newX]) {
 			players[curPlayer].setY(newY);
