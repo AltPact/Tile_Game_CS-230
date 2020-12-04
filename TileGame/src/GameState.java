@@ -38,6 +38,15 @@ public class GameState {
 	private boolean[] backTrackApplied;
 	private int width;
 	private int height;
+	private PlayerPiece[] players;
+	
+	public void setPlayers(PlayerPiece[] players) {
+		this.players = players;
+	}
+	
+	public PlayerPiece[] getPlayers() {
+		return players;
+	}
 	
 	public void setTileDrawn(Tile tileDrawn) {
 		this.tileDrawn = tileDrawn;

@@ -16,11 +16,13 @@ public class GameFileWriter {
 	 * @param filename The file name to be saved.
 	 * @param players The player array.
 	 */
-    public static void writeGameFile(GameState g, String filename, PlayerPiece[] players ) {
+    public static void writeGameFile(GameState g, String filename) {
         try {
             File f = new File("./data/savedgames" + filename);
             f.createNewFile();
             FileWriter w = new FileWriter(filename); 
+            
+            PlayerPiece[] players = g.getPlayers();
             
             /* write game metadata */
             w.write(String.valueOf(g.isGoalHit()) + DEL);
