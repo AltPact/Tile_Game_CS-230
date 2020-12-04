@@ -103,14 +103,27 @@ public class ObjFactory {
 	public Box makeTileInInventory(int tileType) {
 		Box tile = new Box(70,70,10);
 		PhongMaterial tileTexture = new PhongMaterial();
-		if(tileType==0) {
+		if(tileType==0) {//fire
 			tileTexture.setDiffuseMap(new Image(getClass().getResourceAsStream("/img/texture/fireTile.jpg")));
-		}else if(tileType==1) {
+			tileTexture.setSelfIlluminationMap(new Image(getClass().getResourceAsStream("/img/texture/fireTile.jpg")));
+		}else if(tileType==1) {//ice
 			tileTexture.setDiffuseMap(new Image(getClass().getResourceAsStream("/img/texture/IceTile.jpg")));
-		}else if(tileType==2) {
+			tileTexture.setSelfIlluminationMap(new Image(getClass().getResourceAsStream("/img/texture/IceTile.jpg")));
+		}else if(tileType==2) {//doubleMove
 			tileTexture.setDiffuseMap(new Image(getClass().getResourceAsStream("/img/texture/doubleMoveTile.jpg")));
-		}else if(tileType==3) {
+			tileTexture.setSelfIlluminationMap(new Image(getClass().getResourceAsStream("/img/texture/doubleMoveTile.jpg")));
+		}else if(tileType==3) {//backtrack
 			tileTexture.setDiffuseMap(new Image(getClass().getResourceAsStream("/img/texture/backTrackTile.jpg")));
+			tileTexture.setSelfIlluminationMap(new Image(getClass().getResourceAsStream("/img/texture/backTrackTile.jpg")));
+		}else if(tileType==4) {//corner
+			tileTexture.setDiffuseMap(new Image(getClass().getResourceAsStream("/img/texture/Corner.png")));
+			tileTexture.setSelfIlluminationMap(new Image(getClass().getResourceAsStream("/img/texture/Corner.png")));
+		}else if(tileType==5) {//straight
+			tileTexture.setDiffuseMap(new Image(getClass().getResourceAsStream("/img/texture/Straight.png")));
+			tileTexture.setSelfIlluminationMap(new Image(getClass().getResourceAsStream("/img/texture/Straight.png")));
+		}else if(tileType==6) {//t-shaped
+			tileTexture.setDiffuseMap(new Image(getClass().getResourceAsStream("/img/texture/TShaped.png")));
+			tileTexture.setSelfIlluminationMap(new Image(getClass().getResourceAsStream("/img/texture/TShaped.png")));
 		}
 		tile.setMaterial(tileTexture);
 		return tile;
