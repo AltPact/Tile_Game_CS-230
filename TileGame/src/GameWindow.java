@@ -55,6 +55,7 @@ public class GameWindow {
 	 * @param homepane The reference of the the StackPane
 	 */
 	public void init(Parent root, Scene currentScene, StackPane homepane) {
+		initPlayerDataQueue();
 		this.root = root;
 		this.currentScene = currentScene;
 		this.homepane = homepane;

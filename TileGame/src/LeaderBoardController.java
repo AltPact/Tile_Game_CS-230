@@ -45,17 +45,7 @@ public class LeaderBoardController extends GameWindow implements Initializable {
 	
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
-        getPlayers();
 		makeLeaderBoard();
-	}
-	/**
-	 * This method populates the player data queue, to generate the leader board.
-	 */
-	private void getPlayers() {
-		File [] contentsOfDir = new File("./data/playerData").listFiles();
-		for(File file : contentsOfDir) {
-			playerDataQueue.add(PlayerDataFileReader.readFile(file));
-		}
 	}
 	
 	/**
