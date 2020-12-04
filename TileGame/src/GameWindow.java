@@ -147,6 +147,10 @@ public class GameWindow {
     	currentGame=gameToBeSet;
     }
     
+    public Game getCurrentGame() {
+    	return this.currentGame;
+    }
+    
     protected static void initPlayerDataQueue() {
     	if (playerDataQueue.size() == 0) {
     		File[] contentsOfDir = new File("data/playerdata").listFiles();
