@@ -495,6 +495,7 @@ public class Game {
 		newState.setActionTilesForPlayers(getActionTilesForPlayers());
 		newState.setSilkBag(bag);
 		newState.setTilesInAction(tilesInAction);
+		newState.setPlayers(players);
 		return newState;
 	}
 	
