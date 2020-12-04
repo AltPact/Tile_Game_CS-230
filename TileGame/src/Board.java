@@ -73,27 +73,27 @@ public class Board {
 		boolean[] tileDirections = tiles[playerY][playerX].getDirections();
 		
 		//Checks if player can move up
-		if(playerX > 0){
+		if(playerY > 0){
 			if(tileDirections[0] &&  tiles[playerY][playerX - 1].canMove(2)) {
 				moveableSpaces[playerY][playerX - 1] = true;
 			}
 		}
 		//Checks if player can move right
-		if(playerY < width){
+		if(playerX < width){
 			if(tileDirections[1] &&  tiles[playerY + 1][playerX].canMove(3)) {
 				moveableSpaces[playerY + 1][playerX] = true;
 			}
 		}
 		//Checks if player can move down
-		if(playerX < height){
-			if(tileDirections[2] &&  tiles[playerY][playerX + 1].canMove(0)) {
-				moveableSpaces[playerX + 1][playerY] = true;
+		if(playerY < height){
+			if(tileDirections[2] &&  tiles[playerY + 1][playerX].canMove(0)) {
+				moveableSpaces[playerY + 1][playerX] = true;
 			}
 		}
 		//Checks if player can move left
-		if(playerY > 0){
-			if(tileDirections[3] &&  tiles[playerY - 1][playerX].canMove(1)) {
-				moveableSpaces[playerY - 1][playerX] = true;
+		if(playerX > 0){
+			if(tileDirections[3] &&  tiles[playerY][playerX - 1].canMove(1)) {
+				moveableSpaces[playerY][playerX - 1] = true;
 			}
 		}
 		return moveableSpaces;
