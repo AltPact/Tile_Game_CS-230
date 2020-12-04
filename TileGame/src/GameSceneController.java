@@ -315,15 +315,16 @@ public class GameSceneController extends GameWindow implements Initializable {
 	}
 	
 	public static void movePlayer(Group player, int y, int x) {
-		int playerNum = currentGameState.getCurPlayer();
-		int[][] playerPositions = currentGameState.getPlayersPositions();
-		playerPositions[playerNum][0] = y;
-		playerPositions[playerNum][1] = x;
-		currentGameState.setPlayerPositions(playerPositions);
-		TranslateTransition playerMove = new TranslateTransition(Duration.seconds(1),player);
-		playerMove.setToX(x);
-		playerMove.setToY(y);
-		playerMove.play();
+		try {
+			currentGame.moveCurrentPlayer(x, y);
+			TranslateTransition playerMove = new TranslateTransition(Duration.seconds(1),player);
+			playerMove.setToX(x);
+			playerMove.setToY(y);
+			playerMove.play();
+		} catch (IllegalMove e) {
+			e.printStackTrace();
+		}
+		
 	}
 	
 	private static ScaleTransition animateTile(Box tile) {
