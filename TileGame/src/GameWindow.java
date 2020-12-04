@@ -148,7 +148,7 @@ public class GameWindow {
     }
     
     public Game getCurrentGame() {
-    	return this.currentGame;
+    	return currentGame;
     }
     
     protected static void initPlayerDataQueue() {

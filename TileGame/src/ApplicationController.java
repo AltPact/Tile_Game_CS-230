@@ -8,11 +8,13 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextInputDialog;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
+import javafx.stage.Popup;
 import javafx.stage.Stage;
 
 /**
@@ -46,7 +48,7 @@ public class ApplicationController extends Application {
 		primaryStage.setScene(scene);
 		stage = primaryStage;
 		primaryStage.setOnCloseRequest(e -> {
-			closeWindow(gameWin);
+			closeWindow(gameWin.getCurrentGame());
 		});
 		primaryStage.show();
 
@@ -55,22 +57,27 @@ public class ApplicationController extends Application {
 	/**
 	 * This method will save game data
 	 */
-	public static void closeWindow(GameWindow gameWin) {
-		if (gameWin.getCurrentGame() != null) {
+	public static void closeWindow(Game game) {
+		if (game != null) {
 			TextInputDialog newFileNameDialog = new TextInputDialog();
 			newFileNameDialog.setTitle("Save Game Data File Name");
 			newFileNameDialog.setHeaderText("Please enter a file name to save the game data");
 			newFileNameDialog.setContentText("Game Name: ");
-			String newFileName;
+			String newFileName = null;
 			try {
 				Optional<String> msgBoxRespDialog = newFileNameDialog.showAndWait();
 				newFileName = msgBoxRespDialog.get();
 				System.out.println(newFileName);
 			} catch (NoSuchElementException e) {
 				System.out.println("User has selected cancel");
-
+				
 			}
-
+				GameState s = game.getEndGameState();
+				GameFileWriter.writeGameFile(s, newFileName + ".txt");
+				Label successLabel = new Label("Game successfully saved");
+				Popup successDialog = new Popup();
+				successDialog.getContent().add(successLabel);
+			
 		}
 
 		else {

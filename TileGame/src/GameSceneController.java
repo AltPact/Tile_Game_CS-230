@@ -875,7 +875,7 @@ public class GameSceneController extends GameWindow implements Initializable {
 	 */
 	@FXML
 	public void buttonOnActionQ(ActionEvent event) throws IOException {
-		ApplicationController.closeWindow();
+		ApplicationController.closeWindow(this.getCurrentGame());
 	}
 
 	/**
