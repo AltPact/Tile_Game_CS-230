@@ -212,6 +212,25 @@ public class GameSceneController extends GameWindow implements Initializable {
 		playerMove.play();
 	}
 	
+	private void updateBoard() {
+		Placeable[][] newBoard=currentGameState.getBoard();
+		for(int h=0;h<tileArray.length;h++) {
+			for(int w=0;w<tileArray[h].length;w++) {
+				objectFactory.textureTheTile(tileArray[h][w],newBoard[h][w]);
+			}
+		}
+	}
+	
+	private void updatePlayerPosition() {
+		int[][] playerPosition=currentGameState.getPlayersPositions();
+		for(int playerNum=0;playerNum<playerPosition.length;playerNum++) {
+			int x=playerPosition[playerNum][0];
+			int y=playerPosition[playerNum][1];
+			Box onTile =tileArray[x][y];
+			movePlayer(playerObjectArray[playerNum],onTile.getTranslateX(),onTile.getTranslateY());
+		    }
+	}
+	
 	//Testing method
 	/*public static void printPlayerHashMap() {
 		for(Sphere player : playerPieceLink.keySet()) {
