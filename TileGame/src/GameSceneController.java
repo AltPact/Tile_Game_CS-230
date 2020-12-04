@@ -30,8 +30,10 @@ import javafx.scene.SubScene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
@@ -68,8 +70,7 @@ public class GameSceneController extends GameWindow implements Initializable {
 	private static ParallelTransition clickableAnima;
 	private static ArrayList<ScaleTransition> scaleArray;
 	private static Group tiles;
-
-	private static Game currentGame;
+	
 	private static GameState currentGameState;
 	private static Placeable[][] tileBoard;
 	private static int boardHeight;
@@ -77,8 +78,9 @@ public class GameSceneController extends GameWindow implements Initializable {
 	private static int initPlayerPos[][];
 	private static int currentPlayerPosX;
 	private static int currentPlayerPosY;
-	private static GridPane inventory;
-	private static Placeable activePlaceable;  // the floor tile drawn from the silk bag which must be placed by the current player (if they drew a floor tile)
+	private static int turns=1;
+	private static ArrayList<Box> tileInventory;
+	private static Group inventory;
 	
 	@FXML
 	public BorderPane GB;
@@ -86,6 +88,12 @@ public class GameSceneController extends GameWindow implements Initializable {
 	public Button BackHomeButton;
 	@FXML
 	public Button QuitButton;
+	@FXML
+	public Label turnLabel;
+	@FXML
+	public ImageView playerIndicator;
+	@FXML
+	public Pane rightMenuPane;
 
 	/**
 	 * This method initialize this page
@@ -102,31 +110,24 @@ public class GameSceneController extends GameWindow implements Initializable {
 		addTile();
 		initLightSource();
 		addPlayer();
-		
+		setRightMenu();
 		//gameObjects.getChildren().add(objectFactory.makeFireFly());
 		// setScene
 		subScene = new SubScene(gameObjects, sceneWidth, sceneHeight);
 		setCamera();
 		// addScene
 		GB.setCenter(subScene);
-		showInventory();
+		
 		newTurn();
 		
 	}
-
-	/**
-	 * This method adds a light source to light all gameObjects.
-	 */
+	
 	public void initLightSource() {
 		gameObjects.getChildren().add(objectFactory.makeLightSource(100,100));
 		gameObjects.getChildren().add(objectFactory.makeLightSource(500,300));
 		gameObjects.getChildren().add(objectFactory.makeLightSource(100,600));
 	}
-
-	/**
-	 * This method initialises all game-related variables
-	 * TODO: currentGame currently uses generateTestGame until load/new games work
-	 */
+	
 	public void initVariables() {
 		currentGame = FileReaderWriterTest.generateTestGame();
 		tileBoard=currentGameState.getBoard();
@@ -144,9 +145,29 @@ public class GameSceneController extends GameWindow implements Initializable {
 		scaleArray = new ArrayList<ScaleTransition>();
 		tiles = new Group();
 	}
-
-
+    
 	public void showInventory() {
+		inventory = new Group();
+		Box inventoryBase = new Box(90,500,10);
+		PhongMaterial baseTexture = new PhongMaterial(Color.BROWN);
+		inventoryBase.setMaterial(baseTexture);
+		inventory.setTranslateX(900);
+		inventory.setTranslateY(400);
+		inventory.setTranslateZ(-100);
+		ArrayList<ActionTile> tilesOwned = currentGameState.getActionTileForPlayer(currentGameState.getCurPlayer());
+		double y = inventoryBase.getTranslateY()+10;
+		for(ActionTile actionTile:tilesOwned) {
+			Box acTile = objectFactory.makeTileInInventory(actionTile);
+			acTile.setTranslateX(inventoryBase.getTranslateX());
+			acTile.setTranslateY(y);
+			acTile.setTranslateZ(inventoryBase.getTranslateZ()-10);
+			tileInventory.add(acTile);
+			inventory.getChildren().add(acTile);
+			y+=50;
+		}
+		inventory.getChildren().add(inventoryBase);
+		gameObjects.getChildren().add(inventory);		
+		
 		/*GridPane inventory = objectFactory.makeInventory();
 		inventory.setLayoutX(900);
 		inventory.setLayoutY(180);
@@ -166,11 +187,7 @@ public class GameSceneController extends GameWindow implements Initializable {
 		
 		gameObjects.getChildren().add(inventory);*/
 	}
-
-
-	/**
-	 * Adds a background texture beneath all tiles
-	 */
+	
 	public void addFloor() {
 		Box floor = objectFactory.makeFloor();
 		floor.setTranslateX(420);
@@ -178,11 +195,6 @@ public class GameSceneController extends GameWindow implements Initializable {
 		gameObjects.getChildren().add(floor);
 		System.out.println(floor.getTranslateZ());
 	}
-
-	/**
-	 * For each tile in gameBoard, creates a textured box and adds it to
-	 * gameObjects to be drawn to the screen.
-	 */
 	public void addTile() {
 		int y = 400-(boardHeight*100)/2;
 		//System.out.println("Starting X: "+(400-boardWidth/2));
@@ -205,25 +217,20 @@ public class GameSceneController extends GameWindow implements Initializable {
 		gameObjects.getChildren().add(tiles);//add tile group to game group
 	}
 
-	/**
-	 * For each player in the game, creates player model objects - adds them to
-	 * gameObjects to be drawn to the screen.
-	 * TODO: right now this assumes there are always 2 players
-	 */
 	public void addPlayer() {
 		initPlayerPos=currentGameState.getPlayersPositions();
 		//PlayerPiece pieceArray[] = currentGame.getPlayerPieceArray();
-		for (int i = 0; i < 2; i++) {  // for each player
+		for (int i = 0; i < 2; i++) {
 			// put player pos in int
-			int x = initPlayerPos[i][0];  // TODO: the order of x/y is probably wrong here and in all methods
+			int x = initPlayerPos[i][0];
 			int y = initPlayerPos[i][1];
-			Group player = objectFactory.makePlayer(i);  // creates player model object, right now i determines colour, should probably use color attribute of playerPiece
+			Group player = objectFactory.makePlayer(i);
 			player.setMouseTransparent(true);
-			player.translateXProperty().set(tileArray[x][y].getTranslateX());  // translate the position of the player model to align with the tile that they occupy
+			player.translateXProperty().set(tileArray[x][y].getTranslateX());
 			player.translateYProperty().set(tileArray[x][y].getTranslateY());
-			player.translateZProperty().set(-50);  // raise the player model to appear above the tiles
+			player.translateZProperty().set(-50);
 			//playerPieceLink.put(sphere, pieceArray[i]);
-			gameObjects.getChildren().add(player);  // add player to gameObjects to be drawn
+			gameObjects.getChildren().add(player);
 			playerObjectArray[i] = player;
 		}
 		// System.out.println(gameObjects.getChildren());
@@ -240,9 +247,6 @@ public class GameSceneController extends GameWindow implements Initializable {
 		}
 	}*/
 
-	/**
-	 * sets the viewpoint of the subscene to be above the board.
-	 */
 	public void setCamera() {
 		PerspectiveCamera camera = new PerspectiveCamera();
 		camera.translateXProperty().set(cameraX);
@@ -250,7 +254,6 @@ public class GameSceneController extends GameWindow implements Initializable {
 		camera.translateZProperty().set(-1200);
 		subScene.setCamera(camera);
 	}
-
 
 	public static void newTurn() {
 		// displayTurns();
@@ -264,8 +267,8 @@ public class GameSceneController extends GameWindow implements Initializable {
 
 	public static void getNewTile() {
 		Tile newTile = currentGame.getNewTileForCurrentPlayer();
+		
 	}
-
 	/*public static void setMoveableTile(int centerTileX, int centerTileY) {
 		scaleArray = new ArrayList<ScaleTransition>();
 		clickableAnima = new ParallelTransition();
@@ -313,74 +316,8 @@ public class GameSceneController extends GameWindow implements Initializable {
 		clickableAnima.play();
 	}*/
 
-	/**
-	 * pushes the current activePlaceable tile into the given row/column
-	 * TODO: when setPushable is updated to animate opposite tiles, this will need to be updated with another paramater, the "direction" of the shift.
-	 */
-	public static void pushTile(int i, boolean vertical) {
-		int newX;  // x/y of the tile being added
-		int newY;
-		int remX;  // x/y of the tile being pushed off the board
-		int remY;
-		if (vertical) {
-			for (int y = boardHeight - 1; y > 0; y--) {
-				tileArray[y][i] = tileArray[y-1][i];
-			}
-			remX = i;
-			remY = boardHeight - 1;
-			newX = i;
-			newY = 0;
-		} else {
-			for (int x = boardWidth - 1; x > 0; x--) {
-				tileArray[i][x] = tileArray[i][x-1];
-			}
-			remX = boardWidth - 1;
-			remY = i;
-			newX = 0;
-			newY = i;
-		}
 
-		Box newBox = objectFactory.makeTile(activePlaceable);
-		tileArray[newY][newX] = newBox;
-		int displayX = (400-(boardWidth*100)/2) + (100 * newX);  //copied from addTile()
-		int displayY = (400-(boardHeight*100)/2) + (100 * newY);
-		newBox.translateXProperty().set(displayX);
-		newBox.translateYProperty().set(displayY);
-		newBox.translateZProperty().set(0);
-		tiles.getChildren().remove(tileArray[remY][remX]);  // remove tile being pushed off the board from tiles, will no longer be drawn
-		tiles.getChildren().add(newBox);  // add new tile to tiles to be drawn
-	}
-
-	/**
-	 * animates and makes clickable all columns/rows that a tile can be pushed into
-	 * TODO: also needs to animate and make clickable the tiles on the opposite side of the board. currently will only work for tiles on left/top sides
-	 */
-	public static void setPushable() {
-		ArrayList<Box> pushableTiles = new ArrayList<Box>();
-		boolean[][] insertablePlaces = currentGameState.getInsertableLocations();
-		for (int x = 0; x < boardWidth; x++) { // for each column
-			final int finalX = x;
-			if (insertablePlaces[1][x]) {
-				pushableTiles.add(tileArray[x][0]);
-				tileArray[0][x].setOnMouseClicked(e -> {
-					pushTile(finalX, true);
-				});
-			}
-		}
-		for (int y = 0; y < boardHeight; y++) {  // for each row
-			final int finalY = y;
-			if (insertablePlaces[0][y]) {
-				pushableTiles.add(tileArray[y][0]);
-				tileArray[y][0].setOnMouseClicked(e -> {
-					pushTile(finalY, false);
-				});
-			}
-		}
-	}
-
-
-	/* old setPushable
-	public static void setPushable() {
+	/*public static void setPushable() {
 		//clickableAnima = new ParallelTransition();<-animation
 		clickAble = new ArrayList<Box>();
 		boolean moveablePos[][]=currentGameState.getMoveableSpaces();
@@ -414,8 +351,8 @@ public class GameSceneController extends GameWindow implements Initializable {
 					//clickableAnima.getChildren().add(animateTile(pushableTile));
 				}
 			}
-		}
-			if (rows == 0 || rows == 8) {
+		}*/
+			/*if (rows == 0 || rows == 8) {
 				for (int columns = 2; columns < 8; columns += 4) {
 					Box pushableTile = tileArray[columns][rows];
 					pushableTile.setDisable(false);
@@ -456,9 +393,7 @@ public class GameSceneController extends GameWindow implements Initializable {
 			}
 		
 		//clickableAnima.play();<-play animation
-	}
-	*/
-
+	}*/
 
 	/*public static void pushTile(int rows, int columns, String orientation) {
 		System.out.println("Rows: " + rows + " Columns: " + columns + " b: " + orientation);
@@ -693,7 +628,91 @@ public class GameSceneController extends GameWindow implements Initializable {
 	
 }
 	
+	private void setRightMenu() {
+		turnLabel.setText(Integer.toString(turns));
+		showCurPlayer();
+		Tile drawTile=currentGame.getNewTileForCurrentPlayer();
+		
+		showDrawTile(drawTile);
+		showInventory();
+	}
+	
+	private void showCurPlayer() {
+		int curPlayerNum = currentGameState.getCurPlayer();
+		if(curPlayerNum==0) {
+			playerIndicator.setImage(new Image("/img/redWizard.png"));
+		}else if(curPlayerNum==1) {
+			playerIndicator.setImage(new Image("/img/yellowWizard.png"));
+		}else if(curPlayerNum==2) {
+			playerIndicator.setImage(new Image("/img/blueWizard.png"));
+		}else{
+			playerIndicator.setImage(new Image("/img/purpleWizard.png"));
+		}
+		TranslateTransition changePlayer = new TranslateTransition(Duration.seconds(0.8),playerIndicator);
+		changePlayer.setFromX(0);
+		changePlayer.setFromY(-50);
+		changePlayer.setToX(0);
+		changePlayer.setToY(0);
+		changePlayer.play();
+	}
+	
+	private void showDrawTile(Tile drawTile) {
+		Image tileImage=null;
+		if(drawTile.getType()==TileType.Straight) {
+			tileImage = new Image("/img/texture/Straight.png");
+		}else if(drawTile.getType()==TileType.Corner) {
+			tileImage = new Image("/img/texture/Corner.png");
+		}else if(drawTile.getType()==TileType.TShaped) {
+			tileImage = new Image("/img/texture/Corner.png");
+		}else if(drawTile.getType()==TileType.Fire) {
+			tileImage = new Image("/img/texture/fireTile.jpg");
+		}else if(drawTile.getType()==TileType.Ice) {
+			tileImage = new Image("/img/texture/IceTile.jpg");
+		}else if(drawTile.getType()==TileType.BackTrack) {
+			tileImage = new Image("/img/texture/backTrackTile.jpg");
+		}else if(drawTile.getType()==TileType.DoubleMove) {
+			tileImage = new Image("/img/texture/doubleMoveTile.jpg");
+		}
+		Label tileType = showTileType(drawTile);
+		ImageView tileIcon = new ImageView();
+		tileIcon.setImage(tileImage);
+		tileIcon.setFitHeight(50);
+		tileIcon.setFitWidth(50);
+		tileIcon.setLayoutX(42);
+		tileIcon.setLayoutY(225);
+		rightMenuPane.getChildren().add(tileIcon);
+		ScaleTransition appearTile = new ScaleTransition(Duration.seconds(1),tileIcon);
+		appearTile.setFromX(0);
+		appearTile.setFromY(0);
+		appearTile.setToX(1);
+		appearTile.setToY(1);
+		appearTile.setOnFinished(e->{
+			rightMenuPane.getChildren().add(tileType);
+		});
+		PauseTransition hold = new PauseTransition(Duration.millis(1000));
+		hold.setOnFinished(e->{
+			rightMenuPane.getChildren().remove(tileType);
+		});
+		
+		ScaleTransition disappearTile = new ScaleTransition(Duration.seconds(1),tileIcon);
+		disappearTile.setFromX(1);
+		disappearTile.setFromY(1);
+		disappearTile.setToX(0);
+		disappearTile.setToY(0);
+		SequentialTransition showTileSeq = new SequentialTransition(appearTile,hold,disappearTile);
+		showTileSeq.play();
+	}
+	
+	public Label showTileType(Tile drawTile) {
+		Label typeType = new Label(drawTile.getType().name());
+		typeType.setTextFill(Color.WHITE);
+		typeType.setAlignment(Pos.CENTER);
+		typeType.setLayoutX(37);
+		typeType.setLayoutY(205);
+		return typeType;
+	}
 
+	
 	/**
 	 * This method is called when the back button is click it will call the
 	 * switchPane() method which switch to HomePagePane

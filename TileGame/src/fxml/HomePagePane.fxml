@@ -14,7 +14,7 @@
    <top>
       <VBox alignment="CENTER" prefHeight="150.0" prefWidth="600.0" BorderPane.alignment="CENTER">
          <children>
-            <Label alignment="BOTTOM_CENTER" contentDisplay="CENTER" text="Game Title">
+            <Label alignment="BOTTOM_CENTER" contentDisplay="CENTER" text="The Labrynth of Llansamlet">
                <font>
                   <Font size="44.0" />
                </font>

@@ -1,22 +1,3 @@
- 
-/* Java Doc Not Yet Complete.
- * Class Not Yet Complete.
- * No implementation for backtrack yet as file reader/writer not yet implemented.
- * No working implementation as silk bag not yet complete.
- * 
- * TO DO TODAY:
- * 		- Implement the relevant game state constructors.
- * 			end Game
- * 		- Past States reduce data.
- *  
- *  Board needs method to get all tiles.
- * 
- */
-
-
-
-
-
 import java.util.ArrayList;
 /**
  * Game Class is designed to implement the game.
@@ -75,8 +56,6 @@ public class Game {
 		
 	}
 	
-	 //TODO now game class has been reprogrammed, get the data that is relevant for the graphics context.
-	
 	/**
 	 * @private
 	 * This method is designed to be able to build the game from a current state.
@@ -93,9 +72,9 @@ public class Game {
 	 * This method gets a new tile for a player
 	 * If the drawn tile is action tile, then the tile is
 	 * added to their array list. 
-	 * @return The drawn tile.
+	 * @return A game state with a updated list of action tiles and the tile that has been drawn.
 	 */
-	public Tile getNewTileForCurrentPlayer() {
+	public GameState getNewTileForCurrentPlayer() {
 		TileType newTileType = bag.draw();
 		Tile newTile = null;
 		if(newTileType == TileType.BackTrack) {
@@ -113,7 +92,11 @@ public class Game {
 		} else {
 			newTile = new Placeable(newTileType);
 		}
-		return newTile;
+		
+		GameState newState = new GameState();
+		newState.setTileDrawn(newTile);
+		newState.setActionTilesForPlayers(getActionTilesForPlayers());
+		return newState;
 	}
 	
 	/**
@@ -326,9 +309,11 @@ public class Game {
 	 * @throws IllegalMove
 	 */
 	public GameState moveCurrentPlayer(int direction) throws IllegalMove {
+		//If the number of moves left is <= 0.
 		if (movesRemaingForThisPlayer <= 0) {
 			throw new IllegalMove("This player has no moves remaining");
 		}
+		//Move the direction of the player. 
 		int curX = players[curPlayer].getX();
 		int curY = players[curPlayer].getY();
 		boolean[][] moveableSpaces = board.getMoveableSpaces(players[curPlayer]);
@@ -347,12 +332,14 @@ public class Game {
 			newX = curX - 1;
 			newY = curY;
 		}
+		//If the player can move properly
 		if(moveableSpaces[newX][newY]) {
 			players[curPlayer].setX(newX);
 			players[curPlayer].setY(newY);
 			movesRemaingForThisPlayer--;
 			Placeable newTile = (Placeable) board.getTile(newX, newY);
 			isGoalReached = newTile.isGoal();
+			//If the goal is reached, end the game. 
 			if(isGoalReached) {
 				for(int i = 0; i < players.length; i++) {
 					if(i == curPlayer) {
@@ -465,17 +452,29 @@ public class Game {
 		return newState;	
 	}
 	
+	/**
+	 * @private 
+	 * This method makes a game state, with all of the relevant data.
+	 * It contains the all of the player positions, the board, as tiles,
+	 * the current player, move-able spaces and insert-able locations,
+	 * and the tiles that are in action.
+	 * @return  A new game state.
+	 */
 	private GameState makeStateEndTurn() {
 		GameState newState = new GameState();
 		newState.setPlayerPositions(getPlayerPositions());
 		newState.setBoard(board.getTiles(), board.getWidth(), board.getHeight());
 		newState.setTilesInAction(tilesInAction);
-		
 		newState.setCurrentPlayer(curPlayer, movesRemaingForThisPlayer);
 		newState.setMoveableSpaces(board.getMoveableSpaces(players[curPlayer]));
 		newState.setInsertableLocation(board.getInsertablePlaces());
 		return newState;
 	}
+	
+	/**
+	 * Makes a array of arraylists, containing all of the tiles owned by each player. 
+	 * @return A array of ArrayLists containing the action tiles for each player. 
+	 */
 	private ArrayList<ActionTile>[] getActionTilesForPlayers() {
 		@SuppressWarnings("unchecked")
 		ArrayList<ActionTile>[] tilesOwnedByPlayers = new ArrayList[players.length];
@@ -485,6 +484,10 @@ public class Game {
 		return tilesOwnedByPlayers;
 	}
 	
+	/**
+	 * Makes the initial game state of the game.
+	 * @return A game state with all of the data to draw the board.
+	 */
 	public GameState getInitalGameState() {
 		GameState newState = new GameState();
 		newState.setBoard(board.getTiles(), board.getWidth(), board.getHeight());
@@ -497,6 +500,11 @@ public class Game {
 		return newState;
 	}
 	
+	/**
+	 * A method that gets all of the data required to rebuild the game 
+	 * to save it. 
+	 * @return
+	 */
 	public GameState getEndGameState() {
 		GameState newState = new GameState();
 		newState.setBoard(board.getTiles(), board.getWidth(), board.getHeight());

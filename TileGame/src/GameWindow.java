@@ -151,7 +151,6 @@ public class GameWindow {
     		File[] contentsOfDir = new File("data/playerdata").listFiles();
     		for(File file:contentsOfDir) {
     			playerDataQueue.add(PlayerDataFileReader.readFile(file));
-    			
     		}
     	}
     	else {

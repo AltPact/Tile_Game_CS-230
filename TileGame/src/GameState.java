@@ -7,6 +7,10 @@ import java.util.ArrayList;
 
 /**
  * Game state, used to hold data relating to the state at any given time. 
+ * It is designed as a catch all data type to allow multiple items of data 
+ * to be parsed between game and other classes in one go.
+ * It's comprised of the series of getters and setters to set the infomation when
+ * it's needed.
  * @author Alex Ullman (851732) and Joshua Sinderberry (851800)
  * @version 1
  *
@@ -19,6 +23,7 @@ public class GameState {
 	private boolean isGoalHit;
 	private ArrayList<ActionTile>[] actionTilesForEachPlayer;
 	private ArrayList<ActionTilePlaceable> tilesInAction;
+	private Tile tileDrawn;
 	
 	private int[] positionOfInsertedTile;
 	private Tile insertedTile;
@@ -33,6 +38,14 @@ public class GameState {
 	private boolean[] backTrackApplied;
 	private int width;
 	private int height;
+	
+	public void setTileDrawn(Tile tileDrawn) {
+		this.tileDrawn = tileDrawn;
+	}
+	
+	public Tile getTileDrawn() {
+		return tileDrawn;
+	}
 	
 	
 	public ArrayList<ActionTile>[] getActionTilesForEachPlayer() {
