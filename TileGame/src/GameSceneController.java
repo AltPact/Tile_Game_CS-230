@@ -678,6 +678,7 @@ public class GameSceneController extends GameWindow implements Initializable {
 	}
 	
 	public void showInventory() {
+		selectedTile=null;
 		boolean actionTileObtained[]= {false,false,false,false};
 		inventory = new Group();
 		tileInventory = new ArrayList<Box>();
