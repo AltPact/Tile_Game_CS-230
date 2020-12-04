@@ -94,7 +94,7 @@ public class LeaderBoardController extends GameWindow implements Initializable {
 	 */
 	public Label userInfo(String content) {
 		Label label = new Label(content);
-		label.setTextFill(Color.WHITE);
+		label.setTextFill(Color.BLACK);
 		return label;
 	}
 }
