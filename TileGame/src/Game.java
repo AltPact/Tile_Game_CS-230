@@ -84,10 +84,10 @@ public class Game {
 			newTile = new DoubleMove(players[curPlayer]);
 			players[curPlayer].addActionTile((ActionTile)newTile);
 		} else if (newTileType == TileType.Ice) {
-			newTile = new DoubleMove(players[curPlayer]);
+			newTile = new Ice(players[curPlayer], players.length);
 			players[curPlayer].addActionTile((ActionTile)newTile);
 		} else if (newTileType == TileType.Fire) {
-			newTile = new DoubleMove(players[curPlayer]);
+			newTile = new Fire(players[curPlayer], players.length);
 			players[curPlayer].addActionTile((ActionTile)newTile);
 		} else {
 			newTile = new Placeable(newTileType);
