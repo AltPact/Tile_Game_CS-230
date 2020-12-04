@@ -70,6 +70,7 @@ public class GameSceneController extends GameWindow implements Initializable {
 	private static ParallelTransition clickableAnima;
 	private static ArrayList<ScaleTransition> scaleArray;
 	private static Group tiles;
+	private static Group arrows;
 	
 	private static GameState currentGameState;
 	private static Placeable[][] tileBoard;
@@ -110,6 +111,7 @@ public class GameSceneController extends GameWindow implements Initializable {
 		initVariables();
 		addFloor();
 		addTile();
+		gameObjects.getChildren().add(arrows);
 		initLightSource();
 		addPlayer();
 		setRightMenu();
@@ -146,6 +148,7 @@ public class GameSceneController extends GameWindow implements Initializable {
 		clickableAnima=null;
 		scaleArray = new ArrayList<ScaleTransition>();
 		tiles = new Group();
+		arrows = new Group();
 	}
     
 	
@@ -157,6 +160,10 @@ public class GameSceneController extends GameWindow implements Initializable {
 		gameObjects.getChildren().add(floor);
 		System.out.println(floor.getTranslateZ());
 	}
+
+	/**
+	 * add all tiles at start of game
+	 */
 	public void addTile() {
 		int y = 400-(boardHeight*100)/2;
 		//System.out.println("Starting X: "+(400-boardWidth/2));
@@ -231,31 +238,66 @@ public class GameSceneController extends GameWindow implements Initializable {
 		//setPushable();
 		// setMoveableTile(xCor, yCor);
 	}
-	
+
+	/**
+	 * updates the x/y/z positions of all tiles so that they are drawn in the correct place on the screen.
+	 */
+	public static void updateTileTranslations() {
+		int y = 400-(boardHeight*100)/2;
+		for (int q = 0; q < boardHeight; q++) {
+			int x = 400-(boardWidth*100)/2;
+			for (int i = 0; i < boardWidth; i++) {
+				tileArray[q][i].translateXProperty().set(x);
+				tileArray[q][i].translateYProperty().set(y);
+				tileArray[q][i].translateZProperty().set(0);
+				x += 100;//gap between tiles
+			}
+			y += 100;//gap between tiles
+		}
+	}
+
 	/**
 	 * pushes the current activePlaceable tile into the given row/column
+	 * TODO: needs to remove arrows
 	 * TODO: when setPushable is updated to animate opposite tiles, this will need to be updated with another paramater, the "direction" of the shift.
 	 */
-	public static void pushTile(int i, boolean vertical) {
+	/**
+	 *
+	 * @param direction the direction to push to tile in from (top/bottom/left/right)
+	 */
+	public static void pushTile(int i, int direction) {
+		arrows.getChildren().removeAll();  // remove all arrows now that one has been clicked
 		int newX;  // x/y of the tile being added
 		int newY;
 		int remX;  // x/y of the tile being pushed off the board
 		int remY;
-		if (vertical) {
+		if (direction == 0) {  // top
+			tiles.getChildren().remove(tileArray[boardHeight - 1][i]);
 			for (int y = boardHeight - 1; y > 0; y--) {
 				tileArray[y][i] = tileArray[y-1][i];
 			}
-			remX = i;
-			remY = boardHeight - 1;
 			newX = i;
 			newY = 0;
-		} else {
+		} else if (direction == 2) {  // left
+			tiles.getChildren().remove(tileArray[i][boardWidth - 1]);
 			for (int x = boardWidth - 1; x > 0; x--) {
 				tileArray[i][x] = tileArray[i][x-1];
 			}
-			remX = boardWidth - 1;
-			remY = i;
 			newX = 0;
+			newY = i;
+		} else if (direction == 1) {  // bottom
+			tiles.getChildren().remove(tileArray[0][i]);
+			for (int y = 0; y < (boardHeight - 1); y++) {
+				tileArray[y][i] = tileArray[y+1][i];
+			}
+			newX = i;
+			newY = boardHeight - 1;
+		} else{  // assume direction == 3, right
+			tiles.getChildren().remove(tileArray[i][0]);
+			for (int x = 0; x < (boardWidth - 1); x++) {
+				tileArray[i][x] = tileArray[i][x+1];
+			}
+			newX = boardWidth - 1;
 			newY = i;
 		}
 
@@ -266,15 +308,71 @@ public class GameSceneController extends GameWindow implements Initializable {
 		newBox.translateXProperty().set(displayX);
 		newBox.translateYProperty().set(displayY);
 		newBox.translateZProperty().set(0);
-		tiles.getChildren().remove(tileArray[remY][remX]);  // remove tile being pushed off the board from tiles, will no longer be drawn
 		tiles.getChildren().add(newBox);  // add new tile to tiles to be drawn
 	}
 
 	/**
-	 * animates and makes clickable all columns/rows that a tile can be pushed into
-	 * TODO: also needs to animate and make clickable the tiles on the opposite side of the board. currently will only work for tiles on left/top sides
+	 * creates arrows next to all free rows/columns that can be clicked by the player to insert a tile into that row/column
 	 */
-	public static void setPushable() {
+	public static void setPushableArrows() {
+		ArrayList<Box> pushableTiles = new ArrayList<Box>();
+		boolean[][] insertablePlaces = currentGameState.getInsertableLocations(); // [rows, columns][index]
+		for (int x = 0; x < boardWidth; x++) { // for each column
+			final int finalX = x;
+			if (insertablePlaces[1][x]) {
+				pushableTiles.add(tileArray[0][x]);
+				Box newDownArrow = objectFactory.makeArrow(1);  // make down arrow
+				newDownArrow.translateXProperty().set(tileArray[0][x].translateXProperty().get());  // same x
+				newDownArrow.translateYProperty().set(tileArray[0][x].translateYProperty().get() - 100);  // -100y
+				newDownArrow.translateZProperty().set(0);
+				arrows.getChildren().add(newDownArrow);
+				newDownArrow.setOnMouseClicked(e -> {
+					pushTile(finalX, 0);
+				});
+
+				pushableTiles.add(tileArray[boardHeight-1][x]);
+				Box newUpArrow = objectFactory.makeArrow(0);  // make up arrow
+				newUpArrow.translateXProperty().set(tileArray[boardHeight-1][x].translateXProperty().get());  // same x
+				newUpArrow.translateYProperty().set(tileArray[boardHeight-1][x].translateYProperty().get() + 100);  // +100y
+				newUpArrow.translateZProperty().set(0);
+				arrows.getChildren().add(newUpArrow);
+				newDownArrow.setOnMouseClicked(e -> {
+					pushTile(finalX, 1);
+				});
+			}
+		}
+		for (int y = 0; y < boardHeight; y++) {  // for each row
+			final int finalY = y;
+			if (insertablePlaces[0][y]) {
+				pushableTiles.add(tileArray[y][0]);
+				Box newRightArrow = objectFactory.makeArrow(3);  // make right arrow
+				newRightArrow.translateXProperty().set(tileArray[y][0].translateXProperty().get() - 100);  // -100x
+				newRightArrow.translateYProperty().set(tileArray[y][0].translateYProperty().get());  // same y
+				newRightArrow.translateZProperty().set(0);
+				arrows.getChildren().add(newRightArrow);
+				newRightArrow.setOnMouseClicked(e -> {
+					pushTile(finalY, 2);
+				});
+
+				pushableTiles.add(tileArray[y][boardWidth-1]);
+				Box newLeftArrow = objectFactory.makeArrow(2);  // make left arrow
+				newLeftArrow.translateXProperty().set(tileArray[y][boardWidth - 1].translateXProperty().get() + 100);  // +100x
+				newLeftArrow.translateYProperty().set(tileArray[y][boardWidth - 1].translateYProperty().get() + 100);  // same y
+				newLeftArrow.translateZProperty().set(0);
+				arrows.getChildren().add(newLeftArrow);
+				newLeftArrow.setOnMouseClicked(e -> {
+					pushTile(finalY, 1);
+				});
+			}
+		}
+		gameObjects.getChildren().add(arrows);
+	}
+
+	/**
+	 * TODO: old, dont need this anymore
+	 * animates and makes clickable all columns/rows that a tile can be pushed into
+	 */
+	/*public static void setPushable() {
 		ArrayList<Box> pushableTiles = new ArrayList<Box>();
 		boolean[][] insertablePlaces = currentGameState.getInsertableLocations();
 		for (int x = 0; x < boardWidth; x++) { // for each column
@@ -295,7 +393,7 @@ public class GameSceneController extends GameWindow implements Initializable {
 				});
 			}
 		}
-	}
+	}*/
 	
 	public static void setMoveableTiles() {
 		boolean[][] moveableSpaces = currentGameState.getMoveableSpaces();

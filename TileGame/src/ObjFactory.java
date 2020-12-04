@@ -37,7 +37,12 @@ public class ObjFactory {
 	private static PhongMaterial straightTileTexture = new PhongMaterial();
 	private static PhongMaterial goalTileTexture = new PhongMaterial();
 	private static PhongMaterial boardTexture = new PhongMaterial();
-	
+	private static PhongMaterial arrowUpTexture = new PhongMaterial();
+	private static PhongMaterial arrowDownTexture = new PhongMaterial();
+	private static PhongMaterial arrowLeftTexture = new PhongMaterial();
+	private static PhongMaterial arrowRightTexture = new PhongMaterial();
+
+
 	private static PhongMaterial fixedCornerTexture = new PhongMaterial();
 	private static PhongMaterial fixedTTexture = new PhongMaterial();
 	private static PhongMaterial fixedStraightTexture = new PhongMaterial();
@@ -59,6 +64,7 @@ public class ObjFactory {
 		initFrozenTTexture();
 		initFrozenStraightTexture();
 		initFireTexture();
+		initArrowTextures();
 	}
 	
 	private void initTTileTexture() {
@@ -99,6 +105,12 @@ public class ObjFactory {
 	private void initFireTexture() {
 		fireTexture.setDiffuseMap(new Image(getClass().getResourceAsStream("/img/texture/fire.jpg")));
 	}
+	private void initArrowTextures() {
+		arrowUpTexture.setDiffuseMap(new Image(getClass().getResourceAsStream("/img/texture/arrow-up.png")));
+		arrowDownTexture.setDiffuseMap(new Image(getClass().getResourceAsStream("/img/texture/arrow-down.png")));
+		arrowLeftTexture.setDiffuseMap(new Image(getClass().getResourceAsStream("/img/texture/arrow-left.png")));
+		arrowRightTexture.setDiffuseMap(new Image(getClass().getResourceAsStream("/img/texture/arrow-right.png")));
+	}
 	
 	public Box makeTileInInventory(int tileType) {
 		Box tile = new Box(70,70,10);
@@ -128,7 +140,32 @@ public class ObjFactory {
 		tile.setMaterial(tileTexture);
 		return tile;
 	}
-	
+
+	/**
+	 * Constructs a textured arrow box that will indicate where a tile can be pushed into the board
+	 * @param orientation the orientation of the arrow (up, down, left, right)
+	 * @return a textured box that can be drawn to the screen
+	 */
+	public Box makeArrow(int orientation) {
+		Box arrow = new Box(tileLength, tileLength, tiledepth);
+		switch (orientation) {
+			case 0:  // up
+				arrow.setMaterial(arrowUpTexture);
+				break;
+			case 1:  // down
+				arrow.setMaterial(arrowDownTexture);
+				break;
+			case 2:  // left
+				arrow.setMaterial(arrowLeftTexture);
+				break;
+			case 3:  // right
+				arrow.setMaterial(arrowRightTexture);
+				break;
+		}
+		return arrow;
+	}
+
+
 	public Box makeTile(Placeable tileType) {
 		Box tile = new Box(tileLength,tileLength,tiledepth);
 		
