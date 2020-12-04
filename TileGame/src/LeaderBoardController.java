@@ -29,6 +29,7 @@ public class LeaderBoardController extends GameWindow implements Initializable {
 	private BorderPane LB;
 	@FXML
 	private VBox leaderBoard;
+	
 
 	@FXML
 	/**
@@ -44,14 +45,13 @@ public class LeaderBoardController extends GameWindow implements Initializable {
 	
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
-        
 		makeLeaderBoard();
 	}
 	
 	/**
 	 * Purpose: Creates leaderboard by using the playerDataQueue in GameWindow()
 	 */
-	public void makeLeaderBoard() {
+	private void makeLeaderBoard() {
 		int rank=1;
 		for(PlayerData p : playerDataQueue) {
 		HBox playerRow = createUserBox(p,rank);
@@ -94,7 +94,7 @@ public class LeaderBoardController extends GameWindow implements Initializable {
 	 */
 	public Label userInfo(String content) {
 		Label label = new Label(content);
-		label.setTextFill(Color.WHITE);
+		label.setTextFill(Color.BLACK);
 		return label;
 	}
 }

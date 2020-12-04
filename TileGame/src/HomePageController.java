@@ -68,7 +68,6 @@ public class HomePageController extends GameWindow implements Initializable {
 		}
 		try {
 		    messageOfTheDay.setText(MessageOfTheDay.getResult());
-		    System.out.println(MessageOfTheDay.getResult());
 		} catch (IOException e) {
 			System.out.println("Cannot get message of the day");
 		}

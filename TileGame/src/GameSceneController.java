@@ -315,15 +315,16 @@ public class GameSceneController extends GameWindow implements Initializable {
 	}
 	
 	public static void movePlayer(Group player, int y, int x) {
-		int playerNum = currentGameState.getCurPlayer();
-		int[][] playerPositions = currentGameState.getPlayersPositions();
-		playerPositions[playerNum][0] = y;
-		playerPositions[playerNum][1] = x;
-		currentGameState.setPlayerPositions(playerPositions);
-		TranslateTransition playerMove = new TranslateTransition(Duration.seconds(1),player);
-		playerMove.setToX(x);
-		playerMove.setToY(y);
-		playerMove.play();
+		try {
+			currentGame.moveCurrentPlayer(x, y);
+			TranslateTransition playerMove = new TranslateTransition(Duration.seconds(1),player);
+			playerMove.setToX(x);
+			playerMove.setToY(y);
+			playerMove.play();
+		} catch (IllegalMove e) {
+			e.printStackTrace();
+		}
+		
 	}
 	
 	private static ScaleTransition animateTile(Box tile) {
@@ -704,7 +705,36 @@ public class GameSceneController extends GameWindow implements Initializable {
 		Tile drawTile=currentGameState.getTileDrawn();
 		
 		showDrawTile(drawTile);
-		showInventory();
+		if(!drawTile.isAction()) {
+			showPlaceableFloor(drawTile);
+		}
+		if(currentGameState.hasPlaceableActionTileApplied()) {
+		    showInventory();
+		}
+	}
+	
+	private void showPlaceableFloor(Tile floorTile) {
+		Box floor=null;
+		final Box fTile;
+		if(floorTile.getType()==TileType.Corner) {
+			floor=objectFactory.makeTileInInventory(4);
+		}else if(floorTile.getType()==TileType.Straight) {
+			floor=objectFactory.makeTileInInventory(5);
+		}else if(floorTile.getType()==TileType.TShaped) {
+			floor=objectFactory.makeTileInInventory(6);
+		}
+		selectedTile=floor;
+		fTile=floor;
+		floor.setOnMouseClicked(e->{
+			fTile.setRotate(fTile.getRotate()+90);
+		});
+		floor.setTranslateY(400);
+		floor.setTranslateZ(-50);
+		gameObjects.getChildren().add(floor);
+		TranslateTransition floortileMove = new TranslateTransition(Duration.millis(1000), floor);
+		floortileMove.setFromX(1200);
+		floortileMove.setToX(950);
+		floortileMove.play();
 	}
 	
 	public void showInventory() {
@@ -805,7 +835,7 @@ public class GameSceneController extends GameWindow implements Initializable {
 		}else if(drawTile.getType()==TileType.Corner) {
 			tileImage = new Image("/img/texture/Corner.png");
 		}else if(drawTile.getType()==TileType.TShaped) {
-			tileImage = new Image("/img/texture/Corner.png");
+			tileImage = new Image("/img/texture/TShaped.png");
 		}else if(drawTile.getType()==TileType.Fire) {
 			tileImage = new Image("/img/texture/fireTile.jpg");
 		}else if(drawTile.getType()==TileType.Ice) {
@@ -874,7 +904,7 @@ public class GameSceneController extends GameWindow implements Initializable {
 	 */
 	@FXML
 	public void buttonOnActionQ(ActionEvent event) throws IOException {
-		ApplicationController.closeWindow();
+		ApplicationController.closeWindow(this.getCurrentGame());
 	}
 
 	/**

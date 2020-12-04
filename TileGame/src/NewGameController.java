@@ -72,8 +72,6 @@ public class NewGameController extends GameWindow implements Initializable {
 
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
-		initPlayerDataQueue();
-		
 		setComboBox("");
 		makeBoardRadio();
 		
@@ -131,7 +129,6 @@ public class NewGameController extends GameWindow implements Initializable {
 	private HBox makePlayerRows(PlayerData playerInfo) {
 		HBox row = new HBox();
 		row.setPrefSize(496, 22);
-
 		row.getChildren().addAll(makeLabel(playerInfo.getName()), makeButton(row, playerInfo));
 		playerRows.add(row);
 		return row;

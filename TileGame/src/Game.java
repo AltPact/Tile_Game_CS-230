@@ -84,10 +84,10 @@ public class Game {
 			newTile = new DoubleMove(players[curPlayer]);
 			players[curPlayer].addActionTile((ActionTile)newTile);
 		} else if (newTileType == TileType.Ice) {
-			newTile = new DoubleMove(players[curPlayer]);
+			newTile = new Ice(players[curPlayer], players.length);
 			players[curPlayer].addActionTile((ActionTile)newTile);
 		} else if (newTileType == TileType.Fire) {
-			newTile = new DoubleMove(players[curPlayer]);
+			newTile = new Fire(players[curPlayer], players.length);
 			players[curPlayer].addActionTile((ActionTile)newTile);
 		} else {
 			newTile = new Placeable(newTileType);
@@ -135,7 +135,7 @@ public class Game {
 
 		movePlayersOn(directionOfInsertion, affectedRowColumn);
 		
-		int[] postion = {x,y};
+		int[] postion = {y,x};
 		return tileAfterInsertion(tileToBeInserted, postion);
 	}
 	
@@ -265,15 +265,15 @@ public class Game {
 	public GameState playIce(Ice ice, int x, int y) throws IncorrectTileTypeException {
 		players[curPlayer].playActionTile(ice);
 		Placeable[] tilesToAction= new Placeable[9];
-		tilesToAction[0] = (Placeable) board.getTile((x - 1), (y - 1));
-		tilesToAction[1] = (Placeable) board.getTile((x - 1), y);
-		tilesToAction[2] = (Placeable) board.getTile((x - 1), (y + 1));
-		tilesToAction[3] = (Placeable) board.getTile(x, (y - 1));
-		tilesToAction[4] = (Placeable) board.getTile(x, y);
-		tilesToAction[5] = (Placeable) board.getTile(x, (y + 1));
-		tilesToAction[6] = (Placeable) board.getTile((x + 1), (y - 1));
-		tilesToAction[7] = (Placeable) board.getTile((x + 1), y);
-		tilesToAction[8] = (Placeable) board.getTile((x + 1) , (y + 1));
+		tilesToAction[0] = (Placeable) board.getTile((y - 1), (x - 1));
+		tilesToAction[1] = (Placeable) board.getTile((y - 1), x);
+		tilesToAction[2] = (Placeable) board.getTile((y - 1), (x + 1));
+		tilesToAction[3] = (Placeable) board.getTile(y, (x - 1));
+		tilesToAction[4] = (Placeable) board.getTile(y, x);
+		tilesToAction[5] = (Placeable) board.getTile(y, (x + 1));
+		tilesToAction[6] = (Placeable) board.getTile((y + 1), (x - 1));
+		tilesToAction[7] = (Placeable) board.getTile((y + 1), x);
+		tilesToAction[8] = (Placeable) board.getTile((y + 1) , (x + 1));
 		ice.instantiateAction(tilesToAction);
 		return actionTilePlayed();
 	}
@@ -289,15 +289,15 @@ public class Game {
 	public GameState playFire(Fire fire, int x, int y) throws IncorrectTileTypeException {
 		players[curPlayer].playActionTile(fire);
 		Placeable[] tilesToAction= new Placeable[9];
-		tilesToAction[0] = (Placeable) board.getTile((x - 1), (y - 1));
-		tilesToAction[1] = (Placeable) board.getTile((x - 1), y);
-		tilesToAction[2] = (Placeable) board.getTile((x - 1), (y + 1));
-		tilesToAction[3] = (Placeable) board.getTile(x, (y - 1));
-		tilesToAction[4] = (Placeable) board.getTile(x, y);
-		tilesToAction[5] = (Placeable) board.getTile(x, (y + 1));
-		tilesToAction[6] = (Placeable) board.getTile((x + 1), (y - 1));
-		tilesToAction[7] = (Placeable) board.getTile((x + 1), y);
-		tilesToAction[8] = (Placeable) board.getTile((x + 1) , (y + 1));
+		tilesToAction[0] = (Placeable) board.getTile((y - 1), (x - 1));
+		tilesToAction[1] = (Placeable) board.getTile((y - 1), x);
+		tilesToAction[2] = (Placeable) board.getTile((y - 1), (x + 1));
+		tilesToAction[3] = (Placeable) board.getTile(y, (x - 1));
+		tilesToAction[4] = (Placeable) board.getTile(y, x);
+		tilesToAction[5] = (Placeable) board.getTile(y, (x + 1));
+		tilesToAction[6] = (Placeable) board.getTile((y + 1), (x - 1));
+		tilesToAction[7] = (Placeable) board.getTile((y + 1), x);
+		tilesToAction[8] = (Placeable) board.getTile((y + 1) , (x + 1));
 		fire.instantiateAction(tilesToAction);
 		return actionTilePlayed();
 	}
@@ -308,36 +308,18 @@ public class Game {
 	 * @return A new game state, see playerMoved for details.
 	 * @throws IllegalMove
 	 */
-	public GameState moveCurrentPlayer(int direction) throws IllegalMove {
+	public GameState moveCurrentPlayer(int newX, int newY) throws IllegalMove {
 		//If the number of moves left is <= 0.
 		if (movesRemaingForThisPlayer <= 0) {
 			throw new IllegalMove("This player has no moves remaining");
 		}
-		//Move the direction of the player. 
-		int curX = players[curPlayer].getX();
-		int curY = players[curPlayer].getY();
 		boolean[][] moveableSpaces = board.getMoveableSpaces(players[curPlayer]);
-		int newX = 0;
-		int newY = 0;
-		if(direction == 0) {
-			newX = curX;
-			newY = curY - 1;
-		} else if(direction == 1) {
-			newX = curX + 1;
-			newY = curY;
-		} else if(direction == 2) {
-			newX = curX;
-			newY = curY + 1;
-		} else if(direction == 3) {
-			newX = curX - 1;
-			newY = curY;
-		}
 		//If the player can move properly
-		if(moveableSpaces[newX][newY]) {
-			players[curPlayer].setX(newX);
+		if(moveableSpaces[newY][newX]) {
 			players[curPlayer].setY(newY);
+			players[curPlayer].setX(newX);
 			movesRemaingForThisPlayer--;
-			Placeable newTile = (Placeable) board.getTile(newX, newY);
+			Placeable newTile = (Placeable) board.getTile(newY, newX);
 			isGoalReached = newTile.isGoal();
 			//If the goal is reached, end the game. 
 			if(isGoalReached) {
@@ -513,6 +495,7 @@ public class Game {
 		newState.setActionTilesForPlayers(getActionTilesForPlayers());
 		newState.setSilkBag(bag);
 		newState.setTilesInAction(tilesInAction);
+		newState.setPlayers(players);
 		return newState;
 	}
 	

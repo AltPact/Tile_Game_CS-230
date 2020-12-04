@@ -137,8 +137,7 @@ public class LoadGameController extends GameWindow implements Initializable {
 	 */
 	@FXML
 	public void selectOnAction(ActionEvent event) throws IOException {
-		Game g  = makeGame((String) gameSaves.getSelectionModel().getSelectedItem());
-		
+		super.setCurrentGame(makeGame((String) gameSaves.getSelectionModel().getSelectedItem()));
 		switchPane("/fxml/GameBoardPane.fxml",BP, "forward");
 	}
 	
@@ -158,7 +157,6 @@ public class LoadGameController extends GameWindow implements Initializable {
 			fileNameFromFile += "    -    " + date.toString();
 			if(fileNameFromList.equals(fileNameFromFile)) {
 				g = GameFileReader.readGameFile(file);
-				//System.out.println(g.toString());
 				return g;
 			}
 		}

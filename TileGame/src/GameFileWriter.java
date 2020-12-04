@@ -1,5 +1,8 @@
 import java.io.*;
 import java.util.ArrayList;
+
+import javafx.scene.control.Label;
+import javafx.stage.Popup;
 /**
  * This class is designed to write a game to file.
  * All of its methods are static.
@@ -16,11 +19,13 @@ public class GameFileWriter {
 	 * @param filename The file name to be saved.
 	 * @param players The player array.
 	 */
-    public static void writeGameFile(GameState g, String filename, PlayerPiece[] players ) {
+    public static void writeGameFile(GameState g, String filename) {
         try {
             File f = new File("./data/savedgames" + filename);
             f.createNewFile();
             FileWriter w = new FileWriter(filename); 
+            
+            PlayerPiece[] players = g.getPlayers();
             
             /* write game metadata */
             w.write(String.valueOf(g.isGoalHit()) + DEL);
@@ -50,8 +55,9 @@ public class GameFileWriter {
             w.close();
             return;
         } catch (IOException e) {
-            System.out.println("An error occurred.");
-            e.printStackTrace();
+			Label errorLabel = new Label("Game Save Unsuccessful");
+			Popup errorDialog = new Popup();
+			errorDialog.getContent().add(errorLabel);
         }
     }
     
