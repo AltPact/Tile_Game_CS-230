@@ -100,16 +100,16 @@ public class ObjFactory {
 		fireTexture.setDiffuseMap(new Image(getClass().getResourceAsStream("/img/texture/fire.jpg")));
 	}
 	
-	public Box makeTileInInventory(ActionTile tileType) {
+	public Box makeTileInInventory(int tileType) {
 		Box tile = new Box(70,70,10);
 		PhongMaterial tileTexture = new PhongMaterial();
-		if(tileType.getType()==TileType.Fire) {
+		if(tileType==0) {
 			tileTexture.setDiffuseMap(new Image(getClass().getResourceAsStream("/img/texture/fireTile.jpg")));
-		}else if(tileType.getType()==TileType.Ice) {
+		}else if(tileType==1) {
 			tileTexture.setDiffuseMap(new Image(getClass().getResourceAsStream("/img/texture/IceTile.jpg")));
-		}else if(tileType.getType()==TileType.DoubleMove) {
+		}else if(tileType==2) {
 			tileTexture.setDiffuseMap(new Image(getClass().getResourceAsStream("/img/texture/doubleMoveTile.jpg")));
-		}else if(tileType.getType()==TileType.BackTrack) {
+		}else if(tileType==3) {
 			tileTexture.setDiffuseMap(new Image(getClass().getResourceAsStream("/img/texture/backTrackTile.jpg")));
 		}
 		tile.setMaterial(tileTexture);
@@ -253,6 +253,8 @@ public class ObjFactory {
 		wholeHat.getChildren().addAll(hat,hatPlate);
 		return wholeHat;
 	}
+	
+	
 	
 	public Group colorWand(Cylinder c, Sphere g) {
 		Group wand = new Group();
