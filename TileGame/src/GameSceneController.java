@@ -133,6 +133,7 @@ public class GameSceneController extends GameWindow implements Initializable {
 		playerPlaying = playerObjectArray[currentGameState.getCurPlayer()];
 		phase=1;
 		displayTurns();
+		
 		setRightMenu();
 	}
 	
@@ -720,7 +721,7 @@ public class GameSceneController extends GameWindow implements Initializable {
 		}
 	}*/
 
-	public void animationPlayTile(double x, double y,String playerType) {
+	public static void animationPlayTile(double x, double y,String playType) {
 		Box elementType = new Box(200,200,2);
 		elementType.translateXProperty().set(x);
 		elementType.translateYProperty().set(y);
@@ -736,26 +737,26 @@ public class GameSceneController extends GameWindow implements Initializable {
 		
 		PhongMaterial imageTextureElement = new PhongMaterial();
 		PhongMaterial imageTextureMC = new PhongMaterial();
-		if(playerType.equals("fire")) {
-		    imageTextureElement.setDiffuseMap(new Image("fireMagic.png"));
-            imageTextureMC.setDiffuseMap(new Image("fireMagicCircle.png"));
-            imageTextureMC.setSelfIlluminationMap(new Image("fireMagicCircle.png"));
-		}else if(playerType.equals("ice")){
-			imageTextureElement.setDiffuseMap(new Image("frozenMagic.png"));
-            imageTextureMC.setDiffuseMap(new Image("iceMagicCircle.png"));
-            imageTextureMC.setSelfIlluminationMap(new Image("iceMagicCircle.png"));
-		}else if(playerType.equals("wind")){
-			imageTextureElement.setDiffuseMap(new Image("windMagic.png"));
-            imageTextureMC.setDiffuseMap(new Image("windMagicCircle.png"));
-            imageTextureMC.setSelfIlluminationMap(new Image("windMagicCircle.png"));
+		if(playType.equals("fire")) {
+		    imageTextureElement.setDiffuseMap(new Image("/img/texture/fireMagic.png"));
+            imageTextureMC.setDiffuseMap(new Image("/img/texture/fireMagicCircle.png"));
+            imageTextureMC.setSelfIlluminationMap(new Image("/img/texture/fireMagicCircle.png"));
+		}else if(playType.equals("ice")){
+			imageTextureElement.setDiffuseMap(new Image("/img/texture/frozenMagic.png"));
+            imageTextureMC.setDiffuseMap(new Image("/img/texture/iceMagicCircle.png"));
+            imageTextureMC.setSelfIlluminationMap(new Image("/img/texture/iceMagicCircle.png"));
+		}else if(playType.equals("wind")){
+			imageTextureElement.setDiffuseMap(new Image("/img/texture/windMagic.png"));
+            imageTextureMC.setDiffuseMap(new Image("/img/texture/windMagicCircle.png"));
+            imageTextureMC.setSelfIlluminationMap(new Image("/img/texture/windMagicCircle.png"));
 		}else{
-			imageTextureElement.setDiffuseMap(new Image("backTrackMagic.png"));
-            imageTextureMC.setDiffuseMap(new Image("portalMagicCircle.png"));
-            imageTextureMC.setSelfIlluminationMap(new Image("portalMagicCircle.png"));
+			imageTextureElement.setDiffuseMap(new Image("/img/texture/backTrackMagic.png"));
+            imageTextureMC.setDiffuseMap(new Image("/img/texture/portalMagicCircle.png"));
+            imageTextureMC.setSelfIlluminationMap(new Image("/img/texture/portalMagicCircle.png"));
 		}
 		elementType.setMaterial(imageTextureElement);
 		magicCircle.setMaterial(imageTextureMC);
-		
+		gameObjects.getChildren().addAll(elementType,magicCircle);
 		
 		ScaleTransition elementFade = new ScaleTransition(Duration.millis(200),elementType);    
 		elementFade.setFromX(0);
@@ -796,11 +797,46 @@ public class GameSceneController extends GameWindow implements Initializable {
 			gameObjects.getChildren().removeAll(elementType,magicCircle);
 		});
 		
-		seqTransition.play();
-		gameObjects.getChildren().addAll(elementType,magicCircle);
-		
-	
+        seqTransition.play();
 }
+	public static void teleportPlayer(Group player, double x, double y) {
+    	Cylinder teleCylinder = new Cylinder(80,200);
+    	PhongMaterial teleClinderTexture = new PhongMaterial();
+    	teleClinderTexture.setSelfIlluminationMap(new Image("/img/texture/teleCylinder.png"));
+    	teleCylinder.setMaterial(teleClinderTexture);
+    	teleCylinder.setRotationAxis(Rotate.X_AXIS);
+    	teleCylinder.setRotate(90);
+    	teleCylinder.setTranslateZ(-60);
+    	teleCylinder.setVisible(false);
+    	
+    	PauseTransition hold = new PauseTransition(Duration.millis(1000));
+    	hold.setOnFinished(e->{
+    		teleCylinder.setVisible(true);
+    	});
+    	ScaleTransition teleFadeIn = new ScaleTransition(Duration.millis(1000),teleCylinder);    
+    	teleFadeIn.setFromX(0);
+    	teleFadeIn.setFromY(0);
+    	teleFadeIn.setToX(1);
+    	teleFadeIn.setToY(1);
+    	teleFadeIn.setOnFinished(e->{
+    		player.setTranslateX(x);
+    		player.setTranslateY(y);
+    	});
+    	
+    	ScaleTransition teleFadeOut = new ScaleTransition(Duration.millis(1000),teleCylinder);    
+    	teleFadeOut.setFromX(1);
+    	teleFadeOut.setFromY(1);
+    	teleFadeOut.setToX(0);
+    	teleFadeOut.setToY(0);
+    	teleFadeOut.setOnFinished(e->{
+    		player.getChildren().remove(teleCylinder);
+    	});
+    	
+    	animationPlayTile(player.getTranslateX(),player.getTranslateY(),"teleport");
+    	SequentialTransition seqTransition = new SequentialTransition(hold,teleFadeIn,teleFadeOut);
+    	seqTransition.play();
+    	player.getChildren().add(teleCylinder);
+    }
 	
 	private static void setRightMenu() {
 		sRightMenuPane.getChildren().remove(turnLabel);
@@ -818,6 +854,8 @@ public class GameSceneController extends GameWindow implements Initializable {
 		
 		showCurPlayer();
 		
+		
+		teleportPlayer(playerPlaying, tileArray[4][4].getTranslateX(), tileArray[4][4].getTranslateY());
 	}
 	
 	
