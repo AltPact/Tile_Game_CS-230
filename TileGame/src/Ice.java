@@ -30,6 +30,7 @@ public class Ice extends ActionTilePlaceable {
 		try {
 			for(Placeable tile : tilesToAction) {
 				tile.freeze();
+				System.out.println(tile.getType());
 			}
 		}  catch(NullPointerException e) {
 			//This occurs when a action tile is close to the border of the game.

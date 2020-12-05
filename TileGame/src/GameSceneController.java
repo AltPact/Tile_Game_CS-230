@@ -81,6 +81,7 @@ public class GameSceneController extends GameWindow implements Initializable {
 	private static int currentPlayerPosY;
 	private static int turns=1;
 	private static ArrayList<Box> tileInventory;
+	private static ArrayList<ActionTile> actionTilesOwned;
 	private static Group inventory;
 	private static Placeable activePlaceable;  // the floor tile drawn from the silk bag which must be placed by the current player (if they drew a floor tile)
 	private static Box selectedTile;
@@ -137,6 +138,13 @@ public class GameSceneController extends GameWindow implements Initializable {
 		tileBoard=currentGameState.getBoard();
 		boardHeight=tileBoard.length;
 		boardWidth=tileBoard[0].length;
+		System.out.println("board used in gamescene:");
+		for(int a = 0; a < boardHeight; a++) {
+			for(int b = 0; b < boardWidth; b++) {
+				System.out.print(tileBoard[a][b].getType() + " ");
+			}
+			System.out.println("");
+		}
 		subScene = null;
 		objectFactory= new ObjFactory();
 		gameObjects = new Group();
@@ -189,7 +197,7 @@ public class GameSceneController extends GameWindow implements Initializable {
 	public void addPlayer() {
 		initPlayerPos=currentGameState.getPlayersPositions();
 		//PlayerPiece pieceArray[] = currentGame.getPlayerPieceArray();
-		for (int i = 0; i < 2; i++) {
+		for (int i = 0; i < initPlayerPos.length; i++) {
 			// put player pos in int
 			int x = initPlayerPos[i][0];
 			int y = initPlayerPos[i][1];
@@ -205,9 +213,6 @@ public class GameSceneController extends GameWindow implements Initializable {
 		// System.out.println(gameObjects.getChildren());
 	}
 
-	private int translateRotateAngle(double angle) {
-		return (int) ((angle/90)%4);
-	}
 	
 	private void updateBoard() {
 		Placeable[][] newBoard=currentGameState.getBoard();
@@ -821,13 +826,14 @@ public class GameSceneController extends GameWindow implements Initializable {
 		
 		showCurPlayer();
 		currentGameState=currentGame.getNewTileForCurrentPlayer();
+		actionTilesOwned = currentGameState.getActionTileForPlayer(currentGameState.getCurPlayer());
 		Tile drawTile=currentGameState.getTileDrawn();
 		
 		showDrawTile(drawTile);
 		if(!drawTile.isAction()) {
 			showPlaceableFloor(drawTile);
 		}
-		if(currentGameState.hasPlaceableActionTileApplied()) {
+		if(actionTilesOwned.size() > 0) {
 		    showInventory();
 		}
 	}
@@ -856,7 +862,56 @@ public class GameSceneController extends GameWindow implements Initializable {
 		floortileMove.play();
 	}
 	
+	
+	public void playIceTile() {
+		for (int y = 0; y < boardHeight; y++) {
+			final int finalY = y;
+			for (int x = 0; x < boardWidth; x++) {
+				final int finalX = x;
+					animateTile(tileArray[y][x]);
+					tileArray[y][x].setOnMouseClicked(e -> {
+						placeIceTile(finalY, finalX);
+					});
+					clickAble.add(tileArray[y][x]);
+			}
+		}
+	}
+	
+	private void placeIceTile(int y, int x) {
+		Ice iceTile = null;
+		for(ActionTile actionTile:actionTilesOwned) {
+			if(actionTile.getType() == TileType.Ice) {
+				iceTile = (Ice) actionTile;
+			}
+		}
+		System.out.println("Ice tile used:" + iceTile);
+		System.out.println("insert x:" + x + " insert y:" + y);
+		try {
+			currentGame.playIce(iceTile, x, y);
+		} catch (IncorrectTileTypeException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		System.out.println(actionTilesOwned.size());
+		resetClickable();
+	}
+	
+	public void playBacktrack() {
+		for (int y = 0; y < boardHeight; y++) {
+			final int finalY = y;
+			for (int x = 0; x < boardWidth; x++) {
+				final int finalX = x;
+					animateTile(tileArray[y][x]);
+					tileArray[y][x].setOnMouseClicked(e -> {
+						placeIceTile(finalY, finalX);
+					});
+					clickAble.add(tileArray[y][x]);
+			}
+		}
+	}
+	
 	public void showInventory() {
+		System.out.println("hi");
 		selectedTile=null;
 		boolean actionTileObtained[]= {false,false,false,false};
 		inventory = new Group();
@@ -867,10 +922,9 @@ public class GameSceneController extends GameWindow implements Initializable {
 		inventory.setTranslateY(400);
 		inventory.setTranslateZ(-50);
 		inventory.getChildren().add(inventoryBase);
-		ArrayList<ActionTile> tilesOwned = currentGameState.getActionTileForPlayer(currentGameState.getCurPlayer());
 		double y = -200;
 		
-		for(ActionTile actionTile:tilesOwned) {
+		for(ActionTile actionTile:actionTilesOwned) {
 			if(actionTile.getType()==TileType.Fire) {
 				actionTileObtained[0]=true;
 			}else if(actionTile.getType()==TileType.Ice) {
@@ -882,24 +936,50 @@ public class GameSceneController extends GameWindow implements Initializable {
 			}
 		}
 		int counter=0;
-		for(boolean tileObtained:actionTileObtained) {
-			if(tileObtained) {
-			Box acTile = objectFactory.makeTileInInventory(counter);
+		for(int i = 0; i < actionTileObtained.length; i++) {
+			if(actionTileObtained[i]) {
+			Box acTile = objectFactory.makeTileInInventory(i);
 			acTile.setTranslateX(inventoryBase.getTranslateX()-10);
 			acTile.setTranslateY(y);
 			acTile.setTranslateZ(inventoryBase.getTranslateZ()-50);
-			acTile.setOnMouseClicked(e->{
-				if(selectedTile!=acTile) {
-					setSelectedTile(acTile);
-				}else {
-					acTile.setRotate(acTile.getRotate()+90);
-				}
-			});
+			if(actionTileObtained[0]) {
+				
+				acTile.setOnMouseClicked(e->{
+					//what to do when a fire tile is clicked
+					if(selectedTile!=acTile) {
+						setSelectedTile(acTile);
+					}else {
+						acTile.setRotate(acTile.getRotate()+90);
+					}
+				});
+			} else if(actionTileObtained[1]) {
+				acTile.setOnMouseClicked(e->{
+					//what to do when an ice tile is clicked					
+					playIceTile();
+				});
+			} else if(actionTileObtained[2]) {
+				acTile.setOnMouseClicked(e->{
+					//what to do when a doubleMove tile is clicked
+					if(selectedTile!=acTile) {
+						setSelectedTile(acTile);
+					}else {
+						acTile.setRotate(acTile.getRotate()+90);
+					}
+				});
+			} else if(actionTileObtained[3]) {
+				acTile.setOnMouseClicked(e->{
+					//what to do when a doubleMove tile is clicked
+					if(selectedTile!=acTile) {
+						setSelectedTile(acTile);
+					}else {
+						acTile.setRotate(acTile.getRotate()+90);
+					}
+				});
+			}
 			tileInventory.add(acTile);
 			inventory.getChildren().add(acTile);
 			y+=70;
 			}
-			counter++;
 		}
 		gameObjects.getChildren().add(inventory);
 		TranslateTransition tileMove = new TranslateTransition(Duration.millis(1000), inventory);

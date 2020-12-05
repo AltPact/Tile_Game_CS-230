@@ -264,6 +264,16 @@ public class Game {
 	 */
 	public GameState playIce(Ice ice, int x, int y) throws IncorrectTileTypeException {
 		players[curPlayer].playActionTile(ice);
+		
+		System.out.println("board used in Game pre ice applied:");
+		Placeable[][] tiles= board.getTiles();
+		for(int a = 0; a < board.getHeight(); a++) {
+			for(int b = 0; b < board.getWidth(); b++) {
+				System.out.print(tiles[a][b].getType() + " ");
+			}
+			System.out.println("");
+		}
+		
 		Placeable[] tilesToAction= new Placeable[9];
 		tilesToAction[0] = (Placeable) board.getTile((y - 1), (x - 1));
 		tilesToAction[1] = (Placeable) board.getTile((y - 1), x);
@@ -275,6 +285,25 @@ public class Game {
 		tilesToAction[7] = (Placeable) board.getTile((y + 1), x);
 		tilesToAction[8] = (Placeable) board.getTile((y + 1) , (x + 1));
 		ice.instantiateAction(tilesToAction);
+		
+		System.out.println("Tiles with ice applied:");
+		Placeable[][] tiles2 = board.getTiles();
+		for(int a = 0; a < board.getHeight(); a++) {
+			for(int b = 0; b < board.getWidth(); b++) {
+				System.out.print(tiles2[a][b].isFrozen() + " ");
+			}
+			System.out.println("");
+		}
+		
+		System.out.println("board used in Game post ice applied:");
+		Placeable[][] tiles3= board.getTiles();
+		for(int a = 0; a < board.getHeight(); a++) {
+			for(int b = 0; b < board.getWidth(); b++) {
+				System.out.print(tiles3[a][b].getType() + " ");
+			}
+			System.out.println("");
+		}
+		
 		return actionTilePlayed();
 	}
 	
