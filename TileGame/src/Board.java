@@ -236,11 +236,11 @@ public class Board {
 	 * Gets the tile out of tile list.
 	 * @param x the x coordinate
 	 * @param y the y coordinate
-	 * @return
+	 * @return the tile
 	 */
 	public Tile getTile(int x, int y) {
-		if (x > width || y > height) {
-			throw new IllegalStateException("This tile is out of the boundry of the board");
+		if (x >= width || y >= height) {
+			return null;
 		} else {
 			return tiles[y][x];
 		}

@@ -263,47 +263,23 @@ public class Game {
 	 * @throws IncorrectTileTypeException
 	 */
 	public GameState playIce(Ice ice, int x, int y) throws IncorrectTileTypeException {
-		players[curPlayer].playActionTile(ice);
-		
-		System.out.println("board used in Game pre ice applied:");
-		Placeable[][] tiles= board.getTiles();
-		for(int a = 0; a < board.getHeight(); a++) {
-			for(int b = 0; b < board.getWidth(); b++) {
-				System.out.print(tiles[a][b].getType() + " ");
-			}
-			System.out.println("");
-		}
-		
+		players[curPlayer].playActionTile(ice);	
 		Placeable[] tilesToAction= new Placeable[9];
-		tilesToAction[0] = (Placeable) board.getTile((y - 1), (x - 1));
-		tilesToAction[1] = (Placeable) board.getTile((y - 1), x);
-		tilesToAction[2] = (Placeable) board.getTile((y - 1), (x + 1));
-		tilesToAction[3] = (Placeable) board.getTile(y, (x - 1));
-		tilesToAction[4] = (Placeable) board.getTile(y, x);
-		tilesToAction[5] = (Placeable) board.getTile(y, (x + 1));
-		tilesToAction[6] = (Placeable) board.getTile((y + 1), (x - 1));
-		tilesToAction[7] = (Placeable) board.getTile((y + 1), x);
-		tilesToAction[8] = (Placeable) board.getTile((y + 1) , (x + 1));
-		ice.instantiateAction(tilesToAction);
-		
-		System.out.println("Tiles with ice applied:");
-		Placeable[][] tiles2 = board.getTiles();
-		for(int a = 0; a < board.getHeight(); a++) {
-			for(int b = 0; b < board.getWidth(); b++) {
-				System.out.print(tiles2[a][b].isFrozen() + " ");
-			}
-			System.out.println("");
+		try {
+			tilesToAction[0] = (Placeable) board.getTile((y - 1), (x - 1));
+			tilesToAction[1] = (Placeable) board.getTile((y - 1), x);
+			tilesToAction[2] = (Placeable) board.getTile((y - 1), (x + 1));
+			tilesToAction[3] = (Placeable) board.getTile(y, (x - 1));
+			tilesToAction[4] = (Placeable) board.getTile(y, x);
+			tilesToAction[5] = (Placeable) board.getTile(y, (x + 1));
+			tilesToAction[6] = (Placeable) board.getTile((y + 1), (x - 1));
+			tilesToAction[7] = (Placeable) board.getTile((y + 1), x);
+			tilesToAction[8] = (Placeable) board.getTile((y + 1) , (x + 1));
+		} catch (IllegalStateException e) {
+			//Continues processing as tile does not exists, if the tile is too close to the board.
+		} finally {
+			ice.instantiateAction(tilesToAction);
 		}
-		
-		System.out.println("board used in Game post ice applied:");
-		Placeable[][] tiles3= board.getTiles();
-		for(int a = 0; a < board.getHeight(); a++) {
-			for(int b = 0; b < board.getWidth(); b++) {
-				System.out.print(tiles3[a][b].getType() + " ");
-			}
-			System.out.println("");
-		}
-		
 		return actionTilePlayed();
 	}
 	
@@ -314,22 +290,48 @@ public class Game {
 	 * @param y The y coordinate of it's location.
 	 * @return a new Game State: see actionTilePlayed for more details.
 	 * @throws IncorrectTileTypeException
+	 * @throws IllegalFireException 
 	 */
-	public GameState playFire(Fire fire, int x, int y) throws IncorrectTileTypeException {
+	public GameState playFire(Fire fire, int x, int y) throws IncorrectTileTypeException, IllegalFireException {
 		players[curPlayer].playActionTile(fire);
 		Placeable[] tilesToAction= new Placeable[9];
-		tilesToAction[0] = (Placeable) board.getTile((y - 1), (x - 1));
-		tilesToAction[1] = (Placeable) board.getTile((y - 1), x);
-		tilesToAction[2] = (Placeable) board.getTile((y - 1), (x + 1));
-		tilesToAction[3] = (Placeable) board.getTile(y, (x - 1));
-		tilesToAction[4] = (Placeable) board.getTile(y, x);
-		tilesToAction[5] = (Placeable) board.getTile(y, (x + 1));
-		tilesToAction[6] = (Placeable) board.getTile((y + 1), (x - 1));
-		tilesToAction[7] = (Placeable) board.getTile((y + 1), x);
-		tilesToAction[8] = (Placeable) board.getTile((y + 1) , (x + 1));
-		fire.instantiateAction(tilesToAction);
+		try {
+			tilesToAction[0] = getTileFire((y - 1), (x - 1));
+			tilesToAction[1] = getTileFire((y - 1), x);
+			tilesToAction[2] = getTileFire((y - 1), (x + 1));
+			tilesToAction[3] = getTileFire(y, (x - 1));
+			tilesToAction[4] = getTileFire(y, x);
+			tilesToAction[5] = getTileFire(y, (x + 1));
+			tilesToAction[6] = getTileFire((y + 1), (x - 1));
+			tilesToAction[7] = getTileFire((y + 1), x);
+			tilesToAction[8] = getTileFire((y + 1) , (x + 1));
+		} catch (IllegalStateException e) {
+			//Continues processing as tile does not exists, if the tile is too close to the board.
+		} finally {
+			fire.instantiateAction(tilesToAction);
+		}
 		return actionTilePlayed();
 	}
+	
+	/**
+	 * This method gets a tile in a specific location.
+	 * It does this while checking for players. It ensures 
+	 * that a fire tile cannot be called on a tile where a player
+	 * currently is.
+	 * @param x the x coordinate of the tile.
+	 * @param y the y coordinate of the tile
+	 * @return the tile if it exists, null if it does not.
+	 * @throws IllegalFireException
+	 */
+	private Placeable getTileFire(int x, int y) throws IllegalFireException {
+		for(PlayerPiece p : players) {
+			if((p.getX() == x) && (p.getY() == y)){
+				throw new IllegalFireException("Player exists on X = " + x + " and Y = " + y);
+			}
+		}
+		return (Placeable) board.getTile(x, y);
+	}
+
 	
 	/**
 	 * Moves the current player. 
