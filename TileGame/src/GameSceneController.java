@@ -85,6 +85,7 @@ public class GameSceneController extends GameWindow implements Initializable {
 	private static Group inventory;
 	private static Placeable activePlaceable;  // the floor tile drawn from the silk bag which must be placed by the current player (if they drew a floor tile)
 	private static Box selectedTile;
+	private static int phase;
 	
 	@FXML
 	public BorderPane GB;
@@ -124,7 +125,6 @@ public class GameSceneController extends GameWindow implements Initializable {
 		GB.setCenter(subScene);
 		
 		newTurn();
-		
 	}
 	
 	public void initLightSource() {
@@ -255,6 +255,7 @@ public class GameSceneController extends GameWindow implements Initializable {
 	public static void newTurn() {
 		// displayTurns();
 		playerPlaying = playerObjectArray[currentGameState.getCurPlayer()];
+		phase=1;
 		//printPlayerHashMap();
 		//setPushable();
 		// setMoveableTile(xCor, yCor);
@@ -415,6 +416,35 @@ public class GameSceneController extends GameWindow implements Initializable {
 			}
 		}
 	}*/
+	
+	private void updatePhase() {
+		if(phase<3) {
+		   phase=0;
+		}else {
+			phase++;
+		}
+	}
+	
+	private void displayErrorMessage(String errorMessage) {
+		Label error = new Label(errorMessage);
+		error.setStyle("-fx-background-color: transparent;");
+		error.setTextFill(Color.RED);
+		error.setFont(new Font("Arial", 40));
+		gameObjects.getChildren().add(error);
+		TranslateTransition errorPop = new TranslateTransition(Duration.seconds(1),error);
+		errorPop.setFromX(400);
+		errorPop.setFromY(1000);
+		errorPop.setToX(400);
+		errorPop.setToY(850);
+		
+		PauseTransition hold = new PauseTransition(Duration.millis(2000));
+		
+		SequentialTransition seqTransition = new SequentialTransition(errorPop,hold);
+		seqTransition.setOnFinished(e->{
+			gameObjects.getChildren().remove(error);
+		});
+		seqTransition.play();
+	}
 	
 	public static void setMoveableTiles() {
 		boolean[][] moveableSpaces = currentGameState.getMoveableSpaces();
