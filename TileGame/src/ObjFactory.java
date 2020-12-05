@@ -169,7 +169,7 @@ public class ObjFactory {
 	public Box makeTile(Placeable tileType) {
 		Box tile = new Box(tileLength,tileLength,tiledepth);
 		
-		if(tileType.getType()==TileType.Fire) {
+		if(tileType.isOnFire()) {
 			tile.setMaterial(fireTexture);
 		}else if(tileType.getType()==TileType.Straight&&tileType.isFrozen()) {
 			tile.setMaterial(frozenStraightTexture);
@@ -215,7 +215,7 @@ public class ObjFactory {
 	}
 	
 	public void textureTheTile(Box tile, Placeable tileType) {
-		if(tileType.getType()==TileType.Fire) {
+		if(tileType.isOnFire()) {
 			tile.setMaterial(fireTexture);
 		}else if(tileType.getType()==TileType.Straight&&tileType.isFrozen()) {
 			tile.setMaterial(frozenStraightTexture);

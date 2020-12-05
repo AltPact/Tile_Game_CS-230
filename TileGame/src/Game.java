@@ -505,7 +505,7 @@ public class Game {
 		}
 		return tilesOwnedByPlayers;
 	}
-	
+
 	/**
 	 * Makes the initial game state of the game.
 	 * @return A game state with all of the data to draw the board.

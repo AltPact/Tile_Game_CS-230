@@ -64,8 +64,7 @@ public class GameState {
 	public Tile getTileDrawn() {
 		return tileDrawn;
 	}
-	
-	
+
 	public ArrayList<ActionTile>[] getActionTilesForEachPlayer() {
 		return actionTilesForEachPlayer; 
 	}

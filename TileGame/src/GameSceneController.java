@@ -862,7 +862,37 @@ public class GameSceneController extends GameWindow implements Initializable {
 		floortileMove.play();
 	}
 	
-	
+
+	public void playFireTile() {
+		for (int y = 0; y < boardHeight; y++) {
+			final int finalY = y;
+			for (int x = 0; x < boardWidth; x++) {
+				final int finalX = x;
+				animateTile(tileArray[y][x]);
+				tileArray[y][x].setOnMouseClicked(e -> {
+					placeFireTile(finalY, finalX);
+				});
+				clickAble.add(tileArray[y][x]);
+			}
+		}
+	}
+
+	public void placeFireTile(int y, int x) {
+		Fire fireTile = null;
+		for (ActionTile actionTile:actionTilesOwned) {
+			if (actionTile.getType() == TileType.Fire) {
+				fireTile = (Fire) actionTile;
+			}
+		}
+		try {
+			currentGameState = currentGame.playFire(fireTile, x, y);
+			updateBoard();
+			resetClickable();
+		} catch (IncorrectTileTypeException | IllegalFireException e) {
+			e.printStackTrace();
+		}
+	}
+
 	public void playIceTile() {
 		for (int y = 0; y < boardHeight; y++) {
 			final int finalY = y;
@@ -943,14 +973,9 @@ public class GameSceneController extends GameWindow implements Initializable {
 			acTile.setTranslateY(y);
 			acTile.setTranslateZ(inventoryBase.getTranslateZ()-50);
 			if(actionTileObtained[0]) {
-				
 				acTile.setOnMouseClicked(e->{
 					//what to do when a fire tile is clicked
-					if(selectedTile!=acTile) {
-						setSelectedTile(acTile);
-					}else {
-						acTile.setRotate(acTile.getRotate()+90);
-					}
+					playFireTile();
 				});
 			} else if(actionTileObtained[1]) {
 				acTile.setOnMouseClicked(e->{
