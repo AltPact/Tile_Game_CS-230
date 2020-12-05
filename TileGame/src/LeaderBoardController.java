@@ -53,9 +53,8 @@ public class LeaderBoardController extends GameWindow implements Initializable {
 	 */
 	private void makeLeaderBoard() {
 		int rank=1;
-		for(PlayerData p : playerDataQueue) {
-			System.out.println(p.getName());
-			System.out.println(p.getWins());
+		while(!playerDataQueue.isEmpty()) {
+			PlayerData p = playerDataQueue.poll();
 			HBox playerRow = createUserBox(p,rank);
 			leaderBoard.getChildren().add(playerRow);
 			rank++;
