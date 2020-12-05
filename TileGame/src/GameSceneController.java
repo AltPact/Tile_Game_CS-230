@@ -718,10 +718,16 @@ public class GameSceneController extends GameWindow implements Initializable {
 			imageTextureElement.setDiffuseMap(new Image("/img/texture/windMagic.png"));
 			imageTextureMC.setDiffuseMap(new Image("/img/texture/windMagicCircle.png"));
 			imageTextureMC.setSelfIlluminationMap(new Image("/img/texture/windMagicCircle.png"));
+			elementType.setWidth(100);
+			elementType.setHeight(100);
+			magicCircle.setRadius(100);
 		} else {
 			imageTextureElement.setDiffuseMap(new Image("/img/texture/backTrackMagic.png"));
 			imageTextureMC.setDiffuseMap(new Image("/img/texture/portalMagicCircle.png"));
 			imageTextureMC.setSelfIlluminationMap(new Image("/img/texture/portalMagicCircle.png"));
+			elementType.setWidth(100);
+			elementType.setHeight(100);
+			magicCircle.setRadius(100);
 		}
 		elementType.setMaterial(imageTextureElement);
 		magicCircle.setMaterial(imageTextureMC);
@@ -769,12 +775,10 @@ public class GameSceneController extends GameWindow implements Initializable {
 	}
 
 	public static void teleportPlayer(Group player, double x, double y) {
-		Cylinder teleCylinder = new Cylinder(80, 200);
+		Box teleCylinder = new Box(120, 120, 200);
 		PhongMaterial teleClinderTexture = new PhongMaterial();
 		teleClinderTexture.setSelfIlluminationMap(new Image("/img/texture/teleCylinder.png"));
 		teleCylinder.setMaterial(teleClinderTexture);
-		teleCylinder.setRotationAxis(Rotate.X_AXIS);
-		teleCylinder.setRotate(90);
 		teleCylinder.setTranslateZ(-60);
 		teleCylinder.setVisible(false);
 
@@ -823,8 +827,8 @@ public class GameSceneController extends GameWindow implements Initializable {
 
 		showCurPlayer();
 
-		// teleportPlayer(playerPlaying, tileArray[4][4].getTranslateX(),
-		// tileArray[4][4].getTranslateY());
+		//teleportPlayer(playerPlaying, tileArray[4][4].getTranslateX(),
+		//tileArray[4][4].getTranslateY());
 	}
 
 	private static void showPlaceableFloor(Tile floorTile) {
