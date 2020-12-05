@@ -14,12 +14,20 @@
    <top>
       <VBox alignment="CENTER" prefHeight="150.0" prefWidth="600.0" BorderPane.alignment="CENTER">
          <children>
-            <Label alignment="BOTTOM_CENTER" contentDisplay="CENTER" text="The Labrynth of Llansamlet">
+         	<ImageView fitHeight="83.0" fitWidth="109.0" layoutX="14.0" layoutY="6.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="/img/logo.png" />
+               </image></ImageView>
+            <Label alignment="BOTTOM_CENTER" contentDisplay="CENTER" >
                <font>
                   <Font size="44.0" />
                </font>
             </Label>
             <Label fx:id="messageOfTheDay" alignment="CENTER" contentDisplay="CENTER" prefWidth="300.0" text="Message of the day" wrapText="true" />
+         		<font>
+         			<Font size = "20.0" 
+         		
+         		</font>
          </children>
       </VBox>
    </top>
