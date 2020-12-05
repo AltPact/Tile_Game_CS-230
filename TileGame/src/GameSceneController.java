@@ -125,7 +125,6 @@ public class GameSceneController extends GameWindow implements Initializable {
 		GB.setCenter(subScene);
 		
 		newTurn();
-		displayTurns();
 	}
 	
 	public void initLightSource() {
