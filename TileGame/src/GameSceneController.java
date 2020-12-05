@@ -205,6 +205,18 @@ public class GameSceneController extends GameWindow implements Initializable {
 		// System.out.println(gameObjects.getChildren());
 	}
 
+	private int translateRotateAngle(double angle) {
+		int num=(int) (angle/90);
+		if(num%4==0) {
+			return 0;
+		}else if(num%4==1) {
+			return 1;
+		}else if(num%4==2) {
+			return 2;
+		}else {
+			return 3;
+		}
+	}
 	
 	private void updateBoard() {
 		Placeable[][] newBoard=currentGameState.getBoard();
