@@ -14,7 +14,7 @@
    <top>
       <VBox alignment="CENTER" prefHeight="150.0" prefWidth="600.0" BorderPane.alignment="CENTER">
          <children>
-         	<ImageView fitHeight="83.0" fitWidth="109.0" layoutX="14.0" layoutY="6.0" pickOnBounds="true" preserveRatio="true">
+         	<ImageView fitHeight="150.0" fitWidth="350.0" layoutX="14.0" layoutY="150.0" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="/img/logo.png" />
                </image></ImageView>
@@ -23,11 +23,7 @@
                   <Font size="44.0" />
                </font>
             </Label>
-            <Label fx:id="messageOfTheDay" alignment="CENTER" contentDisplay="CENTER" prefWidth="300.0" text="Message of the day" wrapText="true" />
-         		<font>
-         			<Font size = "20.0" 
-         		
-         		</font>
+             <Label fx:id="messageOfTheDay" alignment="CENTER" contentDisplay="CENTER" prefWidth="300.0" text="Message of the day" wrapText="true" />
          </children>
       </VBox>
    </top>
