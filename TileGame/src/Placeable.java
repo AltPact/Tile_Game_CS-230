@@ -71,19 +71,19 @@ public class Placeable extends Tile {
 	 */
 	private void setType(TileType tileType) {
 		if (tileType == TileType.Straight) {
-			this.waysToMove[0] = true;
-			this.waysToMove[1] = false;
+			this.waysToMove[0] = false;
+			this.waysToMove[1] = true;
+			this.waysToMove[2] = false;
+			this.waysToMove[3] = true;
+		} else if (tileType == TileType.Corner) {
+			this.waysToMove[0] = false;
+			this.waysToMove[1] = true;
 			this.waysToMove[2] = true;
 			this.waysToMove[3] = false;
-		} else if (tileType == TileType.Corner) {
-			this.waysToMove[0] = true;
-			this.waysToMove[1] = true;
-			this.waysToMove[2] = false;
-			this.waysToMove[3] = false;
 		} else if (tileType == TileType.TShaped) {
-			this.waysToMove[0] = true;
+			this.waysToMove[0] = false;
 			this.waysToMove[1] = true;
-			this.waysToMove[2] = false;
+			this.waysToMove[2] = true;
 			this.waysToMove[3] = true;
 		} else if (tileType == TileType.Goal) {
 			this.waysToMove[0] = true;

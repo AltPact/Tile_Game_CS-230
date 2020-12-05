@@ -62,11 +62,17 @@ public class Board {
 	 * @return a boolean array of places a player can move equal in size to the board
 	 */
 	public boolean[][] getMoveableSpaces(PlayerPiece player) {
+		for (int y = 0; y < height; y++) {
+			for (int x = 0; x < width; x++) {
+				System.out.print(tiles[y][x].getType()+" "+tiles[y][x].getOrientation()+",");
+			}
+			System.out.println();
+		}
 		int playerX = player.getX();
 		int playerY = player.getY();
 		boolean[][] moveableSpaces = new boolean[height][width];
-		for (int x = 0; x < height; x++) {
-			for (int y = 0; y < width; y++) {
+		for (int y = 0; y < height; y++) {
+			for (int x = 0; x < width; x++) {
 				moveableSpaces[y][x] = false;
 			}
 		}

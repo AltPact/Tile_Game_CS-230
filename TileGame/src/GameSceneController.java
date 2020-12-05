@@ -113,7 +113,6 @@ public class GameSceneController extends GameWindow implements Initializable {
 		initVariables();
 		addFloor();
 		addTile();
-		gameObjects.getChildren().add(arrows);
 		initLightSource();
 		addPlayer();
 		setRightMenu();
@@ -361,7 +360,7 @@ public class GameSceneController extends GameWindow implements Initializable {
 				arrows.getChildren().add(newDownArrow);
 				newDownArrow.setOnMouseClicked(e -> {
 					try {
-						System.out.println("X: "+finalX+" Y: "+0);
+						System.out.println(activePlaceable.getOrientation());
 						currentGame.insertTile(activePlaceable,finalX,0,true);
 						updateGameState();
 						pushTileAnimation(finalX,0,1);
@@ -379,7 +378,7 @@ public class GameSceneController extends GameWindow implements Initializable {
 				arrows.getChildren().add(newUpArrow);
 				newUpArrow.setOnMouseClicked(e -> {
 					try {
-						System.out.println("X: "+finalX+" Y: "+(boardHeight-1));
+						System.out.println(activePlaceable.getOrientation());
 						currentGame.insertTile(activePlaceable,finalX,boardHeight-1,true);
 						updateGameState();
 						pushTileAnimation(finalX,boardHeight-1,0);
@@ -401,15 +400,13 @@ public class GameSceneController extends GameWindow implements Initializable {
 				arrows.getChildren().add(newRightArrow);
 				newRightArrow.setOnMouseClicked(e -> {
 					try {
-						System.out.println("X: "+0+" Y: "+finalY);
+						System.out.println(activePlaceable.getOrientation());
 						currentGame.insertTile(activePlaceable,0,finalY,false);
 						updateGameState();
 						pushTileAnimation(0,finalY,3);
 					} catch (IllegalInsertionException e1) {
 						displayErrorMessage("Cannot insert here");
 					}
-					
-					
 				});
 
 				pushableTiles.add(tileArray[y][boardWidth-1]);
@@ -420,18 +417,17 @@ public class GameSceneController extends GameWindow implements Initializable {
 				arrows.getChildren().add(newLeftArrow);
 				newLeftArrow.setOnMouseClicked(e -> {
 					try {
-						System.out.println("X: "+(boardWidth-1)+" Y: "+finalY);
+						System.out.println(activePlaceable.getOrientation());
 						currentGame.insertTile(activePlaceable,boardWidth-1,finalY,false);
 						updateGameState();
 						pushTileAnimation(boardWidth-1,finalY,2);
 					} catch (IllegalInsertionException e1) {
 						displayErrorMessage("Cannot insert here");
 					}
-					
 				});
 			}
 		}
-		//gameObjects.getChildren().add(arrows);
+		gameObjects.getChildren().add(arrows);
 	}
 
 	/**
@@ -518,19 +514,23 @@ public class GameSceneController extends GameWindow implements Initializable {
 	}
 	
 	public static void setMoveableTiles() {
+		updateGameState();
 		boolean[][] moveableSpaces = currentGameState.getMoveableSpaces();
+		System.out.println(moveableSpaces.length);
 		for (int y = 0; y < boardHeight; y++) {
 			final int finalY = y;
 			for (int x = 0; x < boardWidth; x++) {
+				System.out.print(moveableSpaces[y][x]+", ");
 				final int finalX = x;
 				if(moveableSpaces[y][x]) {
 					animateTile(tileArray[y][x]);
 					tileArray[y][x].setOnMouseClicked(e -> {
-						movePlayer(playerPlaying, finalY, finalX);
+						playerDeliberateMove(playerPlaying, finalY, finalX);
 					});
 					clickAble.add(tileArray[y][x]);
 				}
 			}
+			System.out.println("");
 		}
 	}
 	
@@ -542,14 +542,14 @@ public class GameSceneController extends GameWindow implements Initializable {
 		playerMove.play();
 	}
 	
-	public static void playermoves(Group player, int y, int x) {
+	public static void playerDeliberateMove(Group player, int y, int x) {
 		try {
-			currentGame.moveCurrentPlayer(x, y);
+	        currentGame.moveCurrentPlayer(x, y);
 			movePlayer(player,tileArray[y][x].getTranslateX(),tileArray[y][x].getTranslateY());
+			updateGameState();
 		} catch (IllegalMove e) {
 			e.printStackTrace();
 		}
-		
 	}
 	
 	private static ScaleTransition animateTile(Box tile) {
@@ -574,6 +574,11 @@ public class GameSceneController extends GameWindow implements Initializable {
 
 
 	public static void pushTileAnimation(int rows, int columns, int orientation) {
+		gameObjects.getChildren().remove(arrows);
+		arrows.getChildren().removeAll();
+		hideInventory();
+		
+		
 		Box tileToRemove=null;
 		int starting,ending,incValue,arrayX,arrayY;
 		double X,Y;
@@ -654,6 +659,7 @@ public class GameSceneController extends GameWindow implements Initializable {
 			tileMove.setOnFinished(e->{
 				updateBoard();
 				updatePlayerPosition();
+				setMoveableTiles();
 			});
 		}
 		tileMove.play();
@@ -788,7 +794,9 @@ public class GameSceneController extends GameWindow implements Initializable {
 		}
 	}
 	
+	
 	private void showPlaceableFloor(Tile floorTile) {
+		inventory=new Group();
 		Box floor=null;
 		final Box fTile;
 		if(floorTile.getType()==TileType.Corner) {
@@ -806,11 +814,12 @@ public class GameSceneController extends GameWindow implements Initializable {
 		});
 		floor.setTranslateY(400);
 		floor.setTranslateZ(-50);
-		gameObjects.getChildren().add(floor);
+		inventory.getChildren().add(floor);
 		TranslateTransition floortileMove = new TranslateTransition(Duration.millis(1000), floor);
 		floortileMove.setFromX(1200);
 		floortileMove.setToX(950);
 		floortileMove.play();
+		gameObjects.getChildren().add(inventory);
 	}
 	
 
@@ -967,7 +976,7 @@ public class GameSceneController extends GameWindow implements Initializable {
 
 	}
 	
-	private void hideInventory() {
+	private static void hideInventory() {
 		TranslateTransition tileMove = new TranslateTransition(Duration.millis(1000), inventory);
 		tileMove.setFromX(950);
 		tileMove.setToX(1200);
@@ -975,7 +984,6 @@ public class GameSceneController extends GameWindow implements Initializable {
 			gameObjects.getChildren().remove(inventory);
 		});
 		tileMove.play();
-		
 	}
 	
 	private void setSelectedTile(Box newSelected) {
