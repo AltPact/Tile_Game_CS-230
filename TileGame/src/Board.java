@@ -118,7 +118,6 @@ public class Board {
 					//Shifts tiles down 1
 					for(int i = height - 2; i >= 0; i--) {
 						tiles[y][i + 1] = tiles[y][i];
-						System.out.println("hi");
 					}
 					
 					tiles[y][0] = tile;
