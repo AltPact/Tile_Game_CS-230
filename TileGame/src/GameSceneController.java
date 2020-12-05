@@ -87,7 +87,8 @@ public class GameSceneController extends GameWindow implements Initializable {
 	private static Box selectedTile;
 	private static int phase;
 	private static ParallelTransition clickableAnime;
-	
+	private static Label turnLabel;
+	private static ImageView playerIndicator;
 	@FXML
 	public BorderPane GB;
 	@FXML
@@ -95,12 +96,9 @@ public class GameSceneController extends GameWindow implements Initializable {
 	@FXML
 	public Button QuitButton;
 	@FXML
-	public Label turnLabel;
-	@FXML
-	public ImageView playerIndicator;
-	@FXML
 	public Pane rightMenuPane;
 
+	public static Pane sRightMenuPane;
 	/**
 	 * This method initialize this page
 	 * 
@@ -116,7 +114,7 @@ public class GameSceneController extends GameWindow implements Initializable {
 		addTile();
 		initLightSource();
 		addPlayer();
-		setRightMenu();
+		sRightMenuPane=rightMenuPane;
 		//gameObjects.getChildren().add(objectFactory.makeFireFly());
 		// setScene
 		subScene = new SubScene(gameObjects, sceneWidth, sceneHeight);
@@ -126,6 +124,24 @@ public class GameSceneController extends GameWindow implements Initializable {
 		
 		newTurn();
 		//pushTileAnimation(0,2,0);
+	}
+	
+
+	private static void newTurn() {
+		// displayTurns();
+		
+		playerPlaying = playerObjectArray[currentGameState.getCurPlayer()];
+		phase=1;
+		displayTurns();
+		setRightMenu();
+	}
+	
+	private static void checkWin() {
+		updateGameState();
+		if(!currentGameState.getIsGoalHit()) {
+			turns++;
+			newTurn();
+		}
 	}
 	
 	public void initLightSource() {
@@ -258,14 +274,6 @@ public class GameSceneController extends GameWindow implements Initializable {
 		subScene.setCamera(camera);
 	}
 
-	public static void newTurn() {
-		// displayTurns();
-		playerPlaying = playerObjectArray[currentGameState.getCurPlayer()];
-		phase=1;
-		//printPlayerHashMap();
-		//setPushable();
-		// setMoveableTile(xCor, yCor);
-	}
 
 	/**
 	 * updates the x/y/z positions of all tiles so that they are drawn in the correct place on the screen.
@@ -466,14 +474,14 @@ public class GameSceneController extends GameWindow implements Initializable {
 		}
 	}
 	
-	private void displayTurns() {
+	private static void displayTurns() {
 		Label turnsLabel = new Label("Turns: "+turns);
 		turnsLabel.setStyle("-fx-background-color: rgba(0, 0, 0, 0.5);");
 		turnsLabel.setTextFill(Color.WHITE);
 		turnsLabel.setFont(new Font("Arial", 40));
-		turnsLabel.setTranslateX(-50);
+		turnsLabel.setTranslateX(-150);
 		turnsLabel.setTranslateY(350);
-		turnsLabel.setPrefWidth(1000);
+		turnsLabel.setPrefWidth(1200);
 		turnsLabel.setAlignment(Pos.CENTER);
 		gameObjects.getChildren().add(turnsLabel);
 		ScaleTransition turnShow = new ScaleTransition(Duration.millis(800), turnsLabel);
@@ -489,6 +497,20 @@ public class GameSceneController extends GameWindow implements Initializable {
 		SequentialTransition seqTransition = new SequentialTransition(turnShow,hold,turnOut);
 		seqTransition.setOnFinished(e->{
 			gameObjects.getChildren().remove(turnsLabel);
+			
+			currentGameState=currentGame.getNewTileForCurrentPlayer();
+			actionTilesOwned = currentGameState.getActionTileForPlayer(currentGameState.getCurPlayer());
+			Tile drawTile=currentGameState.getTileDrawn();
+			
+			showDrawTile(drawTile);
+			if(!drawTile.isAction()) {
+				activePlaceable=(Placeable) drawTile;
+				showPlaceableFloor(drawTile);
+				setPushableArrows();
+			}
+			if(actionTilesOwned.size() > 0) {
+			    showInventory();
+			}
 		});
 		seqTransition.play();
 	}
@@ -551,6 +573,7 @@ public class GameSceneController extends GameWindow implements Initializable {
 			movePlayer(player,tileArray[y][x].getTranslateX(),tileArray[y][x].getTranslateY());
 			resetClickable();
 			updateGameState();
+			checkWin();
 		} catch (IllegalMove e) {
 			e.printStackTrace();
 		}
@@ -779,31 +802,26 @@ public class GameSceneController extends GameWindow implements Initializable {
 	
 }
 	
-	private void setRightMenu() {
-		turnLabel.setText(Integer.toString(turns));
+	private static void setRightMenu() {
+		sRightMenuPane.getChildren().remove(turnLabel);
+		turnLabel = new Label(Integer.toString(turns));
+		turnLabel.setPrefWidth(20);
+		turnLabel.setLayoutX(59);
+		turnLabel.setLayoutY(9);
+		turnLabel.setTextFill(Color.WHITE);
+		turnLabel.setFont(new Font("Arial", 29));
+		sRightMenuPane.getChildren().add(turnLabel);
 		TranslateTransition turnLabelMove = new TranslateTransition(Duration.millis(300), turnLabel);
 		turnLabelMove.setFromY(-50);
 		turnLabelMove.setToY(0);
 		turnLabelMove.play();
 		
 		showCurPlayer();
-		currentGameState=currentGame.getNewTileForCurrentPlayer();
-		actionTilesOwned = currentGameState.getActionTileForPlayer(currentGameState.getCurPlayer());
-		Tile drawTile=currentGameState.getTileDrawn();
 		
-		showDrawTile(drawTile);
-		if(!drawTile.isAction()) {
-			activePlaceable=(Placeable) drawTile;
-			showPlaceableFloor(drawTile);
-			setPushableArrows();
-		}
-		if(actionTilesOwned.size() > 0) {
-		    showInventory();
-		}
 	}
 	
 	
-	private void showPlaceableFloor(Tile floorTile) {
+	private static void showPlaceableFloor(Tile floorTile) {
 		inventory=new Group();
 		Box floor=null;
 		final Box fTile;
@@ -831,7 +849,7 @@ public class GameSceneController extends GameWindow implements Initializable {
 	}
 	
 
-	public void playFireTile() {
+	public static void playFireTile() {
 		for (int y = 0; y < boardHeight; y++) {
 			final int finalY = y;
 			for (int x = 0; x < boardWidth; x++) {
@@ -845,7 +863,7 @@ public class GameSceneController extends GameWindow implements Initializable {
 		}
 	}
 
-	public void placeFireTile(int y, int x) {
+	public static void placeFireTile(int y, int x) {
 		Fire fireTile = null;
 		for (ActionTile actionTile:actionTilesOwned) {
 			if (actionTile.getType() == TileType.Fire) {
@@ -861,7 +879,7 @@ public class GameSceneController extends GameWindow implements Initializable {
 		}
 	}
 
-	public void playIceTile() {
+	public static void playIceTile() {
 		for (int y = 0; y < boardHeight; y++) {
 			final int finalY = y;
 			for (int x = 0; x < boardWidth; x++) {
@@ -875,7 +893,7 @@ public class GameSceneController extends GameWindow implements Initializable {
 		}
 	}
 	
-	private void placeIceTile(int y, int x) {
+	private static void placeIceTile(int y, int x) {
 		Ice iceTile = null;
 		for(ActionTile actionTile:actionTilesOwned) {
 			if(actionTile.getType() == TileType.Ice) {
@@ -908,7 +926,7 @@ public class GameSceneController extends GameWindow implements Initializable {
 		}
 	}
 	
-	public void showInventory() {
+	public static void showInventory() {
 		//System.out.println("hi");
 		selectedTile=null;
 		boolean actionTileObtained[]= {false,false,false,false};
@@ -994,7 +1012,7 @@ public class GameSceneController extends GameWindow implements Initializable {
 		tileMove.play();
 	}
 	
-	private void setSelectedTile(Box newSelected) {
+	private static void setSelectedTile(Box newSelected) {
 		if(selectedTile!=null) {
 		   selectedTile.setWidth(70);
 		   selectedTile.setHeight(70);
@@ -1004,8 +1022,15 @@ public class GameSceneController extends GameWindow implements Initializable {
 		selectedTile=newSelected;
 	}
 	
-	private void showCurPlayer() {
+	private static void showCurPlayer() {
+		sRightMenuPane.getChildren().remove(playerIndicator);
 		int curPlayerNum = currentGameState.getCurPlayer();
+		playerIndicator = new ImageView();
+		playerIndicator.setFitHeight(59);
+		playerIndicator.setFitWidth(57);
+		playerIndicator.setLayoutX(39);
+		playerIndicator.setLayoutY(83);
+		sRightMenuPane.getChildren().add(playerIndicator);
 		if(curPlayerNum==0) {
 			playerIndicator.setImage(new Image("/img/redWizard.png"));
 		}else if(curPlayerNum==1) {
@@ -1021,7 +1046,7 @@ public class GameSceneController extends GameWindow implements Initializable {
 		changePlayer.play();
 	}
 	
-	private void showDrawTile(Tile drawTile) {
+	private static void showDrawTile(Tile drawTile) {
 		Image tileImage=null;
 		if(drawTile.getType()==TileType.Straight) {
 			tileImage = new Image("/img/texture/Straight.png");
@@ -1045,18 +1070,18 @@ public class GameSceneController extends GameWindow implements Initializable {
 		tileIcon.setFitWidth(50);
 		tileIcon.setLayoutX(42);
 		tileIcon.setLayoutY(225);
-		rightMenuPane.getChildren().add(tileIcon);
+		sRightMenuPane.getChildren().add(tileIcon);
 		ScaleTransition appearTile = new ScaleTransition(Duration.seconds(1),tileIcon);
 		appearTile.setFromX(0);
 		appearTile.setFromY(0);
 		appearTile.setToX(1);
 		appearTile.setToY(1);
 		appearTile.setOnFinished(e->{
-			rightMenuPane.getChildren().add(tileType);
+			sRightMenuPane.getChildren().add(tileType);
 		});
 		PauseTransition hold = new PauseTransition(Duration.millis(1000));
 		hold.setOnFinished(e->{
-			rightMenuPane.getChildren().remove(tileType);
+			sRightMenuPane.getChildren().remove(tileType);
 		});
 		
 		ScaleTransition disappearTile = new ScaleTransition(Duration.seconds(1),tileIcon);
@@ -1068,7 +1093,7 @@ public class GameSceneController extends GameWindow implements Initializable {
 		showTileSeq.play();
 	}
 	
-	public Label showTileType(Tile drawTile) {
+	public static Label showTileType(Tile drawTile) {
 		Label typeType = new Label(drawTile.getType().name());
 		typeType.setTextFill(Color.WHITE);
 		typeType.setAlignment(Pos.CENTER);

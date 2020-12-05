@@ -16,11 +16,11 @@
                <image>
                   <Image url="/img/TurnsBG.png" />
                </image></ImageView>
-            <Label fx:id="turnLabel" layoutX="59.0" layoutY="9.0" prefHeight="45.0" prefWidth="20.0" text="1" textFill="WHITE">
+            <!-- <Label fx:id="turnLabel" layoutX="59.0" layoutY="9.0" prefHeight="45.0" prefWidth="20.0" text="1" textFill="WHITE">
                <font>
                   <Font name="System Bold" size="29.0" />
                </font>
-            </Label>
+            </Label>-->
             <Label layoutX="54.0" layoutY="-2.0" text="Turn" textFill="WHITE">
                <font>
                   <Font name="System Bold Italic" size="12.0" />
@@ -31,10 +31,10 @@
                <image>
                   <Image url="/img/royalPattern.png" />
                </image></ImageView>
-            <ImageView fx:id="playerIndicator" fitHeight="59.0" fitWidth="57.0" layoutX="39.0" layoutY="83.0" pickOnBounds="true" preserveRatio="true">
+           <!--  <ImageView fx:id="playerIndicator" fitHeight="59.0" fitWidth="57.0" layoutX="39.0" layoutY="83.0" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="/img/blueWizard.png" />
-               </image></ImageView>
+               </image></ImageView>-->
             <ImageView fitHeight="101.0" fitWidth="88.0" layoutX="29.0" layoutY="185.0" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="/img/silkBag.png" />
