@@ -206,16 +206,7 @@ public class GameSceneController extends GameWindow implements Initializable {
 	}
 
 	private int translateRotateAngle(double angle) {
-		int num=(int) (angle/90);
-		if(num%4==0) {
-			return 0;
-		}else if(num%4==1) {
-			return 1;
-		}else if(num%4==2) {
-			return 2;
-		}else {
-			return 3;
-		}
+		return (int) ((angle/90)%4);
 	}
 	
 	private void updateBoard() {
