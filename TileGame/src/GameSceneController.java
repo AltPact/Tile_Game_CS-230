@@ -86,6 +86,7 @@ public class GameSceneController extends GameWindow implements Initializable {
 	private static Placeable activePlaceable;  // the floor tile drawn from the silk bag which must be placed by the current player (if they drew a floor tile)
 	private static Box selectedTile;
 	private static int phase;
+	private static ParallelTransition clickableAnime;
 	
 	@FXML
 	public BorderPane GB;
@@ -516,6 +517,7 @@ public class GameSceneController extends GameWindow implements Initializable {
 	public static void setMoveableTiles() {
 		updateGameState();
 		boolean[][] moveableSpaces = currentGameState.getMoveableSpaces();
+		clickableAnime = new ParallelTransition();
 		System.out.println(moveableSpaces.length);
 		for (int y = 0; y < boardHeight; y++) {
 			final int finalY = y;
@@ -523,7 +525,7 @@ public class GameSceneController extends GameWindow implements Initializable {
 				System.out.print(moveableSpaces[y][x]+", ");
 				final int finalX = x;
 				if(moveableSpaces[y][x]) {
-					animateTile(tileArray[y][x]);
+					clickableAnime.getChildren().add(animateTile(tileArray[y][x]));
 					tileArray[y][x].setOnMouseClicked(e -> {
 						playerDeliberateMove(playerPlaying, finalY, finalX);
 					});
@@ -532,6 +534,7 @@ public class GameSceneController extends GameWindow implements Initializable {
 			}
 			System.out.println("");
 		}
+		clickableAnime.play();
 	}
 	
 	
@@ -546,6 +549,7 @@ public class GameSceneController extends GameWindow implements Initializable {
 		try {
 	        currentGame.moveCurrentPlayer(x, y);
 			movePlayer(player,tileArray[y][x].getTranslateX(),tileArray[y][x].getTranslateY());
+			resetClickable();
 			updateGameState();
 		} catch (IllegalMove e) {
 			e.printStackTrace();
@@ -558,6 +562,7 @@ public class GameSceneController extends GameWindow implements Initializable {
 		enlarge.setToY(0.8);
 		enlarge.setCycleCount(Animation.INDEFINITE);
 		enlarge.setAutoReverse(true);
+		
 		return enlarge;
 	}
 	
@@ -569,7 +574,10 @@ public class GameSceneController extends GameWindow implements Initializable {
 			tile.scaleXProperty().set(1);
 			tile.scaleYProperty().set(1);
 		}
+		clickableAnime.pause();
 		clickAble.clear();
+		//updateBoard();
+		//updatePlayerPosition();
 	}
 
 
