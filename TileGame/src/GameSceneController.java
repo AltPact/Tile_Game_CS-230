@@ -125,6 +125,7 @@ public class GameSceneController extends GameWindow implements Initializable {
 		GB.setCenter(subScene);
 		
 		newTurn();
+		pushTileAnimation(0,1,1);
 	}
 	
 	public void initLightSource() {
@@ -766,7 +767,68 @@ public class GameSceneController extends GameWindow implements Initializable {
 	}
 
 
-
+	public static void pushTileAnimation(int rows, int columns, int orientation) {
+		Box tileToRemove=null;
+		int starting,ending,incValue,arrayX,arrayY;
+		double X,Y;
+		if (orientation==0 || orientation==1) {
+			
+			if (orientation==0) {
+				starting=0;
+				ending=boardHeight-1;
+				incValue=1;
+				arrayX=columns;
+			}else {
+				starting=boardHeight-1;
+				ending=0;
+				incValue=-1;
+				arrayX=columns;
+			}
+			//System.out.println("S: " + starting + " ending: " + ending+ " inc: "+incValue);
+			System.out.println(arrayX+" "+ starting +" "+tileArray[arrayX][starting]);
+			tileToRemove = tileArray[arrayX][starting];
+			X = tileToRemove.getTranslateX();
+			Y = tileToRemove.getTranslateY();
+			for (int i = starting; i!= ending; i+=incValue) {
+				//System.out.println("R: "+i+" S: " + starting + " ending: " + ending+ " inc: "+incValue);
+				Box newTile = tileArray[arrayX][(i+incValue)];
+				moveTile(X, Y, newTile);
+				//tileArray[arrayX][i] = newTile;
+				//System.out.println("R: "+i);
+				X = newTile.getTranslateX();
+				Y = newTile.getTranslateY();
+			}
+		}else {
+			if (orientation==2) {
+				starting=0;
+				ending=boardWidth-1;
+				incValue=1;
+				arrayY=rows;
+			}else {
+				starting=boardWidth-1;
+				ending=0;
+				incValue=-1;
+				arrayY=rows;
+			}
+			//System.out.println("S: " + starting + " ending: " + ending+ " inc: "+incValue);
+			tileToRemove = tileArray[starting][arrayY];
+			X = tileToRemove.getTranslateX();
+			Y = tileToRemove.getTranslateY();
+			for (int i = starting; i!= ending; i+=incValue) {
+				//System.out.println("R: "+i+" S: " + starting + " ending: " + ending+ " inc: "+incValue);
+				Box newTile = tileArray[(i+incValue)][arrayY];
+				moveTile(X, Y, newTile);
+				//tileArray[i][arrayY] = newTile;
+				//System.out.println("R: "+i);
+				X = newTile.getTranslateX();
+				Y = newTile.getTranslateY();
+			}
+		}
+		// vertical
+		
+		tiles.getChildren().remove(tileToRemove);
+		//pushNewTile(X,Y,rows,columns);
+	}
 	
 
 	public static void moveTile(double x, double y, Box moveTile) {
