@@ -125,6 +125,7 @@ public class GameSceneController extends GameWindow implements Initializable {
 		GB.setCenter(subScene);
 		
 		newTurn();
+		displayTurns();
 	}
 	
 	public void initLightSource() {
@@ -423,6 +424,33 @@ public class GameSceneController extends GameWindow implements Initializable {
 		}else {
 			phase++;
 		}
+	}
+	
+	private void displayTurns() {
+		Label turnsLabel = new Label("Turns: "+turns);
+		turnsLabel.setStyle("-fx-background-color: rgba(0, 0, 0, 0.5);");
+		turnsLabel.setTextFill(Color.WHITE);
+		turnsLabel.setFont(new Font("Arial", 40));
+		turnsLabel.setTranslateX(-50);
+		turnsLabel.setTranslateY(350);
+		turnsLabel.setPrefWidth(1000);
+		turnsLabel.setAlignment(Pos.CENTER);
+		gameObjects.getChildren().add(turnsLabel);
+		ScaleTransition turnShow = new ScaleTransition(Duration.millis(800), turnsLabel);
+		turnShow.setFromY(0.1);
+		turnShow.setToY(1);
+		
+		PauseTransition hold = new PauseTransition(Duration.millis(1000));
+		
+		ScaleTransition turnOut = new ScaleTransition(Duration.millis(800), turnsLabel);
+		turnOut.setFromY(1);
+		turnOut.setToY(0.1);
+		
+		SequentialTransition seqTransition = new SequentialTransition(turnShow,hold,turnOut);
+		seqTransition.setOnFinished(e->{
+			gameObjects.getChildren().remove(turnsLabel);
+		});
+		seqTransition.play();
 	}
 	
 	private void displayErrorMessage(String errorMessage) {
