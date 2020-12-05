@@ -125,7 +125,7 @@ public class GameSceneController extends GameWindow implements Initializable {
 		GB.setCenter(subScene);
 		
 		newTurn();
-		pushTileAnimation(0,1,1);
+		//pushTileAnimation(0,2,0);
 	}
 	
 	public void initLightSource() {
@@ -181,15 +181,15 @@ public class GameSceneController extends GameWindow implements Initializable {
 		int y = 400-(boardHeight*100)/2;
 		//System.out.println("Starting X: "+(400-boardWidth/2));
 		//System.out.println("Starting Y: "+y);
-		for (int q = 0; q < boardHeight; q++) {
+		for (int h = 0; h < boardHeight; h++) {
 			int x = 400-(boardWidth*100)/2;
 			
-			for (int i = 0; i < boardWidth; i++) {
-				Box tile = objectFactory.makeTile(tileBoard[q][i]);
+			for (int w = 0; w < boardWidth; w++) {
+				Box tile = objectFactory.makeTile(tileBoard[h][w]);
 				tile.translateXProperty().set(x);
 				tile.translateYProperty().set(y);
 				tile.translateZProperty().set(0);
-				tileArray[i][q] = tile;//box array
+				tileArray[h][w] = tile;//box array
 				tiles.getChildren().add(tile);//tile group
 				x += 100;//gap between tiles
 				//System.out.println(tile.getTranslateZ());
@@ -350,15 +350,19 @@ public class GameSceneController extends GameWindow implements Initializable {
 		boolean[][] insertablePlaces = currentGameState.getInsertableLocations(); // [rows, columns][index]
 		for (int x = 0; x < boardWidth; x++) { // for each column
 			final int finalX = x;
-			if (insertablePlaces[1][x]) {
+			if (insertablePlaces[0][x]) {
 				pushableTiles.add(tileArray[0][x]);
+				System.out.println("0 "+x);
 				Box newDownArrow = objectFactory.makeArrow(1);  // make down arrow
-				newDownArrow.translateXProperty().set(tileArray[0][x].translateXProperty().get());  // same x
-				newDownArrow.translateYProperty().set(tileArray[0][x].translateYProperty().get() - 100);  // -100y
+				System.out.println(tileArray[0][x].getTranslateX()+" "+tileArray[0][x].getTranslateY());
+				newDownArrow.translateXProperty().set(tileArray[0][x].getTranslateX());  // same x
+				newDownArrow.translateYProperty().set(tileArray[0][x].getTranslateY() - 100);  // -100y
 				newDownArrow.translateZProperty().set(0);
 				arrows.getChildren().add(newDownArrow);
 				newDownArrow.setOnMouseClicked(e -> {
-					pushTile(finalX, 0);
+					System.out.println("X "+finalX+ "Y: 0");
+					pushTileAnimation(finalX,0,0);
+					//pushTile(finalX, 0);
 				});
 
 				pushableTiles.add(tileArray[boardHeight-1][x]);
@@ -368,13 +372,15 @@ public class GameSceneController extends GameWindow implements Initializable {
 				newUpArrow.translateZProperty().set(0);
 				arrows.getChildren().add(newUpArrow);
 				newDownArrow.setOnMouseClicked(e -> {
-					pushTile(finalX, 1);
+					System.out.println("X "+finalX+ "Y: "+(boardHeight-1));
+					pushTileAnimation(finalX,boardHeight-1,1);
+					//pushTile(finalX, 1);
 				});
 			}
 		}
-		/*for (int y = 0; y < boardHeight; y++) {  // for each row
+		for (int y = 0; y < boardHeight; y++) {  // for each row
 			final int finalY = y;
-			if (insertablePlaces[0][y]) {
+			if (insertablePlaces[1][y]) {
 				pushableTiles.add(tileArray[y][0]);
 				Box newRightArrow = objectFactory.makeArrow(3);  // make right arrow
 				newRightArrow.translateXProperty().set(tileArray[y][0].translateXProperty().get() - 100);  // -100x
@@ -382,20 +388,20 @@ public class GameSceneController extends GameWindow implements Initializable {
 				newRightArrow.translateZProperty().set(0);
 				arrows.getChildren().add(newRightArrow);
 				newRightArrow.setOnMouseClicked(e -> {
-					pushTile(finalY, 2);
+					//pushTile(finalY, 2);
 				});
 
 				pushableTiles.add(tileArray[y][boardWidth-1]);
 				Box newLeftArrow = objectFactory.makeArrow(2);  // make left arrow
 				newLeftArrow.translateXProperty().set(tileArray[y][boardWidth - 1].translateXProperty().get() + 100);  // +100x
-				newLeftArrow.translateYProperty().set(tileArray[y][boardWidth - 1].translateYProperty().get() + 100);  // same y
+				newLeftArrow.translateYProperty().set(tileArray[y][boardWidth - 1].translateYProperty().get());  // same y
 				newLeftArrow.translateZProperty().set(0);
 				arrows.getChildren().add(newLeftArrow);
 				newLeftArrow.setOnMouseClicked(e -> {
-					pushTile(finalY, 1);
+					//pushTile(finalY, 1);
 				});
 			}
-		}*/
+		}
 		//gameObjects.getChildren().add(arrows);
 	}
 
@@ -771,9 +777,9 @@ public class GameSceneController extends GameWindow implements Initializable {
 		Box tileToRemove=null;
 		int starting,ending,incValue,arrayX,arrayY;
 		double X,Y;
-		if (orientation==0 || orientation==1) {
+		if (orientation==2 || orientation==3) {
 			
-			if (orientation==0) {
+			if (orientation==2) {
 				starting=0;
 				ending=boardHeight-1;
 				incValue=1;
@@ -793,13 +799,13 @@ public class GameSceneController extends GameWindow implements Initializable {
 				//System.out.println("R: "+i+" S: " + starting + " ending: " + ending+ " inc: "+incValue);
 				Box newTile = tileArray[arrayX][(i+incValue)];
 				moveTile(X, Y, newTile);
-				//tileArray[arrayX][i] = newTile;
+				tileArray[arrayX][i] = newTile;
 				//System.out.println("R: "+i);
 				X = newTile.getTranslateX();
 				Y = newTile.getTranslateY();
 			}
 		}else {
-			if (orientation==2) {
+			if (orientation==0) {
 				starting=0;
 				ending=boardWidth-1;
 				incValue=1;
@@ -818,7 +824,7 @@ public class GameSceneController extends GameWindow implements Initializable {
 				//System.out.println("R: "+i+" S: " + starting + " ending: " + ending+ " inc: "+incValue);
 				Box newTile = tileArray[(i+incValue)][arrayY];
 				moveTile(X, Y, newTile);
-				//tileArray[i][arrayY] = newTile;
+				tileArray[i][arrayY] = newTile;
 				//System.out.println("R: "+i);
 				X = newTile.getTranslateX();
 				Y = newTile.getTranslateY();
@@ -827,9 +833,18 @@ public class GameSceneController extends GameWindow implements Initializable {
 		// vertical
 		
 		tiles.getChildren().remove(tileToRemove);
-		//pushNewTile(X,Y,rows,columns);
+		pushNewTile(X,Y,rows,columns);
 	}
-	
+	public static Box pushNewTile(double x, double y,int rows, int columns) {
+		Box newTile =objectFactory.makeTile(activePlaceable);
+		newTile.setTranslateX(1000);
+		newTile.setTranslateY(600);
+		newTile.setTranslateZ(0);
+		tiles.getChildren().add(newTile);
+		moveTile(x,y,newTile);
+		tileArray[columns][rows]=newTile;
+		return newTile;
+	}
 
 	public static void moveTile(double x, double y, Box moveTile) {
 		TranslateTransition tileMove = new TranslateTransition(Duration.millis(500), moveTile);
