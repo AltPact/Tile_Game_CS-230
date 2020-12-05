@@ -168,15 +168,18 @@ public class PlayerData implements Comparable<PlayerData> {
 		int playerWins = this.getWins();
 		int otherWins = otherPlayer.getWins();
 		if (playerWins > otherWins) {
+			System.out.println(-1);
 			return -1;
 		} else if (playerWins < otherWins) {
+			System.out.println(1);
 			return +1;
 		} else if (playerWins == otherWins) {
+			System.out.println(0);
 			return 0;
 		} else {
-			return 99;
+			System.out.println("Else");
+			return 0;
 		}
-
 	}
 
 }
