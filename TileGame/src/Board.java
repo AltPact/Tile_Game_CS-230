@@ -109,52 +109,52 @@ public class Board {
 	 */
 	public boolean insertPiece(int x, int y, boolean vertical, Placeable tile){
 		if(isInsertable(x, y)){
-			
 			if(vertical) {
 
 				//Inserting from above
-				if(x == 0) {
+				if(y == 0) {
 					
 					//Shifts tiles down 1
 					for(int i = height - 2; i >= 0; i--) {
-						tiles[y][i + 1] = tiles[y][i];
+						tiles[i + 1][x] = tiles[i][x];
 					}
 					
-					tiles[y][0] = tile;
+					tiles[0][x] = tile;
 					
 				//Inserting from below
-				} else if(x == height - 1){
+				} else if(y == height - 1){
 					
 					//Shifts tiles up 1
 					for(int i = 1; i < height; i++) {
-						tiles[y][i - 1] = tiles[y][i];
+						tiles[i - 1][x] = tiles[i][x];
 					}
 					
-					tiles[y][width - 1] = tile;
+					tiles[width - 1][y] = tile;
 					
 				//Returns false if tile can not be inserted vertically
 				} else {
+					System.out.println("Line 138");
 					return false;
 				}
 				
 				
 			} else {
-				
+				System.out.println(x + " " + y);
 				//inserting from left
-				if(y == 0) {
+				if(x == 0) {
 					//Shifts tiles right 1
 					for(int i = width - 2; i >= 0; i--) {
-						tiles[i + 1][x] = tiles[i][x];
+						tiles[y][i + 1] = tiles[y][i];
 					}
-					tiles[0][x] = tile;
+					tiles[y][0] = tile;
 					
 				//inserting from right
 				} else if(x == width - 1){
 					//Shifts tiles left 1
 					for(int i = 1; i < width; i++) {
-						tiles[i - 1][x] = tiles[i][x];
+						tiles[y][i - 1] = tiles[y][i];
 					}
-					tiles[height - 1][x] = tile;
+					tiles[y][height - 1] = tile;
 				
 				//Returns false if tile can not be inserted horizontally
 				} else {
