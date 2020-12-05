@@ -204,13 +204,7 @@ public class GameSceneController extends GameWindow implements Initializable {
 		}
 		// System.out.println(gameObjects.getChildren());
 	}
-	
-	public void movePlayer(Group player, double x, double y) {
-		TranslateTransition playerMove = new TranslateTransition(Duration.seconds(1),player);
-		playerMove.setToX(x);
-		playerMove.setToY(y);
-		playerMove.play();
-	}
+
 	
 	private void updateBoard() {
 		Placeable[][] newBoard=currentGameState.getBoard();
@@ -431,13 +425,18 @@ public class GameSceneController extends GameWindow implements Initializable {
 		}
 	}
 	
-	public static void movePlayer(Group player, int y, int x) {
+	
+	public static void movePlayer(Group player, double x, double y) {
+		TranslateTransition playerMove = new TranslateTransition(Duration.seconds(1),player);
+		playerMove.setToX(x);
+		playerMove.setToY(y);
+		playerMove.play();
+	}
+	
+	public static void playermoves(Group player, int y, int x) {
 		try {
 			currentGame.moveCurrentPlayer(x, y);
-			TranslateTransition playerMove = new TranslateTransition(Duration.seconds(1),player);
-			playerMove.setToX(x);
-			playerMove.setToY(y);
-			playerMove.play();
+			movePlayer(player,tileArray[y][x].getTranslateX(),tileArray[y][x].getTranslateY());
 		} catch (IllegalMove e) {
 			e.printStackTrace();
 		}
