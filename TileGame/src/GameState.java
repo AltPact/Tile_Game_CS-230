@@ -39,6 +39,15 @@ public class GameState {
 	private int width;
 	private int height;
 	private PlayerPiece[] players;
+	private boolean hasPlayerInsertedTile;
+	
+	public void setHasPlayerInsertedTile(boolean b) {
+		this.hasPlayerInsertedTile = b;
+	}
+	
+	public boolean hasPlayerInsertedTile() {
+		return hasPlayerInsertedTile;
+	}
 	
 	public void setPlayers(PlayerPiece[] players) {
 		this.players = players;

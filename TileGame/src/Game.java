@@ -18,6 +18,7 @@ public class Game {
 	private ArrayList<ActionTilePlaceable> tilesInAction;
 	private boolean isGoalReached;
 	private ArrayList<GameState> pastStates = new ArrayList<GameState>();
+	private boolean canPlayerInsertTile;
 	
 	
 	/**
@@ -33,6 +34,7 @@ public class Game {
 		this.players = players;
 		this.curPlayer = 0;
 		this.movesRemaingForThisPlayer = 1;
+		this.canPlayerInsertTile = true;
 		this.tilesInAction = new ArrayList<ActionTilePlaceable>();
 		this.isGoalReached = false;
 		this.pastStates = new ArrayList<GameState>();
@@ -66,6 +68,7 @@ public class Game {
 		this.tilesInAction = curState.getTilesInAction();
 		this.curPlayer = curState.getCurPlayer();
 		this.movesRemaingForThisPlayer = curState.getMovedPlayer();
+		this.canPlayerInsertTile = curState.hasPlayerInsertedTile();
 	}
 	
 	/**
@@ -109,6 +112,9 @@ public class Game {
 	 * @throws IllegalInsertionException
 	 */
 	public GameState insertTile(Placeable tileToBeInserted, int x, int y, boolean vertical) throws IllegalInsertionException {
+		if(!canPlayerInsertTile) {
+			throw new IllegalInsertionException("This player has already inserted a tile");
+		}
 		boolean isInserted = board.insertPiece(x, y, vertical, tileToBeInserted);
 		if(!isInserted) {
 			throw new IllegalInsertionException("This tile cannot be inserted");
@@ -136,6 +142,7 @@ public class Game {
 		movePlayersOn(directionOfInsertion, affectedRowColumn);
 		
 		int[] postion = {y,x};
+		canPlayerInsertTile = false;
 		return tileAfterInsertion(tileToBeInserted, postion);
 	}
 	
@@ -378,6 +385,8 @@ public class Game {
 		if ((curPlayer % players.length) == 0) {
 			curPlayer = 0;
 		}
+		movesRemaingForThisPlayer = 1;
+		canPlayerInsertTile = true;
 		for(ActionTilePlaceable tile : tilesInAction) {
 			tile.decrementTime();
 		}

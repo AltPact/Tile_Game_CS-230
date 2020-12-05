@@ -27,6 +27,7 @@ public class GameFileReader {
 			curState.isGoalHit(s.nextBoolean());
 			//Current player and moves remaining.
 			curState.setCurrentPlayer(s.nextInt(), s.nextInt());
+			curState.setHasPlayerInsertedTile(s.nextBoolean());
 			
 			int numPlayers = s.nextInt();
 			

@@ -21,7 +21,8 @@ public class GameFileWriter {
 	 */
     public static void writeGameFile(GameState g, String filename) {
         try {
-            File f = new File("./data/savedgames" + filename);
+        	String fileAndPath = ("./data/savedgame/" + filename);
+            File f = new File(fileAndPath);
             f.createNewFile();
             FileWriter w = new FileWriter(filename); 
             
@@ -31,6 +32,7 @@ public class GameFileWriter {
             w.write(String.valueOf(g.isGoalHit()) + DEL);
             w.write(String.valueOf(g.getCurPlayer()) + DEL);
             w.write(String.valueOf(g.getMovesLeftForCurrentPlayer()) + DEL);
+            w.write(String.valueOf(g.hasPlayerInsertedTile()));
             w.write(String.valueOf(players.length) + DEL);
             
             
@@ -40,7 +42,7 @@ public class GameFileWriter {
             	w.write(String.valueOf(players[p].getY()) + DEL);
                 w.write(String.valueOf(players[p].getColour()) + DEL);
                 w.write(String.valueOf(players[p].getBacktrack()) + DEL);
-                //w.write(players[p].getLinkedData().getName() + DEL);
+                w.write(players[p].getLinkedData().getName() + DEL);
             }
             
             //TODO - UNCOMMENT SAVE THE LINKED DATA.
