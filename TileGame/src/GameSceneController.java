@@ -855,7 +855,7 @@ public class GameSceneController extends GameWindow implements Initializable {
 		showCurPlayer();
 		
 		
-		teleportPlayer(playerPlaying, tileArray[4][4].getTranslateX(), tileArray[4][4].getTranslateY());
+		//teleportPlayer(playerPlaying, tileArray[4][4].getTranslateX(), tileArray[4][4].getTranslateY());
 	}
 	
 	
