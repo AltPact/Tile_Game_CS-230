@@ -99,6 +99,7 @@ public class Game {
 		GameState newState = new GameState();
 		newState.setTileDrawn(newTile);
 		newState.setActionTilesForPlayers(getActionTilesForPlayers());
+		newState.setInsertableLocation(board.getInsertablePlaces());
 		return newState;
 	}
 	
@@ -536,6 +537,17 @@ public class Game {
 		newState.setSilkBag(bag);
 		newState.setTilesInAction(tilesInAction);
 		newState.setPlayers(players);
+		return newState;
+	}
+	
+	public GameState getCurrentGameState() {
+		GameState newState = new GameState();
+		newState.setBoard(board.getTiles(), board.getWidth(), board.getHeight());
+		newState.setActionTilesForPlayers(getActionTilesForPlayers());
+		newState.setCurrentPlayer(curPlayer, movesRemaingForThisPlayer);
+		newState.setMoveableSpaces(board.getMoveableSpaces(players[curPlayer]));
+		newState.setPlayerPositions(getPlayerPositions());
+		newState.setInsertableLocation(board.getInsertablePlaces());
 		return newState;
 	}
 	

@@ -210,7 +210,7 @@ public class ObjFactory {
 		tile.getTransforms().add(rotate);
 		}
 		
-		System.out.println("Box ori: "+tile.getTransforms()+" Place ori: "+tileObject.getOrientation());
+		//System.out.println("Box ori: "+tile.getTransforms()+" Place ori: "+tileObject.getOrientation());
 		return tile;
 	}
 	

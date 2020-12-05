@@ -138,12 +138,12 @@ public class GameSceneController extends GameWindow implements Initializable {
 		tileBoard=currentGameState.getBoard();
 		boardHeight=tileBoard.length;
 		boardWidth=tileBoard[0].length;
-		System.out.println("board used in gamescene:");
+		//System.out.println("board used in gamescene:");
 		for(int a = 0; a < boardHeight; a++) {
 			for(int b = 0; b < boardWidth; b++) {
-				System.out.print(tileBoard[a][b].getType() + " ");
+				//System.out.print(tileBoard[a][b].getType() + " ");
 			}
-			System.out.println("");
+			//System.out.println("");
 		}
 		subScene = null;
 		objectFactory= new ObjFactory();
@@ -166,9 +166,13 @@ public class GameSceneController extends GameWindow implements Initializable {
 		floor.setTranslateX(420);
 		floor.setTranslateY(400);
 		gameObjects.getChildren().add(floor);
-		System.out.println(floor.getTranslateZ());
+		//System.out.println(floor.getTranslateZ());
 	}
 
+	private static void updateGameState() {
+		currentGameState=currentGame.getCurrentGameState();
+	}
+	
 	/**
 	 * add all tiles at start of game
 	 */
@@ -214,10 +218,11 @@ public class GameSceneController extends GameWindow implements Initializable {
 	}
 
 	
-	private void updateBoard() {
+	private static void updateBoard() {
+		updateGameState();
 		Placeable[][] newBoard=currentGameState.getBoard();
-		for(int h=0;h<tileArray.length;h++) {
-			for(int w=0;w<tileArray[h].length;w++) {
+		for(int h=0;h<boardHeight;h++) {
+			for(int w=0;w<boardWidth;w++) {
 				objectFactory.textureTheTile(tileArray[h][w],newBoard[h][w]);
 			}
 		}
@@ -288,6 +293,8 @@ public class GameSceneController extends GameWindow implements Initializable {
 	 * @param direction the direction to push to tile in from (top/bottom/left/right)
 	 */
 	public static void pushTile(int i, int direction) {
+		
+		System.out.println("current active tile: " +activePlaceable.getType());
 		arrows.getChildren().removeAll();  // remove all arrows now that one has been clicked
 		int newX;  // x/y of the tile being added
 		int newY;
@@ -331,6 +338,7 @@ public class GameSceneController extends GameWindow implements Initializable {
 		newBox.translateYProperty().set(displayY);
 		newBox.translateZProperty().set(0);
 		tiles.getChildren().add(newBox);  // add new tile to tiles to be drawn
+		updateBoard();
 	}
 
 	/**
@@ -363,7 +371,7 @@ public class GameSceneController extends GameWindow implements Initializable {
 				});
 			}
 		}
-		for (int y = 0; y < boardHeight; y++) {  // for each row
+		/*for (int y = 0; y < boardHeight; y++) {  // for each row
 			final int finalY = y;
 			if (insertablePlaces[0][y]) {
 				pushableTiles.add(tileArray[y][0]);
@@ -386,8 +394,8 @@ public class GameSceneController extends GameWindow implements Initializable {
 					pushTile(finalY, 1);
 				});
 			}
-		}
-		gameObjects.getChildren().add(arrows);
+		}*/
+		//gameObjects.getChildren().add(arrows);
 	}
 
 	/**
@@ -888,7 +896,9 @@ public class GameSceneController extends GameWindow implements Initializable {
 		
 		showDrawTile(drawTile);
 		if(!drawTile.isAction()) {
+			activePlaceable=(Placeable) drawTile;
 			showPlaceableFloor(drawTile);
+			setPushableArrows();
 		}
 		if(actionTilesOwned.size() > 0) {
 		    showInventory();
@@ -971,15 +981,15 @@ public class GameSceneController extends GameWindow implements Initializable {
 				iceTile = (Ice) actionTile;
 			}
 		}
-		System.out.println("Ice tile used:" + iceTile);
-		System.out.println("insert x:" + x + " insert y:" + y);
+		//System.out.println("Ice tile used:" + iceTile);
+		//System.out.println("insert x:" + x + " insert y:" + y);
 		try {
 			currentGame.playIce(iceTile, x, y);
 		} catch (IncorrectTileTypeException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		System.out.println(actionTilesOwned.size());
+		//System.out.println(actionTilesOwned.size());
 		resetClickable();
 	}
 	
@@ -998,7 +1008,7 @@ public class GameSceneController extends GameWindow implements Initializable {
 	}
 	
 	public void showInventory() {
-		System.out.println("hi");
+		//System.out.println("hi");
 		selectedTile=null;
 		boolean actionTileObtained[]= {false,false,false,false};
 		inventory = new Group();

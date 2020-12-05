@@ -21,7 +21,7 @@ public class FileReaderWriterTest {
      * TODO: DO NOT INCLUDE THIS IN FINAL SUBMISSION
      */
     public static Game generateTestGame() {
-        SilkBag bag = new SilkBag(new int[] {0, 0, 1000, 0}, new int[] {10, 10, 10});
+        SilkBag bag = new SilkBag(new int[] {0, 0, 0, 0}, new int[] {10, 10, 10});
         int width = 5;
         int height = 5;
         Placeable[][] tiles = new Placeable[height][width];
