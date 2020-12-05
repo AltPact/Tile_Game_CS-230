@@ -1,1 +1,1 @@
-MrT,8,9,https://www.biography.com/.image/ar_1:1%2Cc_fill%2Ccs_srgb%2Cg_face%2Cq_auto:good%2Cw_300/MTIwNjA4NjMzNjc0ODkyODEy/mr-t-413140-1-402.jpg
+MrT,20,9,https://www.biography.com/.image/ar_1:1%2Cc_fill%2Ccs_srgb%2Cg_face%2Cq_auto:good%2Cw_300/MTIwNjA4NjMzNjc0ODkyODEy/mr-t-413140-1-402.jpg
