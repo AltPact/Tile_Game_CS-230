@@ -135,7 +135,6 @@ public class GameSceneController extends GameWindow implements Initializable {
 	}
 	
 	public void initVariables() {
-		currentGame = FileReaderWriterTest.generateTestGame();
 		tileBoard=currentGameState.getBoard();
 		boardHeight=tileBoard.length;
 		boardWidth=tileBoard[0].length;
@@ -149,7 +148,7 @@ public class GameSceneController extends GameWindow implements Initializable {
 		subScene = null;
 		objectFactory= new ObjFactory();
 		gameObjects = new Group();
-		tileArray = new Box[9][9];
+		tileArray = new Box[boardHeight][boardWidth];
 		playerObjectArray = new Group[4];
 		playerPieceLink = new HashMap<Sphere, PlayerPiece>();
 		playerPlaying=null;
@@ -208,8 +207,8 @@ public class GameSceneController extends GameWindow implements Initializable {
 			int y = initPlayerPos[i][1];
 			Group player = objectFactory.makePlayer(i);
 			player.setMouseTransparent(true);
-			player.translateXProperty().set(tileArray[x][y].getTranslateX());
-			player.translateYProperty().set(tileArray[x][y].getTranslateY());
+			player.translateXProperty().set(tileArray[y][x].getTranslateX());
+			player.translateYProperty().set(tileArray[y][x].getTranslateY());
 			player.translateZProperty().set(-50);
 			//playerPieceLink.put(sphere, pieceArray[i]);
 			gameObjects.getChildren().add(player);
@@ -229,11 +228,12 @@ public class GameSceneController extends GameWindow implements Initializable {
 		}
 	}
 	
-	private void updatePlayerPosition() {
+	private static void updatePlayerPosition() {
 		int[][] playerPosition=currentGameState.getPlayersPositions();
 		for(int playerNum=0;playerNum<playerPosition.length;playerNum++) {
-			int x=playerPosition[playerNum][0];
-			int y=playerPosition[playerNum][1];
+			int x=playerPosition[playerNum][1];
+			int y=playerPosition[playerNum][0];
+			System.out.println("Player Position X: "+x+" Y: "+y);
 			Box onTile =tileArray[x][y];
 			movePlayer(playerObjectArray[playerNum],onTile.getTranslateX(),onTile.getTranslateY());
 		    }
@@ -293,7 +293,7 @@ public class GameSceneController extends GameWindow implements Initializable {
 	 *
 	 * @param direction the direction to push to tile in from (top/bottom/left/right)
 	 */
-	public static void pushTile(int i, int direction) {
+	/*public static void pushTile(int i, int direction) {
 		
 		System.out.println("current active tile: " +activePlaceable.getType());
 		arrows.getChildren().removeAll();  // remove all arrows now that one has been clicked
@@ -341,7 +341,7 @@ public class GameSceneController extends GameWindow implements Initializable {
 		tiles.getChildren().add(newBox);  // add new tile to tiles to be drawn
 		updateBoard();
 	}
-
+    */
 	/**
 	 * creates arrows next to all free rows/columns that can be clicked by the player to insert a tile into that row/column
 	 */
@@ -360,9 +360,15 @@ public class GameSceneController extends GameWindow implements Initializable {
 				newDownArrow.translateZProperty().set(0);
 				arrows.getChildren().add(newDownArrow);
 				newDownArrow.setOnMouseClicked(e -> {
-					System.out.println("X "+finalX+ "Y: 0");
-					pushTileAnimation(finalX,0,0);
-					//pushTile(finalX, 0);
+					try {
+						System.out.println("X: "+finalX+" Y: "+0);
+						currentGame.insertTile(activePlaceable,finalX,0,true);
+						updateGameState();
+						pushTileAnimation(finalX,0,1);
+					} catch (IllegalInsertionException e1) {
+						displayErrorMessage("Cannot insert here");
+					}
+					
 				});
 
 				pushableTiles.add(tileArray[boardHeight-1][x]);
@@ -371,10 +377,16 @@ public class GameSceneController extends GameWindow implements Initializable {
 				newUpArrow.translateYProperty().set(tileArray[boardHeight-1][x].translateYProperty().get() + 100);  // +100y
 				newUpArrow.translateZProperty().set(0);
 				arrows.getChildren().add(newUpArrow);
-				newDownArrow.setOnMouseClicked(e -> {
-					System.out.println("X "+finalX+ "Y: "+(boardHeight-1));
-					pushTileAnimation(finalX,boardHeight-1,1);
-					//pushTile(finalX, 1);
+				newUpArrow.setOnMouseClicked(e -> {
+					try {
+						System.out.println("X: "+finalX+" Y: "+(boardHeight-1));
+						currentGame.insertTile(activePlaceable,finalX,boardHeight-1,true);
+						updateGameState();
+						pushTileAnimation(finalX,boardHeight-1,0);
+					} catch (IllegalInsertionException e1) {
+						displayErrorMessage("Cannot insert here");
+					}
+					
 				});
 			}
 		}
@@ -388,7 +400,16 @@ public class GameSceneController extends GameWindow implements Initializable {
 				newRightArrow.translateZProperty().set(0);
 				arrows.getChildren().add(newRightArrow);
 				newRightArrow.setOnMouseClicked(e -> {
-					//pushTile(finalY, 2);
+					try {
+						System.out.println("X: "+0+" Y: "+finalY);
+						currentGame.insertTile(activePlaceable,0,finalY,false);
+						updateGameState();
+						pushTileAnimation(0,finalY,3);
+					} catch (IllegalInsertionException e1) {
+						displayErrorMessage("Cannot insert here");
+					}
+					
+					
 				});
 
 				pushableTiles.add(tileArray[y][boardWidth-1]);
@@ -398,7 +419,15 @@ public class GameSceneController extends GameWindow implements Initializable {
 				newLeftArrow.translateZProperty().set(0);
 				arrows.getChildren().add(newLeftArrow);
 				newLeftArrow.setOnMouseClicked(e -> {
-					//pushTile(finalY, 1);
+					try {
+						System.out.println("X: "+(boardWidth-1)+" Y: "+finalY);
+						currentGame.insertTile(activePlaceable,boardWidth-1,finalY,false);
+						updateGameState();
+						pushTileAnimation(boardWidth-1,finalY,2);
+					} catch (IllegalInsertionException e1) {
+						displayErrorMessage("Cannot insert here");
+					}
+					
 				});
 			}
 		}
@@ -467,7 +496,7 @@ public class GameSceneController extends GameWindow implements Initializable {
 		seqTransition.play();
 	}
 	
-	private void displayErrorMessage(String errorMessage) {
+	private static void displayErrorMessage(String errorMessage) {
 		Label error = new Label(errorMessage);
 		error.setStyle("-fx-background-color: transparent;");
 		error.setTextFill(Color.RED);
@@ -533,236 +562,7 @@ public class GameSceneController extends GameWindow implements Initializable {
 	}
 	
 
-	/*public static void getNewTile() {
-		Tile newTile = currentGame.getNewTileForCurrentPlayer();
-		
-	}
-	public static void setMoveableTile(int centerTileX, int centerTileY) {
-		scaleArray = new ArrayList<ScaleTransition>();
-		clickableAnima = new ParallelTransition();
-		if (centerTileY > 0) {
-			// top tile
-			Box topTile = tileArray[centerTileX][centerTileY - 1];
-			topTile.setOnMouseClicked(e -> {
-				setPlayerPosition(playerPlaying, topTile, centerTileX, centerTileY - 1);
-			});
-			scaleArray.add(animateTile(topTile));
-			clickAble.add(topTile);
-		}
-		if (centerTileX > 0) {
-			// left tile
-			Box leftTile = tileArray[centerTileX - 1][centerTileY];
-			leftTile.setOnMouseClicked(e -> {
-				setPlayerPosition(playerPlaying, leftTile, centerTileX - 1, centerTileY);
-			});
-			scaleArray.add(animateTile(leftTile));
-			clickAble.add(leftTile);
-		}
-		if (centerTileX < 8) {
-			// right tile
-			Box rightTile = tileArray[centerTileX + 1][centerTileY];
-			rightTile.setOnMouseClicked(e -> {
-				setPlayerPosition(playerPlaying, rightTile, centerTileX + 1, centerTileY);
-			});
-			scaleArray.add(animateTile(rightTile));
-			clickAble.add(rightTile);
-		}
-		if (centerTileY < 8) {
-			// botton tile
-			Box bottonTile = tileArray[centerTileX][centerTileY + 1];
-			bottonTile.setOnMouseClicked(e -> {
-				setPlayerPosition(playerPlaying, bottonTile, centerTileX, centerTileY + 1);
-			});
-			scaleArray.add(animateTile(bottonTile));
-			clickAble.add(bottonTile);
-		}
-		clickableAnima = new ParallelTransition();
-		for (ScaleTransition animation : scaleArray) {
-			clickableAnima.getChildren().add(animation);
-			System.out.println("Add animate");
-		}
-		clickableAnima.play();
-	}*/
-
-
-	/*public static void setPushable() {
-		//clickableAnima = new ParallelTransition();<-animation
-		clickAble = new ArrayList<Box>();
-		boolean moveablePos[][]=currentGameState.getMoveableSpaces();
-		currentPlayerPosX=initPlayerPos[currentGameState.getCurPlayer()][0];
-		currentPlayerPosY=initPlayerPos[currentGameState.getCurPlayer()][1];
-		
-		for (int y = 0; y <= boardWidth; y++) {
-			for(int x = 0; x<=boardHeight;x++) {
-				if(moveablePos[y][x]==true) {
-					Box pushableTile = tileArray[y][x];
-					clickAble.add(pushableTile);
-					int dir;
-					if(currentPlayerPosY<y) {
-						dir=0;
-					}else if(currentPlayerPosX<x) {
-						dir=1;
-					}else if(currentPlayerPosY>y) {
-						dir=2;
-					}else {
-						dir=3;
-					}
-					pushableTile.setOnMouseClicked(e -> {
-						try {
-							currentGameState=currentGame.moveCurrentPlayer(dir);
-							
-						} catch (IllegalMove e1) {
-							System.out.println("Cannot move there");
-						}
-						
-					});
-					//clickableAnima.getChildren().add(animateTile(pushableTile));
-				}
-			}
-		}*/
-			/*if (rows == 0 || rows == 8) {
-				for (int columns = 2; columns < 8; columns += 4) {
-					Box pushableTile = tileArray[columns][rows];
-					pushableTile.setDisable(false);
-					clickAble.add(pushableTile);
-					int r = rows;
-					int c = columns;
-					if (rows == 0) {
-						pushableTile.setOnMouseClicked(e -> {
-							pushTile(r, c, "downward");
-						});
-					} else {
-						pushableTile.setOnMouseClicked(e -> {
-							pushTile(r, c, "upward");
-						});
-					}
-					clickableAnima.getChildren().add(animateTile(pushableTile));
-				}
-			}
-
-			if (rows == 2 || rows == 6) {
-				for (int columns = 0; columns <= 8; columns += 8) {
-					Box pushableTile = tileArray[columns][rows];
-					pushableTile.setDisable(false);
-					clickAble.add(pushableTile);
-					int r = rows;
-					int c = columns;
-					if (columns == 0) {
-						pushableTile.setOnMouseClicked(e -> {
-							pushTile(r, c, "right");
-						});
-					} else {
-						pushableTile.setOnMouseClicked(e -> {
-							pushTile(r, c, "left");
-						});
-					}
-					clickableAnima.getChildren().add(animateTile(pushableTile));
-				}
-			}
-		
-		//clickableAnima.play();<-play animation
-	}*/
-
-	/*public static void pushTile(int rows, int columns, String orientation) {
-		System.out.println("Rows: " + rows + " Columns: " + columns + " b: " + orientation);
-		clickableAnima.stop();
-		resetClickable();
-		pushTileAnimation(rows, columns, orientation);
-		int xCor = currentGame.getPlayingPlayerPiece().getX();
-		int yCor = currentGame.getPlayingPlayerPiece().getY();
-		setMoveableTile(xCor, yCor);
-	}
 	
-
-	public static void pushTileAnimation(int rows, int columns, String orientation) {
-		Box tileToRemove=null;
-		int starting,ending,incValue,arrayX,arrayY;
-		double X,Y;
-		if (orientation.equals("upward") || orientation.equals("downward")) {
-			
-			if (orientation.equals("upward")) {
-				starting=0;
-				ending=8;
-				incValue=1;
-				arrayX=columns;
-			}else {
-				starting=8;
-				ending=0;
-				incValue=-1;
-				arrayX=columns;
-			}
-			//System.out.println("S: " + starting + " ending: " + ending+ " inc: "+incValue);
-			tileToRemove = tileArray[arrayX][starting];
-			X = tileToRemove.getTranslateX();
-			Y = tileToRemove.getTranslateY();
-			for (int i = starting; i!= ending; i+=incValue) {
-				System.out.println("R: "+i+" S: " + starting + " ending: " + ending+ " inc: "+incValue);
-				Box newTile = tileArray[arrayX][(i+incValue)];
-				moveTile(X, Y, newTile);
-				tileArray[arrayX][i] = newTile;
-				System.out.println("R: "+i);
-				X = newTile.getTranslateX();
-				Y = newTile.getTranslateY();
-			}
-		}else {
-			if (orientation.equals("left")) {
-				starting=0;
-				ending=8;
-				incValue=1;
-				arrayY=rows;
-			}else {
-				starting=8;
-				ending=0;
-				incValue=-1;
-				arrayY=rows;
-			}
-			//System.out.println("S: " + starting + " ending: " + ending+ " inc: "+incValue);
-			tileToRemove = tileArray[starting][arrayY];
-			X = tileToRemove.getTranslateX();
-			Y = tileToRemove.getTranslateY();
-			for (int i = starting; i!= ending; i+=incValue) {
-				System.out.println("R: "+i+" S: " + starting + " ending: " + ending+ " inc: "+incValue);
-				Box newTile = tileArray[(i+incValue)][arrayY];
-				moveTile(X, Y, newTile);
-				tileArray[i][arrayY] = newTile;
-				System.out.println("R: "+i);
-				X = newTile.getTranslateX();
-				Y = newTile.getTranslateY();
-			}
-		}
-		// vertical
-		
-		tiles.getChildren().remove(tileToRemove);
-		pushNewTile(X,Y,rows,columns);
-	}
-	
-	public static Box pushNewTile(double x, double y,int rows, int columns) {
-		Box newTile =objectFactory.makeTTile();
-		newTile.setTranslateX(1000);
-		newTile.setTranslateY(600);
-		newTile.setTranslateZ(0);
-		tiles.getChildren().add(newTile);
-		moveTile(x,y,newTile);
-		tileArray[columns][rows]=newTile;
-		return newTile;
-	}
-
-	public static void setPlayerPosition(Sphere player, Box tile, int x, int y) {
-		clickableAnima.stop();
-		scaleArray = new ArrayList<ScaleTransition>();
-		// set Game class value
-		currentGame.setPlayerPiece(playerPieceLink.get(player), x, y);
-		TranslateTransition playerMove = new TranslateTransition(Duration.seconds(1));
-		playerMove.setNode(player);
-		playerMove.setToX(tile.getTranslateX());
-		playerMove.setToY(tile.getTranslateY());
-		playerMove.play();
-		// reset button
-		resetClickable();
-		currentGame.newTurns();
-		newTurn();
-	}
-*/
 	public static void resetClickable() {
 		for (Box tile : clickAble) {
 			tile.setOnMouseClicked(null);
@@ -798,7 +598,7 @@ public class GameSceneController extends GameWindow implements Initializable {
 			for (int i = starting; i!= ending; i+=incValue) {
 				//System.out.println("R: "+i+" S: " + starting + " ending: " + ending+ " inc: "+incValue);
 				Box newTile = tileArray[arrayX][(i+incValue)];
-				moveTile(X, Y, newTile);
+				moveTile(X, Y, newTile,false);
 				tileArray[arrayX][i] = newTile;
 				//System.out.println("R: "+i);
 				X = newTile.getTranslateX();
@@ -823,7 +623,7 @@ public class GameSceneController extends GameWindow implements Initializable {
 			for (int i = starting; i!= ending; i+=incValue) {
 				//System.out.println("R: "+i+" S: " + starting + " ending: " + ending+ " inc: "+incValue);
 				Box newTile = tileArray[(i+incValue)][arrayY];
-				moveTile(X, Y, newTile);
+				moveTile(X, Y, newTile,false);
 				tileArray[i][arrayY] = newTile;
 				//System.out.println("R: "+i);
 				X = newTile.getTranslateX();
@@ -833,23 +633,29 @@ public class GameSceneController extends GameWindow implements Initializable {
 		// vertical
 		
 		tiles.getChildren().remove(tileToRemove);
-		pushNewTile(X,Y,rows,columns);
+		pushNewTile(X,Y,rows,columns,true);
 	}
-	public static Box pushNewTile(double x, double y,int rows, int columns) {
+	public static Box pushNewTile(double x, double y,int rows, int columns, boolean last) {
 		Box newTile =objectFactory.makeTile(activePlaceable);
 		newTile.setTranslateX(1000);
 		newTile.setTranslateY(600);
 		newTile.setTranslateZ(0);
 		tiles.getChildren().add(newTile);
-		moveTile(x,y,newTile);
+		moveTile(x,y,newTile,last);
 		tileArray[columns][rows]=newTile;
 		return newTile;
 	}
 
-	public static void moveTile(double x, double y, Box moveTile) {
+	public static void moveTile(double x, double y, Box moveTile, boolean last) {
 		TranslateTransition tileMove = new TranslateTransition(Duration.millis(500), moveTile);
 		tileMove.setToX(x);
 		tileMove.setToY(y);
+		if(last) {
+			tileMove.setOnFinished(e->{
+				updateBoard();
+				updatePlayerPosition();
+			});
+		}
 		tileMove.play();
 	}
 
@@ -996,6 +802,7 @@ public class GameSceneController extends GameWindow implements Initializable {
 		fTile=floor;
 		floor.setOnMouseClicked(e->{
 			fTile.setRotate(fTile.getRotate()+90);
+			activePlaceable.rotateRight();
 		});
 		floor.setTranslateY(400);
 		floor.setTranslateZ(-50);
@@ -1133,6 +940,7 @@ public class GameSceneController extends GameWindow implements Initializable {
 						setSelectedTile(acTile);
 					}else {
 						acTile.setRotate(acTile.getRotate()+90);
+						
 					}
 				});
 			} else if(actionTileObtained[3]) {
@@ -1142,6 +950,7 @@ public class GameSceneController extends GameWindow implements Initializable {
 						setSelectedTile(acTile);
 					}else {
 						acTile.setRotate(acTile.getRotate()+90);
+						
 					}
 				});
 			}

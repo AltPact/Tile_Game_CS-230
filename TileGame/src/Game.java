@@ -140,7 +140,7 @@ public class Game {
 			}
 		}
 
-		movePlayersOn(directionOfInsertion, affectedRowColumn);
+		//movePlayersOn(directionOfInsertion, affectedRowColumn);
 		
 		int[] postion = {y,x};
 		canPlayerInsertTile = false;

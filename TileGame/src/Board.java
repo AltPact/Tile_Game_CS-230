@@ -74,14 +74,14 @@ public class Board {
 		
 		//Checks if player can move up
 		if(playerY > 0){
-			if(tileDirections[0] &&  tiles[playerY][playerX - 1].canMove(2)) {
-				moveableSpaces[playerY][playerX - 1] = true;
+			if(tileDirections[0] &&  tiles[playerY - 1][playerX].canMove(2)) {
+				moveableSpaces[playerY - 1][playerX] = true;
 			}
 		}
 		//Checks if player can move right
 		if(playerX < width){
-			if(tileDirections[1] &&  tiles[playerY + 1][playerX].canMove(3)) {
-				moveableSpaces[playerY + 1][playerX] = true;
+			if(tileDirections[1] &&  tiles[playerY][playerX + 1].canMove(3)) {
+				moveableSpaces[playerY][playerX + 1] = true;
 			}
 		}
 		//Checks if player can move down
@@ -170,7 +170,6 @@ public class Board {
 			return false;
 		}
 	}
-
 	/**
 	 * Checks if a specific row/column is free of any fixed tiles
 	 * @param i the index of the row/column to check
