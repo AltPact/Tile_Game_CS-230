@@ -41,6 +41,7 @@ public class MessageOfTheDay {
 		BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()));
 		String outputline = in.readLine();
 		in.close();
+		outputline = outputline.replace("(", "\n(");
 		return outputline;
 	}
 	

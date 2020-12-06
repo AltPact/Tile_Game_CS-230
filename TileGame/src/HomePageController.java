@@ -31,6 +31,7 @@ import javafx.scene.shape.HLineTo;
 import javafx.scene.input.MouseEvent; 
 import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
+import javafx.scene.text.TextAlignment;
 import javafx.util.Duration;
 
 /**
@@ -68,6 +69,7 @@ public class HomePageController extends GameWindow implements Initializable {
 		}
 		try {
 		    messageOfTheDay.setText(MessageOfTheDay.getResult());
+		    messageOfTheDay.setTextAlignment(TextAlignment.CENTER);
 		} catch (IOException e) {
 			System.out.println("Cannot get message of the day");
 		}
