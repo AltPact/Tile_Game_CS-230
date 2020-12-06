@@ -1,10 +1,5 @@
 import java.util.ArrayList;
 
-/*
- * Class not yet complete, can be added to with what ever game window 
- * requires to display the game.
- */
-
 /**
  * Game state, used to hold data relating to the state at any given time. 
  * It is designed as a catch all data type to allow multiple items of data 
@@ -12,8 +7,7 @@ import java.util.ArrayList;
  * It's comprised of the series of getters and setters to set the infomation when
  * it's needed.
  * @author Alex Ullman (851732) and Joshua Sinderberry (851800)
- * @version 1
- *
+ * @version 1.0
  */
 public class GameState {
 	

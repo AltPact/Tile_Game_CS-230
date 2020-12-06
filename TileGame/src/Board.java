@@ -1,6 +1,6 @@
 /**
- * A class representing a game's board; an array of tiles and the positions of players.
- * 
+ * A class representing a game's board; an array of tiles and the positions of
+ * players
  * @author Sam Steadman (1910177) and Joe Sell (1913324)
  * @version 1.0
  */
@@ -12,7 +12,8 @@ public class Board {
 	/**
 	 * Constructor for Board
 	 * @param bag The silk bag tiles will be pulled from to fill the board
-	 * @param tiles The initial state of the board, likely only containing fixed tiles
+	 * @param tiles The initial state of the board, likely only containing
+	 * fixed tiles
 	 */
 	public Board(int width, int height, Placeable[][] tiles) {
 		this.width = tiles[0].length;
@@ -21,8 +22,10 @@ public class Board {
 	}
 	
 	/**
-	 * Checks which rows and columns are free of fixed tiles and can have a tile inserted into them
-	 * @return a array of the rows and columns where tiles can be inserted. [0 = rows, 1 = columns][index]
+	 * Checks which rows and columns are free of fixed tiles and can have a
+	 * tile inserted into them
+	 * @return a array of the rows and columns where tiles can be inserted. 
+	 * [0 = rows, 1 = columns][index]
 	 */
 	public boolean[][] getInsertablePlaces(){
 		int arrayLen;
@@ -31,7 +34,8 @@ public class Board {
 		} else {
 			arrayLen = height;
 		}
-		boolean[][] insertablePlaces = new boolean[2][arrayLen]; // [rows, columns][tile index]
+		// [rows, columns][tile index]
+		boolean[][] insertablePlaces = new boolean[2][arrayLen]; 
 		for (int x = 0; x < width; x++) {  // check rows
 			insertablePlaces[0][x] = isInsertable(x, true);
 		}
@@ -146,17 +150,17 @@ public class Board {
 						tiles[i - 1][x] = tiles[i][x];
 					}
 					
-					tiles[width - 1][y] = tile;
+					tiles[height - 1][x] = tile;
+					System.out.println("Line 150");
 					
 				//Returns false if tile can not be inserted vertically
 				} else {
-					System.out.println("Line 138");
+					
 					return false;
 				}
 				
 				
 			} else {
-				System.out.println(x + " " + y);
 				//inserting from left
 				if(x == 0) {
 					//Shifts tiles right 1

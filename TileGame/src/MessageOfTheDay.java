@@ -7,9 +7,8 @@ import java.net.URL;
  * This class is designed to allow the message of the day to be be obtained from the 
  * website, as is prescribed in the design document. 
  * It should be instanced and then the get result method can be called from the class.
- * 
  * @author Joshua Sinderberry (851800) 
- * @version 1.0
+ * @version 1.1(Morgan Firkins: Added formatting)
  */
 public class MessageOfTheDay {
 	

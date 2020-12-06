@@ -7,7 +7,7 @@ import javafx.stage.Popup;
  * This class is designed to write a game to file.
  * All of its methods are static.
  * @author  Sam Steadman (1910177), Alex Ullman (851732) and Joshua Sinderberry (851800)
- * @version 2
+ * @version 1.2
  */
 public class GameFileWriter {
 

@@ -33,9 +33,8 @@ import javafx.scene.text.Font;
 import javafx.util.Duration;
 
 /**
- * File Name: NewGameController.java Created: 07/11/2020 Modified: 03/12/2020
- * 
- * @author Wan Fai Tong (1909787) and Sam Steadman (1910177) and Morgan Firkins(852264)
+ * Controls the functionality of the New Game Window
+ * @author Wan Fai Tong (1909787),Sam Steadman (1910177),Morgan Firkins(852264)
  * @version: 1.2(Implemented playerDataQueue from Game Window)
  */
 public class NewGameController extends GameWindow implements Initializable {

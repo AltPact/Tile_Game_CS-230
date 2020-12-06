@@ -1,12 +1,9 @@
 import java.util.ArrayList;
 
 /**
- * File Name: PlayerPiece.java<br>
- * Created: 20/11/2020<br>
- * Modified: 24/11/2020<br>
- * @author Morgan Firkins (852264)<br>
- * Version: 1.3(Added linkedData to constructor, updated JavaDoc & toString method)<br>
- *
+ * Creates a playerPiece object to use on Board, with a PlayerData object
+ * @author Morgan Firkins (852264)
+ * Version: 1.3(Added linkedData to constructor, & toString method)
  */
 public class PlayerPiece {
 	private int x;

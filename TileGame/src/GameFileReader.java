@@ -5,10 +5,8 @@ import java.util.Scanner;
 import java.util.regex.Pattern;
 /**
  * A class that reads a game board file or a game file and constructs a game object.
- * 
  * @author Sam Steadman (1910177), Alex Ullman (851732) and Joshua Sinderberry (851800)
- * @version 2
- *
+ * @version 1.2
  */
 public class GameFileReader {
 

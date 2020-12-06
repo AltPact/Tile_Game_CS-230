@@ -1,3 +1,9 @@
+/**
+ * Creates a silk bag to be used in the game
+ * @author Joe Sell
+ * @version 1.0
+ */
+
 public class SilkBag {
 	private TileType[] actionTiles = {TileType.DoubleMove, TileType.BackTrack, TileType.Ice, TileType.Fire};
 	private TileType[] placeableTiles = {TileType.Straight, TileType.Corner, TileType.TShaped};

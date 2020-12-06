@@ -18,10 +18,9 @@ import javafx.stage.Popup;
 import javafx.stage.Stage;
 
 /**
- * File Name: ApplicationController.java Created: 07/11/2020 Modified:
- * 19/11/2020
- * 
- * @author Wan Fai Tong (1909787) and Adem Arik (850904), Morgan Firkins(852264), Josh Sinderberry (851800) Version: 1.0
+ * Launches the entire program, and starts the GUI
+ * @author Wan Fai Tong (1909787), Adem Arik (850904), Morgan Firkins(852264), Josh Sinderberry (851800) 
+ * @version: 1.3
  */
 public class ApplicationController extends Application {
 	private static Stage stage;

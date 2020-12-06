@@ -1,7 +1,7 @@
 /**
  * A exception that should get thrown when 
- * @author joshuasinderberry
- *
+ * @author Joshua Sinderberry (851800)
+ * @version 1.0
  */
 public class IllegalInsertionException extends Exception {
 
