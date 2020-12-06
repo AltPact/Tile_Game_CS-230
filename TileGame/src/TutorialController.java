@@ -28,9 +28,9 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.util.Duration;
 /**
- * File Name: TutorialController.java Created: 07/11/2020 Modified: 19/11/2020
- * 
- * @author Wan Fai Tong (1909787) and Sam Steadman (1910177) and Morgan Firkins(852264) Version: 1.0
+ * Controls the functionality of the Tutorial Window
+ * @author Wan Fai Tong (1909787),Sam Steadman (1910177),Morgan Firkins(852264) 
+ * @version: 1.0
  */
 public class TutorialController extends GameWindow implements Initializable{
 

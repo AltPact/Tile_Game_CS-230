@@ -36,9 +36,9 @@ import javafx.scene.text.TextAlignment;
 import javafx.util.Duration;
 
 /**
- * File Name: HomePageController.java Created: 07/11/2020 Modified: 19/11/2020
- * 
- * @author Wan Fai Tong (1909787) and Sam Steadman (1910177) Version: 1.0
+ * Controls the widgets on the HomePage of the game
+ * @author Wan Fai Tong (1909787), Sam Steadman (1910177), Morgan Firkins(852264)
+ * @version: 1.1(Changed style of messageOfTheDay)
  */
 public class HomePageController extends GameWindow implements Initializable {
 	// FXML bindings

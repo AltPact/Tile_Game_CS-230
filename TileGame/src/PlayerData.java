@@ -1,8 +1,6 @@
 /**
- * File Name: PlayerData.java<br>
- * Created: 14/11/2020<br>
- * Modified: 30/11/2020<br>
- * 
+ * Creates playerData objects from an input, normally from the
+ * playerDataFileReader
  * @author Morgan Firkins (852264)
  * @version: 1.4(Added compareTo)
  */
@@ -174,7 +172,6 @@ public class PlayerData implements Comparable<PlayerData> {
 		} else if (playerWins == otherWins) {
 			return 0;
 		} else {
-			System.out.println("Else");
 			return 0;
 		}
 	}

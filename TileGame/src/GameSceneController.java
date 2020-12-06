@@ -50,7 +50,6 @@ import javafx.util.Duration;
 
 /**
  * File Name: GameSceneController.java Created: 07/11/2020 Modified: 10/11/2020
- * 
  * @author Wan Fai Tong (1909787) and Sam Steadman (1910177) Version: 1.0
  */
 public class GameSceneController extends GameWindow implements Initializable {

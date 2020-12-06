@@ -3,13 +3,9 @@ import java.io.FileNotFoundException;
 import java.util.Scanner;
 
 /**
- * File Name: PlayerDataFileReader.java<br>
- * Purpose: To just read player data files<br>
- * @author Morgan Firkins (852264)<br>
- * @version 1.1(Implemented useDelimneter())<br>
- * Created: 30/11/2020
- * Modified: 01/12/2020
- *
+ * Reads data from playerData files and creates a new PlayerData object
+ * @author Morgan Firkins (852264)
+ * @version 1.1(Implemented useDelimeter())
  */
 public class PlayerDataFileReader {
 	/**

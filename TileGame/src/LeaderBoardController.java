@@ -17,12 +17,9 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 /**
- * File: LeaderBoardController.java
- * Purpose: Implements a leaderboard
- * Modified: 03/12/2020
+ * Controls the leaderboard functionality
  * @author Wan Fai Tong (1909787), Sam Steadman (1910177), Morgan Firkins (852264)
  * @version: 1.3(Removed directoryIteration and added it to GameWindow)
- *
  */
 public class LeaderBoardController extends GameWindow implements Initializable {
 	@FXML

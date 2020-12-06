@@ -25,8 +25,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
 import javafx.util.Duration;
 /**
- * File Name: LoadGameController.java Created: 07/11/2020 Modified: 19/11/2020
- * 
+ * Controls the functionality of the Load Game Window
  * @author Wan Fai Tong (1909787), Sam Steadman (1910177), Milan Tiji (980334), Morgan Firkins (852264) 
  * @version: 1.1(Implemented getGames())
  */

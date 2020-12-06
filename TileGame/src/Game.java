@@ -4,9 +4,7 @@ import java.util.ArrayList;
  * It has the ability for a player to draw a tile, play a action tile,
  * place a placeable tile and move, when each is required.
  * @author Wan Fai Tong (1909787), Alex Ullman (851732) and Joshua Sinderberry (851800)
- * 
  * @version 1.2
- *
  */
 public class Game {
 	

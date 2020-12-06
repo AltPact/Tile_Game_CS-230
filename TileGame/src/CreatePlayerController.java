@@ -11,7 +11,11 @@ import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Circle;
-
+/**
+ * Controls the CreatePlayer Scene in the application
+ * @author Wan Fai Tong (1909787), Sam Steadman (1910177)
+ * @version 1.0
+ */
 public class CreatePlayerController extends GameWindow implements Initializable  {
 
 	@FXML

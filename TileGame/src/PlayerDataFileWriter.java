@@ -3,13 +3,11 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 /**
- * File Name: PlayerDataFileWriter.java<br>
- * Purpose: To generate playerData files<br>
- * Created: 01/12/2020<br>
- * Modified: 01/12/2020
+ * Creates playerData files and saves them to the relevant directory
  * @author Morgan Firkins (852264)
- * @version 1.1(Added commas inbetween values)
+ * @version 1.1(Delimited values with commas)
  */
+
 public class PlayerDataFileWriter {
 
 	public static void generateFile(PlayerData playerData) {

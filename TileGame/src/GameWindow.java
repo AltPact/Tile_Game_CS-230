@@ -25,9 +25,8 @@ import javafx.scene.shape.Path;
 import javafx.scene.text.Font;
 import javafx.util.Duration;
 /**
- * File Name: GameSceneController.java Created: 19/11/2020 Modified: 19/11/2020
- * 
- * @author Wan Fai Tong (1909787) and Sam Steadman (1910177) and Morgan Firkins(852264)
+ * Holds all of the backend code for the GameWindow
+ * @author Wan Fai Tong (1909787), Sam Steadman (1910177), Morgan Firkins(852264)
  * @version: 1.1(Implemented reading playerData files)
  */
 public class GameWindow {
