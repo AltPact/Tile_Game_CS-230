@@ -39,6 +39,11 @@ public class Game {
 		this.isGoalReached = false;
 		this.pastStates = new ArrayList<GameState>();
 		
+		for(int i = 0; i < players.length; i++) {
+			System.out.println("Player " + i + "X Cooridnate: " + players[i].getX());
+			System.out.println("Player " + i + "Y Cooridnate: " + players[i].getY());
+		}
+		
 	}
 	
 	/**
@@ -137,7 +142,7 @@ public class Game {
 			}
 		}
 
-		movePlayersOn(directionOfInsertion, x, y);
+		//movePlayersOn(directionOfInsertion, x, y);
 		
 		int[] postion = {y,x};
 		canPlayerInsertTile = false;
@@ -421,8 +426,9 @@ public class Game {
 	private int[][] getPlayerPositions(){
 		int[][] playerPositions = new int[players.length][2];
 		for(int i = 0; i < players.length; i++) {
-			playerPositions[i][0] = players[i].getX();
-			playerPositions[i][1] = players[i].getY();
+			playerPositions[i][1] = players[i].getX();
+			playerPositions[i][0] = players[i].getY();
+			System.out.println(playerPositions[i][1] + " " + playerPositions[i][0]);
 		}
 		return playerPositions;
 	}

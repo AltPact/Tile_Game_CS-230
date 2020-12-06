@@ -131,7 +131,7 @@ public class GameSceneController extends GameWindow implements Initializable {
 	private static void newTurn() {
 		// displayTurns();
 		
-		currentGame.endTurn();
+		
 		playerPlaying = playerObjectArray[currentGameState.getCurPlayer()];
 		phase = 1;
 		displayTurns();
@@ -187,7 +187,9 @@ public class GameSceneController extends GameWindow implements Initializable {
 	}
 
 	private static void updateGameState() {
+		System.out.println("UPDATE GAME STATE CURRENT PLAYER BEFORE" + currentGameState.getCurPlayer());
 		currentGameState = currentGame.getCurrentGameState();
+		System.out.println("UPDATE GAME STATE CURRENT PLAYER AFTER" + currentGameState.getCurPlayer());
 	}
 
 	/**
@@ -220,8 +222,8 @@ public class GameSceneController extends GameWindow implements Initializable {
 		// PlayerPiece pieceArray[] = currentGame.getPlayerPieceArray();
 		for (int i = 0; i < initPlayerPos.length; i++) {
 			// put player pos in int
-			int x = initPlayerPos[i][0];
-			int y = initPlayerPos[i][1];
+			int x = initPlayerPos[i][1];
+			int y = initPlayerPos[i][0];
 			Group player = objectFactory.makePlayer(i);
 			player.setMouseTransparent(true);
 			player.translateXProperty().set(tileArray[y][x].getTranslateX());
@@ -244,13 +246,13 @@ public class GameSceneController extends GameWindow implements Initializable {
 		}
 	}
 
-	private static void updatePlayerPosition() {
+	private static void updatePlayerPosition() throws IllegalMove {
 		int[][] playerPosition = currentGameState.getPlayersPositions();
 		for (int playerNum = 0; playerNum < playerPosition.length; playerNum++) {
 			int x = playerPosition[playerNum][1];
 			int y = playerPosition[playerNum][0];
 			System.out.println("Player Position X: " + x + " Y: " + y);
-			Box onTile = tileArray[x][y];
+			Box onTile = tileArray[y][x];
 			movePlayer(playerObjectArray[playerNum], onTile.getTranslateX(), onTile.getTranslateY());
 		}
 	}
@@ -511,6 +513,7 @@ public class GameSceneController extends GameWindow implements Initializable {
 
 	public static void setMoveableTiles() {
 		updateGameState();
+		System.out.println("CURRENT PLAYER: " + currentGameState.getCurPlayer());
 		boolean[][] moveableSpaces = currentGameState.getMoveableSpaces();
 		clickableAnime = new ParallelTransition();
 		System.out.println(moveableSpaces.length);
@@ -532,7 +535,7 @@ public class GameSceneController extends GameWindow implements Initializable {
 		clickableAnime.play();
 	}
 
-	public static void movePlayer(Group player, double x, double y) {
+	public static void movePlayer(Group player, double x, double y) throws IllegalMove {
 		TranslateTransition playerMove = new TranslateTransition(Duration.seconds(1), player);
 		playerMove.setToX(x);
 		playerMove.setToY(y);
@@ -542,8 +545,10 @@ public class GameSceneController extends GameWindow implements Initializable {
 	public static void playerDeliberateMove(Group player, int y, int x) {
 		try {
 			currentGame.moveCurrentPlayer(x, y);
+			updateGameState();
 			movePlayer(player, tileArray[y][x].getTranslateX(), tileArray[y][x].getTranslateY());
 			resetClickable();
+			currentGame.endTurn();
 			updateGameState();
 			checkWin();
 		} catch (IllegalMove e) {
@@ -569,8 +574,13 @@ public class GameSceneController extends GameWindow implements Initializable {
 		}
 		clickableAnime.pause();
 		clickAble.clear();
-		// updateBoard();
-		// updatePlayerPosition();
+		updateBoard();
+		try {
+			updatePlayerPosition();
+		} catch (IllegalMove e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	public static void pushTileAnimation(int rows, int columns, int orientation) {
@@ -662,7 +672,12 @@ public class GameSceneController extends GameWindow implements Initializable {
 		if (last) {
 			tileMove.setOnFinished(e -> {
 				updateBoard();
-				updatePlayerPosition();
+				try {
+					updatePlayerPosition();
+				} catch (IllegalMove e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 				setMoveableTiles();
 			});
 		}
@@ -932,7 +947,7 @@ public class GameSceneController extends GameWindow implements Initializable {
 		}
 	}
 	
-	public void useBacktrack(Group playerObject) {
+	public static void useBacktrack(Group playerObject) {
 		BackTrack backtrackTile = null;
 		for (ActionTile actionTile : actionTilesOwned) {
 			if (actionTile.getType() == TileType.BackTrack) {
