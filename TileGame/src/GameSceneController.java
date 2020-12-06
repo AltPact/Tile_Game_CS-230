@@ -921,17 +921,29 @@ public class GameSceneController extends GameWindow implements Initializable {
 		resetClickable();
 	}
 
-	public void playBacktrack() {
-		for (int y = 0; y < boardHeight; y++) {
-			final int finalY = y;
-			for (int x = 0; x < boardWidth; x++) {
-				final int finalX = x;
-				animateTile(tileArray[y][x]);
-				tileArray[y][x].setOnMouseClicked(e -> {
-					placeIceTile(finalY, finalX);
+	public static void playBacktrack() {
+		for (Group playerObject:playerObjectArray) {
+			if(playerObject != playerPlaying) {
+				playerObject.setOnMouseClicked(e -> {
+					useBacktrack(playerObject);
 				});
-				clickAble.add(tileArray[y][x]);
 			}
+		}
+	}
+	
+	public void useBacktrack(Group playerObject) {
+		BackTrack backtrackTile = null;
+		for (ActionTile actionTile : actionTilesOwned) {
+			if (actionTile.getType() == TileType.BackTrack) {
+				backtrackTile = (BackTrack) actionTile;
+			}
+		}
+		// TODO add get the player number
+		int playernum = 0;
+		try {
+		currentGame.playBackTrack(backtrackTile, playernum);
+		} catch  (IllegalBackTrackException e) {
+			// TODO Add what to do if error
 		}
 	}
 
@@ -989,13 +1001,8 @@ public class GameSceneController extends GameWindow implements Initializable {
 					});
 				} else if (actionTileObtained[3]) {
 					acTile.setOnMouseClicked(e -> {
-						// what to do when a doubleMove tile is clicked
-						if (selectedTile != acTile) {
-							setSelectedTile(acTile);
-						} else {
-							acTile.setRotate(acTile.getRotate() + 90);
-
-						}
+						// what to do when a Backtrack tile is clicked
+						playBacktrack();
 					});
 				}
 				tileInventory.add(acTile);
