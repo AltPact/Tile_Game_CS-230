@@ -130,7 +130,8 @@ public class GameSceneController extends GameWindow implements Initializable {
 
 	private static void newTurn() {
 		// displayTurns();
-
+		
+		currentGame.endTurn();
 		playerPlaying = playerObjectArray[currentGameState.getCurPlayer()];
 		phase = 1;
 		displayTurns();

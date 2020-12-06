@@ -39,10 +39,10 @@ public class GameFileReader {
 				int playerY = s.nextInt();
 				String playerColour = s.next();
 				Boolean backtrackApplied = s.nextBoolean();
-				//String name = s.next();
-				//File pDataFile = new File("./data/playerdata/" + name);
-				//PlayerData pData = PlayerDataFileReader.readFile(pDataFile);
-				players[p] = new PlayerPiece(playerX, playerY, playerColour, backtrackApplied, null);
+				String name = s.next();
+				File pDataFile = new File("./data/playerdata/" + name);
+				PlayerData pData = PlayerDataFileReader.readFile(pDataFile);
+				players[p] = new PlayerPiece(playerX, playerY, playerColour, backtrackApplied, pData);
 			}
 			
 			readCurrentGameState(curState, s, players);

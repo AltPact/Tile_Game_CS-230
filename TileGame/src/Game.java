@@ -122,9 +122,7 @@ public class Game {
 		}
 		
 		int directionOfInsertion = 0;
-		int affectedRowColumn = 0;
 		if(vertical) {
-			affectedRowColumn = y;
 			if(y == 0) {
 				directionOfInsertion = 2;
 				
@@ -132,7 +130,6 @@ public class Game {
 				directionOfInsertion = 0;
 			}
 		} else {
-			affectedRowColumn = x;
 			if(x == 0) {
 				directionOfInsertion = 1;
 			} else {
@@ -140,7 +137,7 @@ public class Game {
 			}
 		}
 
-		//movePlayersOn(directionOfInsertion, affectedRowColumn);
+		movePlayersOn(directionOfInsertion, x, y);
 		
 		int[] postion = {y,x};
 		canPlayerInsertTile = false;
@@ -154,10 +151,11 @@ public class Game {
 	 * @param directionOfInsertion The direction of the insertion e.g. 0 if it is comming from the bottom.
 	 * @param affectedRowColumn The affected row or column.
 	 */
-	private void movePlayersOn(int directionOfInsertion, int affectedRowColumn) {
+	private void movePlayersOn(int directionOfInsertion, int insertionX, int insertionY) {
 		for(PlayerPiece player : players) {
+			
 			//if the inserted tile effects a vertical column
-			if(((directionOfInsertion == 0) || (directionOfInsertion == 2)) && player.getY() == affectedRowColumn) { 
+			if(((directionOfInsertion == 0) || (directionOfInsertion == 2)) && player.getX() == insertionX) { 
 				int testY = player.getY();
 				//Makes the appropriate change
 				if (directionOfInsertion == 0) {
@@ -176,7 +174,7 @@ public class Game {
 				}
 				player.setY(testY);
 			//If the inserted tile effects a horizontal row.
-			} else if (((directionOfInsertion == 1) || (directionOfInsertion == 1)) && player.getX() == affectedRowColumn) { 
+			} else if (((directionOfInsertion == 1) || (directionOfInsertion == 1)) && player.getY() == insertionY) { 
 				int testX = player.getX();
 				//Makes the appropriate change
 				if (directionOfInsertion == 3) {
