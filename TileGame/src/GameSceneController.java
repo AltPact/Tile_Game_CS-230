@@ -263,25 +263,6 @@ public class GameSceneController extends GameWindow implements Initializable {
 			movePlayer(playerObjectArray[playerNum], onTile.getTranslateX(), onTile.getTranslateY());
 		}
 	}
-
-	/**
-	 * updates the x/y/z positions of all tiles so that they are drawn in the
-	 * correct place on the screen.
-	 */
-	/*public static void updateTileTranslations() {
-		int y = 400 - (boardHeight * 100) / 2;
-		for (int q = 0; q < boardHeight; q++) {
-			int x = 400 - (boardWidth * 100) / 2;
-			for (int i = 0; i < boardWidth; i++) {
-				tileArray[q][i].translateXProperty().set(x);
-				tileArray[q][i].translateYProperty().set(y);
-				tileArray[q][i].translateZProperty().set(0);
-				x += 100;// gap between tiles
-			}
-			y += 100;// gap between tiles
-		}
-	}*/
-
 	/**
 	 * Translate methods
 	 */
@@ -370,6 +351,7 @@ public class GameSceneController extends GameWindow implements Initializable {
 			currentGameState = currentGame.getNewTileForCurrentPlayer();
 			actionTilesOwned = currentGameState.getActionTileForPlayer(currentGameState.getCurPlayer());
 			Tile drawTile = currentGameState.getTileDrawn();
+			System.out.println("************Type of Tile Drawn " + drawTile.getType());
 
 			showDrawTile(drawTile);
 			if (!drawTile.isAction()) {
@@ -387,6 +369,7 @@ public class GameSceneController extends GameWindow implements Initializable {
 	}
 	
 	private static void showPlaceableFloor(Tile floorTile) {
+		System.out.println("===========New Tile: " + floorTile.getType());
 		inventory = new Group();
 		Box floor = null;
 		final Box fTile;
@@ -431,6 +414,7 @@ public class GameSceneController extends GameWindow implements Initializable {
 				newDownArrow.setOnMouseClicked(e -> {
 					try {
 						//setOrientation(selectedTile);
+						System.out.println("------------Acive Placeable: " + activePlaceable.getType() + " Ori: " + activePlaceable.getOrientation());
 						currentGame.insertTile(activePlaceable, finalX, 0, true);
 						updateGameState();
 						pushTileAnimation(finalX, 0, 1);
@@ -448,7 +432,7 @@ public class GameSceneController extends GameWindow implements Initializable {
 				arrows.getChildren().add(newUpArrow);
 				newUpArrow.setOnMouseClicked(e -> {
 					try {
-						System.out.println(activePlaceable.getOrientation());
+						System.out.println("------------Acive Placeable: " + activePlaceable.getType() + " Ori: " + activePlaceable.getOrientation());
 						currentGame.insertTile(activePlaceable, finalX, boardHeight - 1, true);
 						updateGameState();
 						pushTileAnimation(finalX, boardHeight - 1, 0);
@@ -470,7 +454,7 @@ public class GameSceneController extends GameWindow implements Initializable {
 				arrows.getChildren().add(newRightArrow);
 				newRightArrow.setOnMouseClicked(e -> {
 					try {
-						System.out.println(activePlaceable.getOrientation());
+						System.out.println("------------Acive Placeable: " + activePlaceable.getType() + " Ori: " + activePlaceable.getOrientation());
 						currentGame.insertTile(activePlaceable, 0, finalY, false);
 						updateGameState();
 						pushTileAnimation(0, finalY, 3);
@@ -488,7 +472,7 @@ public class GameSceneController extends GameWindow implements Initializable {
 				arrows.getChildren().add(newLeftArrow);
 				newLeftArrow.setOnMouseClicked(e -> {
 					try {
-						System.out.println(activePlaceable.getOrientation());
+						System.out.println("------------Acive Placeable: " + activePlaceable.getType() + " Ori: " + activePlaceable.getOrientation());
 						currentGame.insertTile(activePlaceable, boardWidth - 1, finalY, false);
 						updateGameState();
 						pushTileAnimation(boardWidth - 1, finalY, 2);
