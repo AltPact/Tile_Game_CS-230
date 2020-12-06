@@ -52,7 +52,7 @@ public class CreatePlayerController extends GameWindow implements Initializable 
 		String iconPath = "/img/defaultIcon.png";
 		String playerName = inputBox.getText();
 		
-		System.out.println(playerName);
+		System.out.println(playerName + "player is created");
 		for(PlayerData player:playerDataQueue) {
 			if(player.getName().equals(playerName)) {
 				return false;
