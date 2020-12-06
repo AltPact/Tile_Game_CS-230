@@ -30,7 +30,7 @@ import javafx.util.Duration;
 /**
  * File Name: TutorialController.java Created: 07/11/2020 Modified: 19/11/2020
  * 
- * @author Wan Fai Tong (1909787) and Sam Steadman (1910177) Version: 1.0
+ * @author Wan Fai Tong (1909787) and Sam Steadman (1910177) and Morgan Firkins(852264) Version: 1.0
  */
 public class TutorialController extends GameWindow implements Initializable{
 
@@ -49,6 +49,12 @@ public class TutorialController extends GameWindow implements Initializable{
 	public ImageView imageView1;
 	public ImageView imageView2;
 	public ImageView imageView3;
+	public ImageView imageView4;
+	public ImageView imageView5;
+	public ImageView imageView6;
+	public ImageView imageView7;
+	public ImageView imageView8;
+	public ImageView imageView9;
 	@FXML
 	public Button Right;
 	@FXML
@@ -60,7 +66,19 @@ public class TutorialController extends GameWindow implements Initializable{
 	@FXML
 	public Circle C2; 
 	@FXML
-	public Circle C3; 
+	public Circle C3;
+	@FXML
+	public Circle C4; 
+	@FXML
+	public Circle C5; 
+	@FXML
+	public Circle C6;
+	@FXML
+	public Circle C7; 
+	@FXML
+	public Circle C8; 
+	@FXML
+	public Circle C9; 
 	
 	/**
 	 * This method initialize this page
@@ -72,16 +90,32 @@ public class TutorialController extends GameWindow implements Initializable{
 		counter=0;
 		currentImage=imageView1;
 		
-		imageView2 = setImageView("/img/Instruction2.jpg", imageView2);
-		imageView3 = setImageView("/img/Instruction3.jpg", imageView3);
-		
+		imageView2 = setImageView("/img/Tut 2.png", imageView2);
+		imageView3 = setImageView("/img/Tut 3.png", imageView3);
+		imageView4 = setImageView("/img/Tut 4.png", imageView4);
+		imageView5 = setImageView("/img/Tut 5.png", imageView5);
+		imageView6 = setImageView("/img/Tut 6.png", imageView6);
+		imageView7 = setImageView("/img/Tut 7.png", imageView7);
+		imageView8 = setImageView("/img/Tut 8.png", imageView8);
+		imageView9 = setImageView("/img/Tut 9.png", imageView9);
 		imageArr.add(imageView1);
 		imageArr.add(imageView2);
 		imageArr.add(imageView3);
-		
+		imageArr.add(imageView4);
+		imageArr.add(imageView5);
+		imageArr.add(imageView6);
+		imageArr.add(imageView7);
+		imageArr.add(imageView8);
+		imageArr.add(imageView9);
 		circleArr.add(C1);
 		circleArr.add(C2);
 		circleArr.add(C3);
+		circleArr.add(C4);
+		circleArr.add(C5);
+		circleArr.add(C6);
+		circleArr.add(C7);
+		circleArr.add(C8);
+		circleArr.add(C9);
 	}
 	
 	/**
