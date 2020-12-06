@@ -17,9 +17,10 @@
          <Label fx:id="messageOfTheDay" alignment="CENTER" contentDisplay="CENTER" prefWidth="600.0" text="Message of the day" wrapText="true" style="-fx-background-color: orange; -fx-text-fill: white;"/>
          	<ImageView fitHeight="0" fitWidth="500.0" layoutX="100.0" layoutY="150.0" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="/img/logo.png" />
+                  <Image url="/img/logo.png"/>
                </image>
            </ImageView>
+         
          </children>
       </VBox>
    </top>

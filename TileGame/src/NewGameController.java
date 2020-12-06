@@ -85,6 +85,7 @@ public class NewGameController extends GameWindow implements Initializable {
 	} 
 
 	private void setComboBox(String searchName) {
+		
 		searchBox.getItems().clear();
 		if (searchName.equals("")) {
 			for (PlayerData player : playerDataQueue) {
