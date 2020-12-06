@@ -20,7 +20,7 @@ public class FileReaderWriterTest {
      * This is a funciton to generate a hard-coded game to use for testing while we figure out our file reader.
      * TODO: DO NOT INCLUDE THIS IN FINAL SUBMISSION
      */
-    public static Game generateTestGame() {
+   /* public static Game generateTestGame() {
         SilkBag bag = new SilkBag(new int[] {0, 0, 0, 0}, new int[] {10, 10, 10});
         int width = 5;
         int height = 5;
@@ -37,5 +37,20 @@ public class FileReaderWriterTest {
         PlayerPiece piece2 = new PlayerPiece(1, 0, "Blue", false, data2);
 
         return new Game(bag, new PlayerPiece[] {piece1, piece2}, board);
+    }*/
+    
+   public static void main(String[] args) {
+    	Placeable brahbrah = new Placeable(TileType.Corner,false,false,0);
+    	System.out.println(brahbrah.canMove(0)+" "+brahbrah.canMove(1)+" "+
+    	brahbrah.canMove(2)+" "+brahbrah.canMove(3)+" ");
+    	brahbrah.rotateLeft();
+    	System.out.println(brahbrah.canMove(0)+" "+brahbrah.canMove(1)+" "+
+    	    	brahbrah.canMove(2)+" "+brahbrah.canMove(3)+" ");
+    	brahbrah.rotateLeft();
+    	System.out.println(brahbrah.canMove(0)+" "+brahbrah.canMove(1)+" "+
+    	    	brahbrah.canMove(2)+" "+brahbrah.canMove(3)+" ");
+    	brahbrah.rotateLeft();
+    	System.out.println(brahbrah.canMove(0)+" "+brahbrah.canMove(1)+" "+
+    	    	brahbrah.canMove(2)+" "+brahbrah.canMove(3)+" ");
     }
 }

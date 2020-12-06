@@ -185,10 +185,13 @@ public class ObjFactory {
 			tile.setMaterial(fixedTTexture);
 		}else if(tileType.getType()==TileType.TShaped) {
 		    tile.setMaterial(tTileTexture);
+		    System.out.println("make TShaped");
 		}else if(tileType.getType()==TileType.Straight) {
 			tile.setMaterial(straightTileTexture);
+			System.out.println("make Straight");
 		}else if(tileType.getType()==TileType.Corner) {
 			tile.setMaterial(cornerTileTexture);
+			System.out.println("make Corner");
 		}else if(tileType.getType()==TileType.Goal) {
 			tile.setMaterial(goalTileTexture);
 		}

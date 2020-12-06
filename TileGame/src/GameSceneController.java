@@ -240,7 +240,7 @@ public class GameSceneController extends GameWindow implements Initializable {
 		Placeable[][] newBoard = currentGameState.getBoard();
 		for (int h = 0; h < boardHeight; h++) {
 			for (int w = 0; w < boardWidth; w++) {
-				objectFactory.textureTheTile(tileArray[h][w], newBoard[h][w]);
+				//objectFactory.textureTheTile(tileArray[h][w], newBoard[h][w]);
 			}
 		}
 	}
@@ -333,6 +333,12 @@ public class GameSceneController extends GameWindow implements Initializable {
 	 * newBox.translateZProperty().set(0); tiles.getChildren().add(newBox); // add
 	 * new tile to tiles to be drawn updateBoard(); }
 	 */
+	
+	private static void setOrientation(Box tile) {
+		int ori=(int)(tile.getRotate()/90)%4;
+		System.out.println("Translate rotate "+ori);
+		activePlaceable.setOrientation(ori);
+	}
 	/**
 	 * creates arrows next to all free rows/columns that can be clicked by the
 	 * player to insert a tile into that row/column
@@ -353,7 +359,7 @@ public class GameSceneController extends GameWindow implements Initializable {
 				arrows.getChildren().add(newDownArrow);
 				newDownArrow.setOnMouseClicked(e -> {
 					try {
-						System.out.println(activePlaceable.getOrientation());
+						setOrientation(selectedTile);
 						currentGame.insertTile(activePlaceable, finalX, 0, true);
 						updateGameState();
 						pushTileAnimation(finalX, 0, 1);
@@ -478,6 +484,7 @@ public class GameSceneController extends GameWindow implements Initializable {
 
 			showDrawTile(drawTile);
 			if (!drawTile.isAction()) {
+				System.out.println("Drawn tile: "+drawTile.getType());
 				activePlaceable = (Placeable) drawTile;
 				showPlaceableFloor(drawTile);
 				setPushableArrows();
@@ -654,6 +661,7 @@ public class GameSceneController extends GameWindow implements Initializable {
 	}
 
 	public static Box pushNewTile(double x, double y, int rows, int columns, boolean last) {
+		System.out.println("Push "+activePlaceable.getType());
 		Box newTile = objectFactory.makeTile(activePlaceable);
 		newTile.setTranslateX(1000);
 		newTile.setTranslateY(600);
@@ -671,10 +679,11 @@ public class GameSceneController extends GameWindow implements Initializable {
 		if (last) {
 			tileMove.setOnFinished(e -> {
 				updateBoard();
+				activePlaceable=null;
 				try {
 					updatePlayerPosition();
 				} catch (IllegalMove e1) {
-					// TODO Auto-generated catch block
+					
 					e1.printStackTrace();
 				}
 				setMoveableTiles();

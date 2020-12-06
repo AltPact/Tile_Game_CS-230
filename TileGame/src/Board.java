@@ -47,30 +47,41 @@ public class Board {
 	 * @param bag The bag to draw floor tiles from.
 	 */
 	public void fillBoard(SilkBag bag) {
-		for (int x = 0; x < height; x++) {
-			for (int y = 0; y < width; y++) {
-				if (tiles[y][x] == null) {
-					int direction = ((int)(Math.random() * (4)));
-					tiles[y][x] =  new Placeable(bag.drawPlaceable(), false, false, direction);
-				}
+		
+        for (int x = 0; x < height; x++) {
+            for (int y = 0; y < width; y++) {
+                if (tiles[y][x] == null) {
+                    int direction = ((int)(Math.random() * (4)));
+                    //System.out.print(direction + ", ");
+                    tiles[y][x] =  new Placeable(bag.drawPlaceable(), false, false, direction);
+                }
+            }
+            //System.out.println("");
+        }
+        /*for (int y = 0; y < height; y++) {
+			for (int x = 0; x < width; x++) {
+				//System.out.print(tiles[y][x].getType()+" "+tiles[y][x].getOrientation()+",");
+				System.out.printf("%s, R%d, canMove[%b,%b,%b,%b] | ", tiles[y][x].getType(), tiles[y][x].getOrientation(), tiles[y][x].canMove(0), tiles[y][x].canMove(1), tiles[y][x].canMove(2), tiles[y][x].canMove(3));
 			}
-		}
-	}
+			System.out.println();
+		}*/
+    }
 	
 	/**
 	 * @param player The player to be moved
 	 * @return a boolean array of places a player can move equal in size to the board
 	 */
 	public boolean[][] getMoveableSpaces(PlayerPiece player) {
-		for (int y = 0; y < height; y++) {
-			for (int x = 0; x < width; x++) {
-				System.out.print(tiles[y][x].getType()+" "+tiles[y][x].getOrientation()+",");
-			}
-			System.out.println();
-		}
+		/* for (int y = 0; y < height; y++) {
+				for (int x = 0; x < width; x++) {
+					//System.out.print(tiles[y][x].getType()+" "+tiles[y][x].getOrientation()+",");
+					System.out.printf("%s, R%d, canMove[%b,%b,%b,%b] | ", tiles[y][x].getType(), tiles[y][x].getOrientation(), tiles[y][x].canMove(0), tiles[y][x].canMove(1), tiles[y][x].canMove(2), tiles[y][x].canMove(3));
+				}
+				System.out.println();
+			}*/
 		int playerX = player.getX();
 		int playerY = player.getY();
-		System.out.println("CURRENT PLAYER POSITIONS: X: " + playerX + " Y: " + playerY);
+		//System.out.println("CURRENT PLAYER POSITIONS: X: " + playerX + " Y: " + playerY);
 		boolean[][] moveableSpaces = new boolean[height][width];
 		for (int y = 0; y < height; y++) {
 			for (int x = 0; x < width; x++) {
@@ -86,13 +97,13 @@ public class Board {
 			}
 		}
 		//Checks if player can move right
-		if(playerX < width - 1){
+		if(playerX < width-1){
 			if(tileDirections[1] &&  tiles[playerY][playerX + 1].canMove(3)) {
 				moveableSpaces[playerY][playerX + 1] = true;
 			}
 		}
 		//Checks if player can move down
-		if(playerY < height - 1){
+		if(playerY < height-1){
 			if(tileDirections[2] &&  tiles[playerY + 1][playerX].canMove(0)) {
 				moveableSpaces[playerY + 1][playerX] = true;
 			}

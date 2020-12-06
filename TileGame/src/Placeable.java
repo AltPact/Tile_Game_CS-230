@@ -12,7 +12,7 @@ public class Placeable extends Tile {
 	
 	private final int NUM_OF_WAYS_TO_MOVE = 4;
 	
-	private int orientation = 0; //Orientation of the Tile 0 = North, 1 = East ...
+	private int orientation; //Orientation of the Tile 0 = North, 1 = East ...
 	private boolean isOnFire;
 	private boolean isFrozen;
 	private boolean[] waysToMove = new boolean[4]; // The position in the array implies movement 
@@ -32,6 +32,7 @@ public class Placeable extends Tile {
 		this.ISGOAL = isGoal;
 		this.ISFIXED = isFixed;
 		setType(tileType);
+		orientation=0;
 	}
 	
 	/**
@@ -43,6 +44,7 @@ public class Placeable extends Tile {
 		this.ISGOAL = false;
 		this.ISFIXED = false;
 		setType(tileType);
+		orientation=0;
 	}
 	
 	/**
@@ -60,8 +62,14 @@ public class Placeable extends Tile {
 		this.ISFIXED = isFixed;
 		setType(tileType);
 		this.orientation = orientation;
+		System.out.println("Ori: "+this.orientation);
 		for(int i = 0; i < orientation; i++) {
-			rotateRight(); 
+			boolean temp = this.waysToMove[0];
+			this.waysToMove[0] = this.waysToMove[3];
+			this.waysToMove[3] = this.waysToMove[2];
+			this.waysToMove[2] = this.waysToMove[1];
+			this.waysToMove[1] = temp;
+			
 		}
 	}
 	
@@ -106,7 +114,7 @@ public class Placeable extends Tile {
 	 * This method rotates the tile right one place.
 	 * It automatically updates ways to move and orientation.
 	 */
-	public void rotateRight() {
+	public void rotateLeft() {
 		this.orientation = (this.orientation + 1) % NUM_OF_WAYS_TO_MOVE;
 		boolean temp = this.waysToMove[0];
 		this.waysToMove[0] = this.waysToMove[1];
@@ -115,12 +123,28 @@ public class Placeable extends Tile {
 		this.waysToMove[3] = temp;
 	}
 	
+    /**
+     * Sets the orientation of the tile and updates waysToMove
+     * @param orientation the new orientation of the tile
+     */
+    public void setOrientation(int orientation) {
+        this.orientation = orientation;
+        setType(super.getType());  // reset waysToMove
+        for(int i = 0; i < orientation; i++) {  // rotate waysToMove
+            boolean temp = this.waysToMove[3];
+            this.waysToMove[3] = this.waysToMove[2];
+            this.waysToMove[2] = this.waysToMove[1];
+            this.waysToMove[1] = this.waysToMove[0];
+            this.waysToMove[0] = temp;
+        }
+    }
+	
 	/**
 	 * This method rotates the tile left one place.
 	 * It automatically updates ways to move and orientation.
 	 */
 	
-	public void rotateLeft() {
+	public void rotateRight() {
 		this.orientation = (NUM_OF_WAYS_TO_MOVE + (this.orientation - 1)) % NUM_OF_WAYS_TO_MOVE;
 		boolean temp = this.waysToMove[0];
 		this.waysToMove[0] = this.waysToMove[3];
@@ -160,6 +184,7 @@ public class Placeable extends Tile {
 	 * @return The Orientation of the tile
 	 */
 	public int getOrientation() {
+		System.out.println("get ori: "+this.orientation);
 		return this.orientation;
 	}
 	

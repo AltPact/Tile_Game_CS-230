@@ -118,6 +118,7 @@ public class Game {
 	 * @throws IllegalInsertionException
 	 */
 	public GameState insertTile(Placeable tileToBeInserted, int x, int y, boolean vertical) throws IllegalInsertionException {
+		System.out.println("Call game class insertTile: "+tileToBeInserted.getType());
 		if(!canPlayerInsertTile) {
 			throw new IllegalInsertionException("This player has already inserted a tile");
 		}
