@@ -248,7 +248,7 @@ public class GameSceneController extends GameWindow implements Initializable {
 		Placeable[][] newBoard = currentGameState.getBoard();
 		for (int h = 0; h < boardHeight; h++) {
 			for (int w = 0; w < boardWidth; w++) {
-				//objectFactory.textureTheTile(tileArray[h][w], newBoard[h][w]);
+				objectFactory.textureTheTile(tileArray[h][w], newBoard[h][w]);
 			}
 		}
 	}
@@ -401,7 +401,7 @@ public class GameSceneController extends GameWindow implements Initializable {
 		fTile = floor;
 		floor.setOnMouseClicked(e -> {
 			fTile.setRotate(fTile.getRotate() + 90);
-			activePlaceable.rotateRight();
+			activePlaceable.rotateLeft();
 		});
 		floor.setTranslateY(400);
 		floor.setTranslateZ(-50);
@@ -430,7 +430,7 @@ public class GameSceneController extends GameWindow implements Initializable {
 				arrows.getChildren().add(newDownArrow);
 				newDownArrow.setOnMouseClicked(e -> {
 					try {
-						setOrientation(selectedTile);
+						//setOrientation(selectedTile);
 						currentGame.insertTile(activePlaceable, finalX, 0, true);
 						updateGameState();
 						pushTileAnimation(finalX, 0, 1);
@@ -633,6 +633,8 @@ public class GameSceneController extends GameWindow implements Initializable {
 	}
 
 	public static void pushTileAnimation(int rows, int columns, int orientation) {
+		System.out.println("============ Active Placeable Type : " + activePlaceable.getType() + " Ori: " + activePlaceable.getOrientation());
+		
 		gameObjects.getChildren().remove(arrows);
 		arrows.getChildren().removeAll();
 		hideInventory();
