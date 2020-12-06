@@ -90,6 +90,7 @@ public class GameSceneController extends GameWindow implements Initializable {
 	private static ParallelTransition clickableAnime;
 	private static Label turnLabel;
 	private static ImageView playerIndicator;
+	private static int playerNoGotBackTrack;
 	@FXML
 	public BorderPane GB;
 	@FXML
@@ -109,6 +110,7 @@ public class GameSceneController extends GameWindow implements Initializable {
 	 */
 	@Override
 	public void initialize(URL url, ResourceBundle resources) {
+		currentGame = FileReaderWriterTest.generateTestGame();
 		currentGameState = currentGame.getInitalGameState();
 		initVariables();
 		addFloor();
@@ -151,7 +153,7 @@ public class GameSceneController extends GameWindow implements Initializable {
 		objectFactory = new ObjFactory();
 		gameObjects = new Group();
 		tileArray = new Box[boardHeight][boardWidth];
-		playerObjectArray = new Group[4];
+		playerObjectArray = new Group[currentGameState.getPlayersPositions().length];
 		playerPieceLink = new HashMap<Sphere, PlayerPiece>();
 		playerPlaying = null;
 		clickAble = new ArrayList<Box>();
@@ -248,12 +250,15 @@ public class GameSceneController extends GameWindow implements Initializable {
 		Placeable[][] newBoard = currentGameState.getBoard();
 		for (int h = 0; h < boardHeight; h++) {
 			for (int w = 0; w < boardWidth; w++) {
+				System.out.print(newBoard[h][w].isFrozen()+" <Frozen Fire>"+newBoard[h][w].isOnFire()+", ");
 				objectFactory.textureTheTile(tileArray[h][w], newBoard[h][w]);
 			}
+			System.out.println();
 		}
 	}
 
 	private static void updatePlayerPosition() throws IllegalMove {
+		updateGameState();
 		int[][] playerPosition = currentGameState.getPlayersPositions();
 		for (int playerNum = 0; playerNum < playerPosition.length; playerNum++) {
 			int x = playerPosition[playerNum][1];
@@ -555,11 +560,14 @@ public class GameSceneController extends GameWindow implements Initializable {
 		for(int h=0;h<boardHeight;h++) {
 			for(int w=0;w<boardWidth;w++) {
 				if(moveableSpaces[h][w]) {
+					System.out.print("true");
 					moveable=true;
 				}
-			}
+			}System.out.println("");
 		}
+		System.out.println("setMoveableTiles() "+!moveable);
 		if(!moveable) {
+			
 			newTurn();
 		}else {
 		clickableAnime = new ParallelTransition();
@@ -597,9 +605,15 @@ public class GameSceneController extends GameWindow implements Initializable {
 			updateGameState();
 			movePlayer(player, tileArray[y][x].getTranslateX(), tileArray[y][x].getTranslateY());
 			resetClickable();
-			currentGame.endTurn();
-			updateGameState();
-			newTurn();
+			if(currentGameState.getMovesLeftForCurrentPlayer()>0) {
+				setMoveableTiles();
+			}else {
+				currentGame.endTurn();
+			    updateGameState();
+			    newTurn();
+			}
+			
+			
 		} catch (IllegalMove e) {
 			e.printStackTrace();
 		}
@@ -768,6 +782,7 @@ public class GameSceneController extends GameWindow implements Initializable {
 
 	
 	public static void showInventory() {
+		clickableAnime=new ParallelTransition();
 		selectedTile = null;
 		boolean actionTileObtained[] = { false, false, false, false };
 		inventory = new Group();
@@ -812,20 +827,22 @@ public class GameSceneController extends GameWindow implements Initializable {
 						// what to do when a fire tile is clicked
 						if (selectedTile != acTile) {
 							setSelectedTile(acTile);
-						} else {
+							if(clickableAnime!=null&&clickableAnime.getStatus()==Animation.Status.RUNNING) {
+								resetClickable();
+								}
 							playFireTile();
-							//setMoveableTiles();
-						}
+						} 
 					});
 				} else if (actionTileObtained[1]) {
 					acTile.setOnMouseClicked(e -> {
 						// what to do when an ice tile is clicked
 						if (selectedTile != acTile) {
 							setSelectedTile(acTile);
-						} else {
+							if(clickableAnime!=null&&clickableAnime.getStatus()==Animation.Status.RUNNING) {
+								resetClickable();
+								}
 							playIceTile();
-							//setMoveableTiles();
-						}
+						} 
 						
 					});
 				} else if (actionTileObtained[2]) {
@@ -833,8 +850,10 @@ public class GameSceneController extends GameWindow implements Initializable {
 						// what to do when a doubleMove tile is clicked
 						if (selectedTile != acTile) {
 							setSelectedTile(acTile);
-						} else {
-							acTile.setRotate(acTile.getRotate() + 90);
+							if(clickableAnime!=null&&clickableAnime.getStatus()==Animation.Status.RUNNING) {
+							resetClickable();
+							}
+							playDoubleMove();
 						}
 					});
 				} else if (actionTileObtained[3]) {
@@ -842,9 +861,10 @@ public class GameSceneController extends GameWindow implements Initializable {
 						// what to do when a Backtrack tile is clicked
 						if (selectedTile != acTile) {
 							setSelectedTile(acTile);
-						} else {
+							if(clickableAnime!=null&&clickableAnime.getStatus()==Animation.Status.RUNNING) {
+							resetClickable();
+							}
 							playBacktrack();
-							//setMoveableTiles();
 						}
 						//setMoveableTiles();
 					});
@@ -932,16 +952,18 @@ public class GameSceneController extends GameWindow implements Initializable {
 			final int finalY = y;
 			for (int x = 0; x < boardWidth; x++) {
 				final int finalX = x;
-				animateTile(tileArray[y][x]);
+				clickableAnime.getChildren().add(animateTile(tileArray[y][x]));
 				tileArray[y][x].setOnMouseClicked(e -> {
 					placeFireTile(finalY, finalX);
 				});
 				clickAble.add(tileArray[y][x]);
 			}
 		}
+		clickableAnime.play();
 	}
 
 	public static void placeFireTile(int y, int x) {
+		System.out.println("Fire y: "+y+" x: "+x);
 		Fire fireTile = null;
 		for (ActionTile actionTile : actionTilesOwned) {
 			if (actionTile.getType() == TileType.Fire) {
@@ -949,29 +971,38 @@ public class GameSceneController extends GameWindow implements Initializable {
 			}
 		}
 		try {
+			System.out.println("Fire tile"+fireTile);
 			currentGameState = currentGame.playFire(fireTile, x, y);
 			updateBoard();
+			//resetClickable();
+			hideInventory();
 			resetClickable();
+			setMoveableTiles();
+			
 		} catch (IncorrectTileTypeException | IllegalFireException e) {
 			e.printStackTrace();
 		}
 	}
 
 	public static void playIceTile() {
+		System.out.println("Call ice tile");
 		for (int y = 0; y < boardHeight; y++) {
 			final int finalY = y;
 			for (int x = 0; x < boardWidth; x++) {
 				final int finalX = x;
-				animateTile(tileArray[y][x]);
+				clickableAnime.getChildren().add(animateTile(tileArray[y][x]));
 				tileArray[y][x].setOnMouseClicked(e -> {
+					System.out.println("=========================PLay ice X: "+finalX+"Y: "+finalY);
 					placeIceTile(finalY, finalX);
 				});
 				clickAble.add(tileArray[y][x]);
 			}
 		}
+		clickableAnime.play();
 	}
 
 	private static void placeIceTile(int y, int x) {
+		System.out.println("ice y: "+y+" x: "+x);
 		Ice iceTile = null;
 		for (ActionTile actionTile : actionTilesOwned) {
 			if (actionTile.getType() == TileType.Ice) {
@@ -979,17 +1010,50 @@ public class GameSceneController extends GameWindow implements Initializable {
 			}
 		}
 		try {
-			currentGame.playIce(iceTile, x, y);
+			currentGameState = currentGame.playIce(iceTile, x, y);
+			
+			updateBoard();
+			
+			hideInventory();
+			
+			resetClickable();
+			setMoveableTiles();
 		} catch (IncorrectTileTypeException e) {
 			e.printStackTrace();
+			
 		}
+		
+	}
+	
+	public static void playDoubleMove() {
+		playerPlaying.setMouseTransparent(false);
+		playerPlaying.setOnMouseClicked(e -> {
+			useDoubleMove();
+		});
+	}
+	
+	public static void useDoubleMove() {
+		playerPlaying.setMouseTransparent(true);
+		playerPlaying.setOnMouseClicked(null);
+		System.out.println("Double Move played");
+		DoubleMove dmTile=null;
+		for(ActionTile actionTile : actionTilesOwned) {
+			if(actionTile.getType() == TileType.DoubleMove) {
+				dmTile=(DoubleMove) actionTile;
+			}
+		}
+		currentGame.playDoubleMove(dmTile);
+		hideInventory();
 		resetClickable();
+		setMoveableTiles();
 	}
 
 	public static void playBacktrack() {
 		for (Group playerObject:playerObjectArray) {
 			if(playerObject != playerPlaying) {
+				playerObject.setMouseTransparent(false);
 				playerObject.setOnMouseClicked(e -> {
+					System.out.println("Back Track echo");
 					useBacktrack(playerObject);
 				});
 			}
@@ -997,23 +1061,32 @@ public class GameSceneController extends GameWindow implements Initializable {
 	}
 	
 	public static void useBacktrack(Group playerObject) {
+		playerObject.setMouseTransparent(true);
+		playerObject.setOnMouseClicked(null);
 		BackTrack backtrackTile = null;
+		for(int playerNo=0;playerNo<playerObjectArray.length;playerNo++) {
+			if(playerObjectArray[playerNo]==playerObject) {
+				playerNoGotBackTrack=playerNo;
+			}
+		}
 		for (ActionTile actionTile : actionTilesOwned) {
 			if (actionTile.getType() == TileType.BackTrack) {
 				backtrackTile = (BackTrack) actionTile;
 			}
 		}
-		
-		int playernum = 0;
 		try {
-		currentGame.playBackTrack(backtrackTile, playernum);
-		} catch  (IllegalBackTrackException e) {
-			
+			System.out.println("Player got backTrack: "+playerNoGotBackTrack);
+		    currentGame.playBackTrack(backtrackTile, playerNoGotBackTrack);
+			hideInventory();
+			resetClickable();
+			updatePlayerPosition();
+			setMoveableTiles();
+		} catch  (IllegalBackTrackException | IllegalMove e) {
+			e.printStackTrace();
+			System.out.println("Cannot back track");
 		}
 	}
-
 	
-
 	/**
 	 * Animation
 	 */

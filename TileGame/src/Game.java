@@ -224,7 +224,7 @@ public class Game {
 			throw new IllegalBackTrackException(playerAgainst + " Has already had backtrack applied");
 		}
 		players[curPlayer].playActionTile(backtrack);
-		int i = pastStates.size();
+		int i = pastStates.size()-1;
 		GameState twoMovesAgo = null;
 		try {
 			GameState testState = pastStates.get(i);
@@ -234,8 +234,8 @@ public class Game {
 			}
 			twoMovesAgo = pastStates.get(i - players.length);
 
-			int backTrackedX = twoMovesAgo.getPlayersPositions()[playerAgainst][0];
-			int backTrackedY = twoMovesAgo.getPlayersPositions()[playerAgainst][1];
+			int backTrackedX = twoMovesAgo.getPlayersPositions()[playerAgainst][1];
+			int backTrackedY = twoMovesAgo.getPlayersPositions()[playerAgainst][0];
 		
 			Placeable testTile = (Placeable) board.getTile(backTrackedX, backTrackedY);
 			
@@ -257,6 +257,8 @@ public class Game {
 			}
 			players[playerAgainst].setBacktrack(true);
 		} catch(IndexOutOfBoundsException e) {
+			e.printStackTrace();
+			System.out.println("Brah Brah");
 			throw new IllegalBackTrackException("Not enough moves made to conduct backtrack against player " + playerAgainst);
 		} finally {
 			players[curPlayer].addActionTile(new BackTrack(players[curPlayer]));
