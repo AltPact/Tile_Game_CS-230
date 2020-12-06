@@ -232,9 +232,9 @@ public class GameSceneController extends GameWindow implements Initializable {
 		// displayTurns();
 		playerPlaying = playerObjectArray[currentGameState.getCurPlayer()];
 		phase = 1;
+		updateGameState();
 		displayTurns();
 		setRightMenu();
-		updateGameState();
 		if (!currentGameState.getIsGoalHit()) {
 			turns++;
 		}
@@ -373,7 +373,7 @@ public class GameSceneController extends GameWindow implements Initializable {
 
 			showDrawTile(drawTile);
 			if (!drawTile.isAction()) {
-				System.out.println("Drawn tile: "+drawTile.getType());
+				System.out.println("Drawn tile: " + drawTile.getType());
 				activePlaceable = (Placeable) drawTile;
 				showPlaceableFloor(drawTile);
 				setPushableArrows();
@@ -548,7 +548,6 @@ public class GameSceneController extends GameWindow implements Initializable {
 	}
 
 	public static void setMoveableTiles() {
-		System.out.println("557");
 		updateGameState();
 		boolean moveable=false;
 		System.out.println("CURRENT PLAYER: " + currentGameState.getCurPlayer());
@@ -730,7 +729,6 @@ public class GameSceneController extends GameWindow implements Initializable {
 					
 					e1.printStackTrace();
 				}
-				    System.out.println("740");
 				    
 				    PauseTransition hold = new PauseTransition(Duration.millis(1000));
 					hold.setOnFinished(lamda -> {
@@ -768,7 +766,6 @@ public class GameSceneController extends GameWindow implements Initializable {
 
 	
 	public static void showInventory() {
-		// System.out.println("hi");
 		selectedTile = null;
 		boolean actionTileObtained[] = { false, false, false, false };
 		inventory = new Group();
@@ -791,6 +788,7 @@ public class GameSceneController extends GameWindow implements Initializable {
 		double y = -200;
 
 		for (ActionTile actionTile : actionTilesOwned) {
+			System.out.println(actionTile.getType());
 			if (actionTile.getType() == TileType.Fire) {
 				actionTileObtained[0] = true;
 			} else if (actionTile.getType() == TileType.Ice) {
@@ -801,7 +799,6 @@ public class GameSceneController extends GameWindow implements Initializable {
 				actionTileObtained[3] = true;
 			}
 		}
-		int counter = 0;
 		for (int i = 0; i < actionTileObtained.length; i++) {
 			if (actionTileObtained[i]) {
 				Box acTile = objectFactory.makeTileInInventory(i);
