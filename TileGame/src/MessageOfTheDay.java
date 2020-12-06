@@ -42,6 +42,7 @@ public class MessageOfTheDay {
 		String outputline = in.readLine();
 		in.close();
 		outputline = outputline.replace("(", "\n(");
+		outputline = "Quote of the Day\n" + outputline;
 		return outputline;
 	}
 	
