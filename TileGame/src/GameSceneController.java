@@ -1073,6 +1073,9 @@ public class GameSceneController extends GameWindow implements Initializable {
 			tileImage = new Image("/img/texture/doubleMoveTile.jpg");
 		}
 		Label tileType = showTileType(drawTile);
+		tileType.setAlignment(Pos.CENTER);
+		tileType.setLayoutX(42);
+		tileType.setLayoutY(200);
 		ImageView tileIcon = new ImageView();
 		tileIcon.setImage(tileImage);
 		tileIcon.setFitHeight(50);

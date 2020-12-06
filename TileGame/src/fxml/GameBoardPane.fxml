@@ -35,9 +35,9 @@
                <image>
                   <Image url="/img/blueWizard.png" />
                </image></ImageView>-->
-            <ImageView fitHeight="101.0" fitWidth="88.0" layoutX="29.0" layoutY="185.0" pickOnBounds="true" preserveRatio="true">
+            <ImageView fitHeight="120.0" fitWidth="120.0" layoutX="9.0" layoutY="190.0" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="/img/silkBag.png" />
+                  <Image url="/img/texture/royalPatternContainer.jpg" />
                </image></ImageView>
             <Button fx:id="BackHomeButton" layoutX="11.0" layoutY="316.0" mnemonicParsing="false" onAction="#buttonOnActionB" onMouseEntered="#mouseOnB" onMouseExited="#mouseOFFB" prefHeight="31.0" prefWidth="110.0" style="-fx-background-color: BLACK; -fx-background-radius: 5px; -fx-border-color: GOLDENROD; -fx-border-radius: 5px; -fx-border-width: 2;" text="To Homepage" textFill="#da9707" />
             <Button fx:id="QuitButton" layoutX="11.0" layoutY="355.0" mnemonicParsing="false" onAction="#buttonOnActionQ" onMouseEntered="#mouseOnQ" onMouseExited="#mouseOFFQ" prefHeight="31.0" prefWidth="110.0" style="-fx-background-color: BLACK; -fx-background-radius: 5px; -fx-border-color: GOLDENROD; -fx-border-radius: 5px; -fx-border-width: 2;" text="Quit" textFill="#da9707" />
