@@ -127,25 +127,9 @@ public class GameSceneController extends GameWindow implements Initializable {
 		// pushTileAnimation(0,2,0);
 	}
 
-	private static void newTurn() {
-		// displayTurns();
-		
-		
-		playerPlaying = playerObjectArray[currentGameState.getCurPlayer()];
-		phase = 1;
-		displayTurns();
-
-		setRightMenu();
-	}
-
-	private static void checkWin() {
-		updateGameState();
-		if (!currentGameState.getIsGoalHit()) {
-			turns++;
-			newTurn();
-		}
-	}
-
+	/**
+	 * Set game environment
+	 */
 	public void initLightSource() {
 		gameObjects.getChildren().add(objectFactory.makeLightSource(100, 100));
 		gameObjects.getChildren().add(objectFactory.makeLightSource(500, 300));
@@ -189,11 +173,9 @@ public class GameSceneController extends GameWindow implements Initializable {
 		System.out.println("UPDATE GAME STATE CURRENT PLAYER BEFORE" + currentGameState.getCurPlayer());
 		currentGameState = currentGame.getCurrentGameState();
 		System.out.println("UPDATE GAME STATE CURRENT PLAYER AFTER" + currentGameState.getCurPlayer());
+		
 	}
 
-	/**
-	 * add all tiles at start of game
-	 */
 	public void addTile() {
 		int y = 400 - (boardHeight * 100) / 2;
 		// System.out.println("Starting X: "+(400-boardWidth/2));
@@ -235,12 +217,38 @@ public class GameSceneController extends GameWindow implements Initializable {
 		// System.out.println(gameObjects.getChildren());
 	}
 
+	public void setCamera() {
+		PerspectiveCamera camera = new PerspectiveCamera();
+		camera.translateXProperty().set(cameraX);
+		camera.translateYProperty().set(cameraY);
+		camera.translateZProperty().set(-1200);
+		subScene.setCamera(camera);
+	}
+	
+	/**
+	 * New turns method
+	 */
+	private static void newTurn() {
+		// displayTurns();
+		playerPlaying = playerObjectArray[currentGameState.getCurPlayer()];
+		phase = 1;
+		updateGameState();
+		displayTurns();
+		setRightMenu();
+		if (!currentGameState.getIsGoalHit()) {
+			turns++;
+		}
+	}
+	
+	/**
+	 * Update methods
+	 */
 	private static void updateBoard() {
 		updateGameState();
 		Placeable[][] newBoard = currentGameState.getBoard();
 		for (int h = 0; h < boardHeight; h++) {
 			for (int w = 0; w < boardWidth; w++) {
-				//objectFactory.textureTheTile(tileArray[h][w], newBoard[h][w]);
+				objectFactory.textureTheTile(tileArray[h][w], newBoard[h][w]);
 			}
 		}
 	}
@@ -255,94 +263,140 @@ public class GameSceneController extends GameWindow implements Initializable {
 			movePlayer(playerObjectArray[playerNum], onTile.getTranslateX(), onTile.getTranslateY());
 		}
 	}
-
-	// Testing method
-	/*
-	 * public static void printPlayerHashMap() { for(Sphere player :
-	 * playerPieceLink.keySet()) { if(playerPlaying==player) {
-	 * System.out.println("Current player: "); }
-	 * System.out.println("Player: "+player+" PlayerPiece: "+playerPieceLink.get(
-	 * player));
-	 * 
-	 * } }
-	 */
-
-	public void setCamera() {
-		PerspectiveCamera camera = new PerspectiveCamera();
-		camera.translateXProperty().set(cameraX);
-		camera.translateYProperty().set(cameraY);
-		camera.translateZProperty().set(-1200);
-		subScene.setCamera(camera);
-	}
-
 	/**
-	 * updates the x/y/z positions of all tiles so that they are drawn in the
-	 * correct place on the screen.
+	 * Translate methods
 	 */
-	public static void updateTileTranslations() {
-		int y = 400 - (boardHeight * 100) / 2;
-		for (int q = 0; q < boardHeight; q++) {
-			int x = 400 - (boardWidth * 100) / 2;
-			for (int i = 0; i < boardWidth; i++) {
-				tileArray[q][i].translateXProperty().set(x);
-				tileArray[q][i].translateYProperty().set(y);
-				tileArray[q][i].translateZProperty().set(0);
-				x += 100;// gap between tiles
-			}
-			y += 100;// gap between tiles
-		}
-	}
-
-	/**
-	 * pushes the current activePlaceable tile into the given row/column TODO: needs
-	 * to remove arrows TODO: when setPushable is updated to animate opposite tiles,
-	 * this will need to be updated with another paramater, the "direction" of the
-	 * shift.
-	 */
-
-	/**
-	 *
-	 * @param direction the direction to push to tile in from
-	 *                  (top/bottom/left/right)
-	 */
-	/*
-	 * public static void pushTile(int i, int direction) {
-	 * 
-	 * System.out.println("current active tile: " +activePlaceable.getType());
-	 * arrows.getChildren().removeAll(); // remove all arrows now that one has been
-	 * clicked int newX; // x/y of the tile being added int newY; int remX; // x/y
-	 * of the tile being pushed off the board int remY; if (direction == 0) { // top
-	 * tiles.getChildren().remove(tileArray[boardHeight - 1][i]); for (int y =
-	 * boardHeight - 1; y > 0; y--) { tileArray[y][i] = tileArray[y-1][i]; } newX =
-	 * i; newY = 0; } else if (direction == 2) { // left
-	 * tiles.getChildren().remove(tileArray[i][boardWidth - 1]); for (int x =
-	 * boardWidth - 1; x > 0; x--) { tileArray[i][x] = tileArray[i][x-1]; } newX =
-	 * 0; newY = i; } else if (direction == 1) { // bottom
-	 * tiles.getChildren().remove(tileArray[0][i]); for (int y = 0; y < (boardHeight
-	 * - 1); y++) { tileArray[y][i] = tileArray[y+1][i]; } newX = i; newY =
-	 * boardHeight - 1; } else{ // assume direction == 3, right
-	 * tiles.getChildren().remove(tileArray[i][0]); for (int x = 0; x < (boardWidth
-	 * - 1); x++) { tileArray[i][x] = tileArray[i][x+1]; } newX = boardWidth - 1;
-	 * newY = i; }
-	 * 
-	 * Box newBox = objectFactory.makeTile(activePlaceable); tileArray[newY][newX] =
-	 * newBox; int displayX = (400-(boardWidth*100)/2) + (100 * newX); //copied from
-	 * addTile() int displayY = (400-(boardHeight*100)/2) + (100 * newY);
-	 * newBox.translateXProperty().set(displayX);
-	 * newBox.translateYProperty().set(displayY);
-	 * newBox.translateZProperty().set(0); tiles.getChildren().add(newBox); // add
-	 * new tile to tiles to be drawn updateBoard(); }
-	 */
-	
 	private static void setOrientation(Box tile) {
 		int ori=(int)(tile.getRotate()/90)%4;
 		System.out.println("Translate rotate "+ori);
 		activePlaceable.setOrientation(ori);
 	}
+	
+	/**
+	 * Game process
+	 */
+	
 	/**
 	 * creates arrows next to all free rows/columns that can be clicked by the
 	 * player to insert a tile into that row/column
 	 */
+	private static void setRightMenu() {
+		sRightMenuPane.getChildren().remove(turnLabel);
+		turnLabel = new Label(Integer.toString(turns));
+		turnLabel.setPrefWidth(20);
+		turnLabel.setLayoutX(59);
+		turnLabel.setLayoutY(9);
+		turnLabel.setTextFill(Color.WHITE);
+		turnLabel.setFont(new Font("Arial", 29));
+		sRightMenuPane.getChildren().add(turnLabel);
+		TranslateTransition turnLabelMove = new TranslateTransition(Duration.millis(300), turnLabel);
+		turnLabelMove.setFromY(-50);
+		turnLabelMove.setToY(0);
+		turnLabelMove.play();
+
+		showCurPlayer();
+
+		//teleportPlayer(playerPlaying, tileArray[4][4].getTranslateX(),
+		//tileArray[4][4].getTranslateY());
+	}
+
+	private static void showCurPlayer() {
+		sRightMenuPane.getChildren().remove(playerIndicator);
+		int curPlayerNum = currentGameState.getCurPlayer();
+		playerIndicator = new ImageView();
+		playerIndicator.setFitHeight(59);
+		playerIndicator.setFitWidth(57);
+		playerIndicator.setLayoutX(39);
+		playerIndicator.setLayoutY(83);
+		sRightMenuPane.getChildren().add(playerIndicator);
+		if (curPlayerNum == 0) {
+			playerIndicator.setImage(new Image("/img/redWizard.png"));
+		} else if (curPlayerNum == 1) {
+			playerIndicator.setImage(new Image("/img/yellowWizard.png"));
+		} else if (curPlayerNum == 2) {
+			playerIndicator.setImage(new Image("/img/blueWizard.png"));
+		} else {
+			playerIndicator.setImage(new Image("/img/purpleWizard.png"));
+		}
+		TranslateTransition changePlayer = new TranslateTransition(Duration.seconds(0.8), playerIndicator);
+		changePlayer.setFromX(50);
+		changePlayer.setToX(0);
+		changePlayer.play();
+	}
+	
+	private static void displayTurns() {
+		Label turnsLabel = new Label("Turns: " + turns);
+		turnsLabel.setStyle("-fx-background-color: rgba(0, 0, 0, 0.5);");
+		turnsLabel.setTextFill(Color.WHITE);
+		turnsLabel.setFont(new Font("Arial", 40));
+		turnsLabel.setTranslateX(-150);
+		turnsLabel.setTranslateY(350);
+		turnsLabel.setPrefWidth(1200);
+		turnsLabel.setAlignment(Pos.CENTER);
+		gameObjects.getChildren().add(turnsLabel);
+		ScaleTransition turnShow = new ScaleTransition(Duration.millis(800), turnsLabel);
+		turnShow.setFromY(0.1);
+		turnShow.setToY(1);
+
+		PauseTransition hold = new PauseTransition(Duration.millis(1000));
+
+		ScaleTransition turnOut = new ScaleTransition(Duration.millis(800), turnsLabel);
+		turnOut.setFromY(1);
+		turnOut.setToY(0.1);
+
+		SequentialTransition seqTransition = new SequentialTransition(turnShow, hold, turnOut);
+		seqTransition.setOnFinished(e -> {
+			gameObjects.getChildren().remove(turnsLabel);
+
+			currentGameState = currentGame.getNewTileForCurrentPlayer();
+			actionTilesOwned = currentGameState.getActionTileForPlayer(currentGameState.getCurPlayer());
+			Tile drawTile = currentGameState.getTileDrawn();
+			System.out.println("************Type of Tile Drawn " + drawTile.getType());
+
+			showDrawTile(drawTile);
+			if (!drawTile.isAction()) {
+				System.out.println("Drawn tile: " + drawTile.getType());
+				activePlaceable = (Placeable) drawTile;
+				showPlaceableFloor(drawTile);
+				setPushableArrows();
+				
+			}else {
+				showInventory();
+			}
+			
+		});
+		seqTransition.play();
+	}
+	
+	private static void showPlaceableFloor(Tile floorTile) {
+		System.out.println("===========New Tile: " + floorTile.getType());
+		inventory = new Group();
+		Box floor = null;
+		final Box fTile;
+		if (floorTile.getType() == TileType.Corner) {
+			floor = objectFactory.makeTileInInventory(4);
+		} else if (floorTile.getType() == TileType.Straight) {
+			floor = objectFactory.makeTileInInventory(5);
+		} else if (floorTile.getType() == TileType.TShaped) {
+			floor = objectFactory.makeTileInInventory(6);
+		}
+		selectedTile = floor;
+		fTile = floor;
+		floor.setOnMouseClicked(e -> {
+			fTile.setRotate(fTile.getRotate() + 90);
+			activePlaceable.rotateLeft();
+		});
+		floor.setTranslateY(400);
+		floor.setTranslateZ(-50);
+		inventory.getChildren().add(floor);
+		TranslateTransition floortileMove = new TranslateTransition(Duration.millis(1000), floor);
+		floortileMove.setFromX(1200);
+		floortileMove.setToX(950);
+		floortileMove.play();
+		gameObjects.getChildren().add(inventory);
+	}
+	
+	
 	public static void setPushableArrows() {
 		ArrayList<Box> pushableTiles = new ArrayList<Box>();
 		boolean[][] insertablePlaces = currentGameState.getInsertableLocations(); // [rows, columns][index]
@@ -359,7 +413,8 @@ public class GameSceneController extends GameWindow implements Initializable {
 				arrows.getChildren().add(newDownArrow);
 				newDownArrow.setOnMouseClicked(e -> {
 					try {
-						setOrientation(selectedTile);
+						//setOrientation(selectedTile);
+						System.out.println("------------Acive Placeable: " + activePlaceable.getType() + " Ori: " + activePlaceable.getOrientation());
 						currentGame.insertTile(activePlaceable, finalX, 0, true);
 						updateGameState();
 						pushTileAnimation(finalX, 0, 1);
@@ -377,7 +432,7 @@ public class GameSceneController extends GameWindow implements Initializable {
 				arrows.getChildren().add(newUpArrow);
 				newUpArrow.setOnMouseClicked(e -> {
 					try {
-						System.out.println(activePlaceable.getOrientation());
+						System.out.println("------------Acive Placeable: " + activePlaceable.getType() + " Ori: " + activePlaceable.getOrientation());
 						currentGame.insertTile(activePlaceable, finalX, boardHeight - 1, true);
 						updateGameState();
 						pushTileAnimation(finalX, boardHeight - 1, 0);
@@ -399,7 +454,7 @@ public class GameSceneController extends GameWindow implements Initializable {
 				arrows.getChildren().add(newRightArrow);
 				newRightArrow.setOnMouseClicked(e -> {
 					try {
-						System.out.println(activePlaceable.getOrientation());
+						System.out.println("------------Acive Placeable: " + activePlaceable.getType() + " Ori: " + activePlaceable.getOrientation());
 						currentGame.insertTile(activePlaceable, 0, finalY, false);
 						updateGameState();
 						pushTileAnimation(0, finalY, 3);
@@ -417,7 +472,7 @@ public class GameSceneController extends GameWindow implements Initializable {
 				arrows.getChildren().add(newLeftArrow);
 				newLeftArrow.setOnMouseClicked(e -> {
 					try {
-						System.out.println(activePlaceable.getOrientation());
+						System.out.println("------------Acive Placeable: " + activePlaceable.getType() + " Ori: " + activePlaceable.getOrientation());
 						currentGame.insertTile(activePlaceable, boardWidth - 1, finalY, false);
 						updateGameState();
 						pushTileAnimation(boardWidth - 1, finalY, 2);
@@ -454,47 +509,6 @@ public class GameSceneController extends GameWindow implements Initializable {
 		}
 	}
 
-	private static void displayTurns() {
-		Label turnsLabel = new Label("Turns: " + turns);
-		turnsLabel.setStyle("-fx-background-color: rgba(0, 0, 0, 0.5);");
-		turnsLabel.setTextFill(Color.WHITE);
-		turnsLabel.setFont(new Font("Arial", 40));
-		turnsLabel.setTranslateX(-150);
-		turnsLabel.setTranslateY(350);
-		turnsLabel.setPrefWidth(1200);
-		turnsLabel.setAlignment(Pos.CENTER);
-		gameObjects.getChildren().add(turnsLabel);
-		ScaleTransition turnShow = new ScaleTransition(Duration.millis(800), turnsLabel);
-		turnShow.setFromY(0.1);
-		turnShow.setToY(1);
-
-		PauseTransition hold = new PauseTransition(Duration.millis(1000));
-
-		ScaleTransition turnOut = new ScaleTransition(Duration.millis(800), turnsLabel);
-		turnOut.setFromY(1);
-		turnOut.setToY(0.1);
-
-		SequentialTransition seqTransition = new SequentialTransition(turnShow, hold, turnOut);
-		seqTransition.setOnFinished(e -> {
-			gameObjects.getChildren().remove(turnsLabel);
-
-			currentGameState = currentGame.getNewTileForCurrentPlayer();
-			actionTilesOwned = currentGameState.getActionTileForPlayer(currentGameState.getCurPlayer());
-			Tile drawTile = currentGameState.getTileDrawn();
-
-			showDrawTile(drawTile);
-			if (!drawTile.isAction()) {
-				System.out.println("Drawn tile: "+drawTile.getType());
-				activePlaceable = (Placeable) drawTile;
-				showPlaceableFloor(drawTile);
-				setPushableArrows();
-			}
-			if (actionTilesOwned.size() > 0) {
-				showInventory();
-			}
-		});
-		seqTransition.play();
-	}
 
 	private static void displayErrorMessage(String errorMessage) {
 		Label error = new Label(errorMessage);
@@ -519,8 +533,19 @@ public class GameSceneController extends GameWindow implements Initializable {
 
 	public static void setMoveableTiles() {
 		updateGameState();
+		boolean moveable=false;
 		System.out.println("CURRENT PLAYER: " + currentGameState.getCurPlayer());
 		boolean[][] moveableSpaces = currentGameState.getMoveableSpaces();
+		for(int h=0;h<boardHeight;h++) {
+			for(int w=0;w<boardWidth;w++) {
+				if(moveableSpaces[h][w]) {
+					moveable=true;
+				}
+			}
+		}
+		if(!moveable) {
+			newTurn();
+		}else {
 		clickableAnime = new ParallelTransition();
 		System.out.println(moveableSpaces.length);
 		for (int y = 0; y < boardHeight; y++) {
@@ -531,6 +556,7 @@ public class GameSceneController extends GameWindow implements Initializable {
 				if (moveableSpaces[y][x]) {
 					clickableAnime.getChildren().add(animateTile(tileArray[y][x]));
 					tileArray[y][x].setOnMouseClicked(e -> {
+						System.out.println("582");
 						playerDeliberateMove(playerPlaying, finalY, finalX);
 					});
 					clickAble.add(tileArray[y][x]);
@@ -539,6 +565,7 @@ public class GameSceneController extends GameWindow implements Initializable {
 			System.out.println("");
 		}
 		clickableAnime.play();
+		}
 	}
 
 	public static void movePlayer(Group player, double x, double y) throws IllegalMove {
@@ -556,7 +583,7 @@ public class GameSceneController extends GameWindow implements Initializable {
 			resetClickable();
 			currentGame.endTurn();
 			updateGameState();
-			checkWin();
+			newTurn();
 		} catch (IllegalMove e) {
 			e.printStackTrace();
 		}
@@ -584,16 +611,18 @@ public class GameSceneController extends GameWindow implements Initializable {
 		try {
 			updatePlayerPosition();
 		} catch (IllegalMove e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+			displayErrorMessage("Cant move player this way");
 		}
 	}
 
 	public static void pushTileAnimation(int rows, int columns, int orientation) {
+		System.out.println("============ Active Placeable Type : " + activePlaceable.getType() + " Ori: " + activePlaceable.getOrientation());
+		
 		gameObjects.getChildren().remove(arrows);
 		arrows.getChildren().removeAll();
 		hideInventory();
-
+        
 		Box tileToRemove = null;
 		int starting, ending, incValue, arrayX, arrayY;
 		double X, Y;
@@ -686,7 +715,12 @@ public class GameSceneController extends GameWindow implements Initializable {
 					
 					e1.printStackTrace();
 				}
-				setMoveableTiles();
+				    
+				    PauseTransition hold = new PauseTransition(Duration.millis(1000));
+					hold.setOnFinished(lamda -> {
+						showInventory();
+					});
+					hold.play();
 			});
 		}
 		tileMove.play();
@@ -713,6 +747,319 @@ public class GameSceneController extends GameWindow implements Initializable {
 	 * PhongMaterial(Color.GREEN); for (Box tile : clickAble) {
 	 * tile.setMaterial(greenFill); } }
 	 */
+
+	
+
+	
+	public static void showInventory() {
+		selectedTile = null;
+		boolean actionTileObtained[] = { false, false, false, false };
+		inventory = new Group();
+		tileInventory = new ArrayList<Box>();
+		
+		Box skipB=objectFactory.makeSkipButton();
+		skipB.setTranslateY(400);
+		skipB.setTranslateZ(-5);
+		skipB.setOnMouseClicked(e->{
+			hideInventory();
+			setMoveableTiles();
+		});
+		
+		Box inventoryBase = new Box(90, 500, 10);
+		PhongMaterial baseTexture = new PhongMaterial(Color.BROWN);
+		inventoryBase.setMaterial(baseTexture);
+		inventory.setTranslateY(400);
+		inventory.setTranslateZ(-50);
+		inventory.getChildren().addAll(inventoryBase,skipB);
+		double y = -200;
+
+		for (ActionTile actionTile : actionTilesOwned) {
+			System.out.println(actionTile.getType());
+			if (actionTile.getType() == TileType.Fire) {
+				actionTileObtained[0] = true;
+			} else if (actionTile.getType() == TileType.Ice) {
+				actionTileObtained[1] = true;
+			} else if (actionTile.getType() == TileType.DoubleMove) {
+				actionTileObtained[2] = true;
+			} else if (actionTile.getType() == TileType.BackTrack) {
+				actionTileObtained[3] = true;
+			}
+		}
+		for (int i = 0; i < actionTileObtained.length; i++) {
+			if (actionTileObtained[i]) {
+				Box acTile = objectFactory.makeTileInInventory(i);
+				acTile.setTranslateX(inventoryBase.getTranslateX() - 10);
+				acTile.setTranslateY(y);
+				acTile.setTranslateZ(inventoryBase.getTranslateZ() - 50);
+				if (actionTileObtained[0]) {
+					acTile.setOnMouseClicked(e -> {
+						// what to do when a fire tile is clicked
+						if (selectedTile != acTile) {
+							setSelectedTile(acTile);
+						} else {
+							playFireTile();
+							//setMoveableTiles();
+						}
+					});
+				} else if (actionTileObtained[1]) {
+					acTile.setOnMouseClicked(e -> {
+						// what to do when an ice tile is clicked
+						if (selectedTile != acTile) {
+							setSelectedTile(acTile);
+						} else {
+							playIceTile();
+							//setMoveableTiles();
+						}
+						
+					});
+				} else if (actionTileObtained[2]) {
+					acTile.setOnMouseClicked(e -> {
+						// what to do when a doubleMove tile is clicked
+						if (selectedTile != acTile) {
+							setSelectedTile(acTile);
+						} else {
+							acTile.setRotate(acTile.getRotate() + 90);
+						}
+					});
+				} else if (actionTileObtained[3]) {
+					acTile.setOnMouseClicked(e -> {
+						// what to do when a Backtrack tile is clicked
+						if (selectedTile != acTile) {
+							setSelectedTile(acTile);
+						} else {
+							playBacktrack();
+							//setMoveableTiles();
+						}
+						//setMoveableTiles();
+					});
+				}
+				tileInventory.add(acTile);
+				inventory.getChildren().add(acTile);
+				y += 70;
+			}
+		}
+		gameObjects.getChildren().add(inventory);
+		TranslateTransition tileMove = new TranslateTransition(Duration.millis(1000), inventory);
+		tileMove.setFromX(1200);
+		tileMove.setToX(950);
+		tileMove.play();
+
+	}
+	
+
+	private static void showDrawTile(Tile drawTile) {
+		Image tileImage = null;
+		if (drawTile.getType() == TileType.Straight) {
+			tileImage = new Image("/img/texture/Straight.png");
+		} else if (drawTile.getType() == TileType.Corner) {
+			tileImage = new Image("/img/texture/Corner.png");
+		} else if (drawTile.getType() == TileType.TShaped) {
+			tileImage = new Image("/img/texture/TShaped.png");
+		} else if (drawTile.getType() == TileType.Fire) {
+			tileImage = new Image("/img/texture/fireTile.jpg");
+		} else if (drawTile.getType() == TileType.Ice) {
+			tileImage = new Image("/img/texture/IceTile.jpg");
+		} else if (drawTile.getType() == TileType.BackTrack) {
+			tileImage = new Image("/img/texture/backTrackTile.jpg");
+		} else if (drawTile.getType() == TileType.DoubleMove) {
+			tileImage = new Image("/img/texture/doubleMoveTile.jpg");
+		}
+		Label tileType = showTileType(drawTile);
+		tileType.setAlignment(Pos.CENTER);
+		tileType.setLayoutX(42);
+		tileType.setLayoutY(200);
+		ImageView tileIcon = new ImageView();
+		tileIcon.setImage(tileImage);
+		tileIcon.setFitHeight(50);
+		tileIcon.setFitWidth(50);
+		tileIcon.setLayoutX(42);
+		tileIcon.setLayoutY(225);
+		sRightMenuPane.getChildren().add(tileIcon);
+		ScaleTransition appearTile = new ScaleTransition(Duration.seconds(1), tileIcon);
+		appearTile.setFromX(0);
+		appearTile.setFromY(0);
+		appearTile.setToX(1);
+		appearTile.setToY(1);
+		appearTile.setOnFinished(e -> {
+			sRightMenuPane.getChildren().add(tileType);
+		});
+		PauseTransition hold = new PauseTransition(Duration.millis(1000));
+		hold.setOnFinished(e -> {
+			sRightMenuPane.getChildren().remove(tileType);
+		});
+
+		ScaleTransition disappearTile = new ScaleTransition(Duration.seconds(1), tileIcon);
+		disappearTile.setFromX(1);
+		disappearTile.setFromY(1);
+		disappearTile.setToX(0);
+		disappearTile.setToY(0);
+		SequentialTransition showTileSeq = new SequentialTransition(appearTile, hold, disappearTile);
+		showTileSeq.play();
+	}
+	
+	public static Label showTileType(Tile drawTile) {
+		Label typeType = new Label(drawTile.getType().name());
+		typeType.setTextFill(Color.WHITE);
+		typeType.setAlignment(Pos.CENTER);
+		typeType.setLayoutX(37);
+		typeType.setLayoutY(205);
+		return typeType;
+	}
+
+	
+	/**
+	 * Action tile methods
+	 */
+
+	public static void playFireTile() {
+		for (int y = 0; y < boardHeight; y++) {
+			final int finalY = y;
+			for (int x = 0; x < boardWidth; x++) {
+				final int finalX = x;
+				animateTile(tileArray[y][x]);
+				tileArray[y][x].setOnMouseClicked(e -> {
+					placeFireTile(finalY, finalX);
+				});
+				clickAble.add(tileArray[y][x]);
+			}
+		}
+	}
+
+	public static void placeFireTile(int y, int x) {
+		Fire fireTile = null;
+		for (ActionTile actionTile : actionTilesOwned) {
+			if (actionTile.getType() == TileType.Fire) {
+				fireTile = (Fire) actionTile;
+			}
+		}
+		try {
+			currentGameState = currentGame.playFire(fireTile, x, y);
+			updateBoard();
+			resetClickable();
+		} catch (IncorrectTileTypeException | IllegalFireException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public static void playIceTile() {
+		for (int y = 0; y < boardHeight; y++) {
+			final int finalY = y;
+			for (int x = 0; x < boardWidth; x++) {
+				final int finalX = x;
+				animateTile(tileArray[y][x]);
+				tileArray[y][x].setOnMouseClicked(e -> {
+					placeIceTile(finalY, finalX);
+				});
+				clickAble.add(tileArray[y][x]);
+			}
+		}
+	}
+
+	private static void placeIceTile(int y, int x) {
+		Ice iceTile = null;
+		for (ActionTile actionTile : actionTilesOwned) {
+			if (actionTile.getType() == TileType.Ice) {
+				iceTile = (Ice) actionTile;
+			}
+		}
+		try {
+			currentGame.playIce(iceTile, x, y);
+		} catch (IncorrectTileTypeException e) {
+			e.printStackTrace();
+		}
+		resetClickable();
+	}
+
+	public static void playBacktrack() {
+		for (Group playerObject:playerObjectArray) {
+			if(playerObject != playerPlaying) {
+				playerObject.setOnMouseClicked(e -> {
+					useBacktrack(playerObject);
+				});
+			}
+		}
+	}
+	
+	public static void useBacktrack(Group playerObject) {
+		BackTrack backtrackTile = null;
+		for (ActionTile actionTile : actionTilesOwned) {
+			if (actionTile.getType() == TileType.BackTrack) {
+				backtrackTile = (BackTrack) actionTile;
+			}
+		}
+		
+		int playernum = 0;
+		try {
+		currentGame.playBackTrack(backtrackTile, playernum);
+		} catch  (IllegalBackTrackException e) {
+			
+		}
+	}
+
+	
+
+	/**
+	 * Animation
+	 */
+	private static void hideInventory() {
+		System.out.println("Hide inventory");
+		TranslateTransition tileMove = new TranslateTransition(Duration.millis(1000), inventory);
+		tileMove.setFromX(950);
+		tileMove.setToX(1200);
+		tileMove.setOnFinished(e -> {
+			inventory.getChildren().clear();
+			gameObjects.getChildren().remove(inventory);
+
+		});
+		tileMove.play();
+	}
+
+	private static void setSelectedTile(Box newSelected) {
+		if (selectedTile != null) {
+			selectedTile.setWidth(70);
+			selectedTile.setHeight(70);
+		}
+		newSelected.setWidth(90);
+		newSelected.setHeight(90);
+		selectedTile = newSelected;
+	}
+	
+	public static void teleportPlayer(Group player, double x, double y) {
+		Box teleCylinder = new Box(120, 120, 200);
+		PhongMaterial teleClinderTexture = new PhongMaterial();
+		teleClinderTexture.setSelfIlluminationMap(new Image("/img/texture/teleCylinder.png"));
+		teleCylinder.setMaterial(teleClinderTexture);
+		teleCylinder.setTranslateZ(-60);
+		teleCylinder.setVisible(false);
+
+		PauseTransition hold = new PauseTransition(Duration.millis(1000));
+		hold.setOnFinished(e -> {
+			teleCylinder.setVisible(true);
+		});
+		ScaleTransition teleFadeIn = new ScaleTransition(Duration.millis(1000), teleCylinder);
+		teleFadeIn.setFromX(0);
+		teleFadeIn.setFromY(0);
+		teleFadeIn.setToX(1);
+		teleFadeIn.setToY(1);
+		teleFadeIn.setOnFinished(e -> {
+			player.setTranslateX(x);
+			player.setTranslateY(y);
+		});
+
+		ScaleTransition teleFadeOut = new ScaleTransition(Duration.millis(1000), teleCylinder);
+		teleFadeOut.setFromX(1);
+		teleFadeOut.setFromY(1);
+		teleFadeOut.setToX(0);
+		teleFadeOut.setToY(0);
+		teleFadeOut.setOnFinished(e -> {
+			player.getChildren().remove(teleCylinder);
+		});
+
+		animationPlayTile(player.getTranslateX(), player.getTranslateY(), "teleport");
+		SequentialTransition seqTransition = new SequentialTransition(hold, teleFadeIn, teleFadeOut);
+		seqTransition.play();
+		player.getChildren().add(teleCylinder);
+	}
 
 	public static void animationPlayTile(double x, double y, String playType) {
 		Box elementType = new Box(200, 200, 2);
@@ -798,352 +1145,7 @@ public class GameSceneController extends GameWindow implements Initializable {
 		seqTransition.play();
 	}
 
-	public static void teleportPlayer(Group player, double x, double y) {
-		Box teleCylinder = new Box(120, 120, 200);
-		PhongMaterial teleClinderTexture = new PhongMaterial();
-		teleClinderTexture.setSelfIlluminationMap(new Image("/img/texture/teleCylinder.png"));
-		teleCylinder.setMaterial(teleClinderTexture);
-		teleCylinder.setTranslateZ(-60);
-		teleCylinder.setVisible(false);
-
-		PauseTransition hold = new PauseTransition(Duration.millis(1000));
-		hold.setOnFinished(e -> {
-			teleCylinder.setVisible(true);
-		});
-		ScaleTransition teleFadeIn = new ScaleTransition(Duration.millis(1000), teleCylinder);
-		teleFadeIn.setFromX(0);
-		teleFadeIn.setFromY(0);
-		teleFadeIn.setToX(1);
-		teleFadeIn.setToY(1);
-		teleFadeIn.setOnFinished(e -> {
-			player.setTranslateX(x);
-			player.setTranslateY(y);
-		});
-
-		ScaleTransition teleFadeOut = new ScaleTransition(Duration.millis(1000), teleCylinder);
-		teleFadeOut.setFromX(1);
-		teleFadeOut.setFromY(1);
-		teleFadeOut.setToX(0);
-		teleFadeOut.setToY(0);
-		teleFadeOut.setOnFinished(e -> {
-			player.getChildren().remove(teleCylinder);
-		});
-
-		animationPlayTile(player.getTranslateX(), player.getTranslateY(), "teleport");
-		SequentialTransition seqTransition = new SequentialTransition(hold, teleFadeIn, teleFadeOut);
-		seqTransition.play();
-		player.getChildren().add(teleCylinder);
-	}
-
-	private static void setRightMenu() {
-		sRightMenuPane.getChildren().remove(turnLabel);
-		turnLabel = new Label(Integer.toString(turns));
-		turnLabel.setPrefWidth(20);
-		turnLabel.setLayoutX(59);
-		turnLabel.setLayoutY(9);
-		turnLabel.setTextFill(Color.WHITE);
-		turnLabel.setFont(new Font("Arial", 29));
-		sRightMenuPane.getChildren().add(turnLabel);
-		TranslateTransition turnLabelMove = new TranslateTransition(Duration.millis(300), turnLabel);
-		turnLabelMove.setFromY(-50);
-		turnLabelMove.setToY(0);
-		turnLabelMove.play();
-
-		showCurPlayer();
-
-		//teleportPlayer(playerPlaying, tileArray[4][4].getTranslateX(),
-		//tileArray[4][4].getTranslateY());
-	}
-
-	private static void showPlaceableFloor(Tile floorTile) {
-		inventory = new Group();
-		Box floor = null;
-		final Box fTile;
-		if (floorTile.getType() == TileType.Corner) {
-			floor = objectFactory.makeTileInInventory(4);
-		} else if (floorTile.getType() == TileType.Straight) {
-			floor = objectFactory.makeTileInInventory(5);
-		} else if (floorTile.getType() == TileType.TShaped) {
-			floor = objectFactory.makeTileInInventory(6);
-		}
-		selectedTile = floor;
-		fTile = floor;
-		floor.setOnMouseClicked(e -> {
-			fTile.setRotate(fTile.getRotate() + 90);
-			activePlaceable.rotateRight();
-		});
-		floor.setTranslateY(400);
-		floor.setTranslateZ(-50);
-		inventory.getChildren().add(floor);
-		TranslateTransition floortileMove = new TranslateTransition(Duration.millis(1000), floor);
-		floortileMove.setFromX(1200);
-		floortileMove.setToX(950);
-		floortileMove.play();
-		gameObjects.getChildren().add(inventory);
-	}
-
-	public static void playFireTile() {
-		for (int y = 0; y < boardHeight; y++) {
-			final int finalY = y;
-			for (int x = 0; x < boardWidth; x++) {
-				final int finalX = x;
-				animateTile(tileArray[y][x]);
-				tileArray[y][x].setOnMouseClicked(e -> {
-					placeFireTile(finalY, finalX);
-				});
-				clickAble.add(tileArray[y][x]);
-			}
-		}
-	}
-
-	public static void placeFireTile(int y, int x) {
-		Fire fireTile = null;
-		for (ActionTile actionTile : actionTilesOwned) {
-			if (actionTile.getType() == TileType.Fire) {
-				fireTile = (Fire) actionTile;
-			}
-		}
-		try {
-			currentGameState = currentGame.playFire(fireTile, x, y);
-			updateBoard();
-			resetClickable();
-		} catch (IncorrectTileTypeException | IllegalFireException e) {
-			e.printStackTrace();
-		}
-	}
-
-	public static void playIceTile() {
-		for (int y = 0; y < boardHeight; y++) {
-			final int finalY = y;
-			for (int x = 0; x < boardWidth; x++) {
-				final int finalX = x;
-				animateTile(tileArray[y][x]);
-				tileArray[y][x].setOnMouseClicked(e -> {
-					placeIceTile(finalY, finalX);
-				});
-				clickAble.add(tileArray[y][x]);
-			}
-		}
-	}
-
-	private static void placeIceTile(int y, int x) {
-		Ice iceTile = null;
-		for (ActionTile actionTile : actionTilesOwned) {
-			if (actionTile.getType() == TileType.Ice) {
-				iceTile = (Ice) actionTile;
-			}
-		}
-		// System.out.println("Ice tile used:" + iceTile);
-		// System.out.println("insert x:" + x + " insert y:" + y);
-		try {
-			currentGame.playIce(iceTile, x, y);
-		} catch (IncorrectTileTypeException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		// System.out.println(actionTilesOwned.size());
-		resetClickable();
-	}
-
-	public static void playBacktrack() {
-		for (Group playerObject:playerObjectArray) {
-			if(playerObject != playerPlaying) {
-				playerObject.setOnMouseClicked(e -> {
-					useBacktrack(playerObject);
-				});
-			}
-		}
-	}
 	
-	public static void useBacktrack(Group playerObject) {
-		BackTrack backtrackTile = null;
-		for (ActionTile actionTile : actionTilesOwned) {
-			if (actionTile.getType() == TileType.BackTrack) {
-				backtrackTile = (BackTrack) actionTile;
-			}
-		}
-		// TODO add get the player number
-		int playernum = 0;
-		try {
-		currentGame.playBackTrack(backtrackTile, playernum);
-		} catch  (IllegalBackTrackException e) {
-			// TODO Add what to do if error
-		}
-	}
-
-	public static void showInventory() {
-		// System.out.println("hi");
-		selectedTile = null;
-		boolean actionTileObtained[] = { false, false, false, false };
-		inventory = new Group();
-		tileInventory = new ArrayList<Box>();
-		Box inventoryBase = new Box(90, 500, 10);
-		PhongMaterial baseTexture = new PhongMaterial(Color.BROWN);
-		inventoryBase.setMaterial(baseTexture);
-		inventory.setTranslateY(400);
-		inventory.setTranslateZ(-50);
-		inventory.getChildren().add(inventoryBase);
-		double y = -200;
-
-		for (ActionTile actionTile : actionTilesOwned) {
-			if (actionTile.getType() == TileType.Fire) {
-				actionTileObtained[0] = true;
-			} else if (actionTile.getType() == TileType.Ice) {
-				actionTileObtained[1] = true;
-			} else if (actionTile.getType() == TileType.DoubleMove) {
-				actionTileObtained[2] = true;
-			} else if (actionTile.getType() == TileType.BackTrack) {
-				actionTileObtained[3] = true;
-			}
-		}
-		int counter = 0;
-		for (int i = 0; i < actionTileObtained.length; i++) {
-			if (actionTileObtained[i]) {
-				Box acTile = objectFactory.makeTileInInventory(i);
-				acTile.setTranslateX(inventoryBase.getTranslateX() - 10);
-				acTile.setTranslateY(y);
-				acTile.setTranslateZ(inventoryBase.getTranslateZ() - 50);
-				if (actionTileObtained[0]) {
-					acTile.setOnMouseClicked(e -> {
-						// what to do when a fire tile is clicked
-						playFireTile();
-					});
-				} else if (actionTileObtained[1]) {
-					acTile.setOnMouseClicked(e -> {
-						// what to do when an ice tile is clicked
-						playIceTile();
-					});
-				} else if (actionTileObtained[2]) {
-					acTile.setOnMouseClicked(e -> {
-						// what to do when a doubleMove tile is clicked
-						if (selectedTile != acTile) {
-							setSelectedTile(acTile);
-						} else {
-							acTile.setRotate(acTile.getRotate() + 90);
-
-						}
-					});
-				} else if (actionTileObtained[3]) {
-					acTile.setOnMouseClicked(e -> {
-						// what to do when a Backtrack tile is clicked
-						playBacktrack();
-					});
-				}
-				tileInventory.add(acTile);
-				inventory.getChildren().add(acTile);
-				y += 70;
-			}
-		}
-		gameObjects.getChildren().add(inventory);
-		TranslateTransition tileMove = new TranslateTransition(Duration.millis(1000), inventory);
-		tileMove.setFromX(1200);
-		tileMove.setToX(950);
-		tileMove.play();
-
-	}
-
-	private static void hideInventory() {
-		TranslateTransition tileMove = new TranslateTransition(Duration.millis(1000), inventory);
-		tileMove.setFromX(950);
-		tileMove.setToX(1200);
-		tileMove.setOnFinished(e -> {
-			gameObjects.getChildren().remove(inventory);
-		});
-		tileMove.play();
-	}
-
-	private static void setSelectedTile(Box newSelected) {
-		if (selectedTile != null) {
-			selectedTile.setWidth(70);
-			selectedTile.setHeight(70);
-		}
-		newSelected.setWidth(90);
-		newSelected.setHeight(90);
-		selectedTile = newSelected;
-	}
-
-	private static void showCurPlayer() {
-		sRightMenuPane.getChildren().remove(playerIndicator);
-		int curPlayerNum = currentGameState.getCurPlayer();
-		playerIndicator = new ImageView();
-		playerIndicator.setFitHeight(59);
-		playerIndicator.setFitWidth(57);
-		playerIndicator.setLayoutX(39);
-		playerIndicator.setLayoutY(83);
-		sRightMenuPane.getChildren().add(playerIndicator);
-		if (curPlayerNum == 0) {
-			playerIndicator.setImage(new Image("/img/redWizard.png"));
-		} else if (curPlayerNum == 1) {
-			playerIndicator.setImage(new Image("/img/yellowWizard.png"));
-		} else if (curPlayerNum == 2) {
-			playerIndicator.setImage(new Image("/img/blueWizard.png"));
-		} else {
-			playerIndicator.setImage(new Image("/img/purpleWizard.png"));
-		}
-		TranslateTransition changePlayer = new TranslateTransition(Duration.seconds(0.8), playerIndicator);
-		changePlayer.setFromX(50);
-		changePlayer.setToX(0);
-		changePlayer.play();
-	}
-
-	private static void showDrawTile(Tile drawTile) {
-		Image tileImage = null;
-		if (drawTile.getType() == TileType.Straight) {
-			tileImage = new Image("/img/texture/Straight.png");
-		} else if (drawTile.getType() == TileType.Corner) {
-			tileImage = new Image("/img/texture/Corner.png");
-		} else if (drawTile.getType() == TileType.TShaped) {
-			tileImage = new Image("/img/texture/TShaped.png");
-		} else if (drawTile.getType() == TileType.Fire) {
-			tileImage = new Image("/img/texture/fireTile.jpg");
-		} else if (drawTile.getType() == TileType.Ice) {
-			tileImage = new Image("/img/texture/IceTile.jpg");
-		} else if (drawTile.getType() == TileType.BackTrack) {
-			tileImage = new Image("/img/texture/backTrackTile.jpg");
-		} else if (drawTile.getType() == TileType.DoubleMove) {
-			tileImage = new Image("/img/texture/doubleMoveTile.jpg");
-		}
-		Label tileType = showTileType(drawTile);
-		tileType.setAlignment(Pos.CENTER);
-		tileType.setLayoutX(42);
-		tileType.setLayoutY(200);
-		ImageView tileIcon = new ImageView();
-		tileIcon.setImage(tileImage);
-		tileIcon.setFitHeight(50);
-		tileIcon.setFitWidth(50);
-		tileIcon.setLayoutX(42);
-		tileIcon.setLayoutY(225);
-		sRightMenuPane.getChildren().add(tileIcon);
-		ScaleTransition appearTile = new ScaleTransition(Duration.seconds(1), tileIcon);
-		appearTile.setFromX(0);
-		appearTile.setFromY(0);
-		appearTile.setToX(1);
-		appearTile.setToY(1);
-		appearTile.setOnFinished(e -> {
-			sRightMenuPane.getChildren().add(tileType);
-		});
-		PauseTransition hold = new PauseTransition(Duration.millis(1000));
-		hold.setOnFinished(e -> {
-			sRightMenuPane.getChildren().remove(tileType);
-		});
-
-		ScaleTransition disappearTile = new ScaleTransition(Duration.seconds(1), tileIcon);
-		disappearTile.setFromX(1);
-		disappearTile.setFromY(1);
-		disappearTile.setToX(0);
-		disappearTile.setToY(0);
-		SequentialTransition showTileSeq = new SequentialTransition(appearTile, hold, disappearTile);
-		showTileSeq.play();
-	}
-
-	public static Label showTileType(Tile drawTile) {
-		Label typeType = new Label(drawTile.getType().name());
-		typeType.setTextFill(Color.WHITE);
-		typeType.setAlignment(Pos.CENTER);
-		typeType.setLayoutX(37);
-		typeType.setLayoutY(205);
-		return typeType;
-	}
 
 	/**
 	 * This method is called when the back button is click it will call the

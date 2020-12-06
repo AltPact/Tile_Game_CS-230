@@ -62,7 +62,6 @@ public class Placeable extends Tile {
 		this.ISFIXED = isFixed;
 		setType(tileType);
 		this.orientation = orientation;
-		System.out.println("Ori: "+this.orientation);
 		for(int i = 0; i < orientation; i++) {
 			boolean temp = this.waysToMove[0];
 			this.waysToMove[0] = this.waysToMove[3];
@@ -184,7 +183,6 @@ public class Placeable extends Tile {
 	 * @return The Orientation of the tile
 	 */
 	public int getOrientation() {
-		System.out.println("get ori: "+this.orientation);
 		return this.orientation;
 	}
 	

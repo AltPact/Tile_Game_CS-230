@@ -217,6 +217,15 @@ public class ObjFactory {
 		return tile;
 	}
 	
+	public Box makeSkipButton() {
+		Box skipButton = new Box(100,50,3);
+		PhongMaterial skipTexture = new PhongMaterial();
+		skipTexture.setDiffuseMap(new Image(getClass().getResourceAsStream("/img/texture/skipButton.png")));
+		skipTexture.setSelfIlluminationMap(new Image(getClass().getResourceAsStream("/img/texture/skipButton.png")));
+		skipButton.setMaterial(skipTexture);
+		return skipButton;
+	}
+	
 	public void textureTheTile(Box tile, Placeable tileType) {
 		if(tileType.isOnFire()) {
 			tile.setMaterial(fireTexture);

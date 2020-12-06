@@ -43,9 +43,7 @@ public class GameFileWriter {
                 w.write(String.valueOf(players[p].getColour()) + DEL);
                 w.write(String.valueOf(players[p].getBacktrack()) + DEL);
                 w.write(players[p].getLinkedData().getName() + "playerdata.txt" + DEL);
-            }
-            
-            //TODO - UNCOMMENT SAVE THE LINKED DATA.
+	    }
             
             /* write current game state */
             writeCurrentGameState(g, w, players);

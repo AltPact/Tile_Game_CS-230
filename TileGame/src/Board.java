@@ -72,13 +72,12 @@ public class Board {
 	 * @return a boolean array of places a player can move equal in size to the board
 	 */
 	public boolean[][] getMoveableSpaces(PlayerPiece player) {
-		/* for (int y = 0; y < height; y++) {
+		for (int y = 0; y < height; y++) {
 				for (int x = 0; x < width; x++) {
-					//System.out.print(tiles[y][x].getType()+" "+tiles[y][x].getOrientation()+",");
 					System.out.printf("%s, R%d, canMove[%b,%b,%b,%b] | ", tiles[y][x].getType(), tiles[y][x].getOrientation(), tiles[y][x].canMove(0), tiles[y][x].canMove(1), tiles[y][x].canMove(2), tiles[y][x].canMove(3));
 				}
 				System.out.println();
-			}*/
+			}
 		int playerX = player.getX();
 		int playerY = player.getY();
 		//System.out.println("CURRENT PLAYER POSITIONS: X: " + playerX + " Y: " + playerY);
@@ -147,17 +146,17 @@ public class Board {
 						tiles[i - 1][x] = tiles[i][x];
 					}
 					
-					tiles[width - 1][y] = tile;
+					tiles[height - 1][x] = tile;
+					System.out.println("Line 150");
 					
 				//Returns false if tile can not be inserted vertically
 				} else {
-					System.out.println("Line 138");
+					
 					return false;
 				}
 				
 				
 			} else {
-				System.out.println(x + " " + y);
 				//inserting from left
 				if(x == 0) {
 					//Shifts tiles right 1
