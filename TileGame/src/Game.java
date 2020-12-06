@@ -143,7 +143,7 @@ public class Game {
 			}
 		}
 
-		//movePlayersOn(directionOfInsertion, x, y);
+		movePlayersOn(directionOfInsertion, x, y);
 		
 		int[] postion = {y,x};
 		canPlayerInsertTile = false;
@@ -173,14 +173,14 @@ public class Game {
 				//If the players position is now illegal, but them back on the board.
 				if(testY >= board.getHeight() || testY < 0) {
 					if (directionOfInsertion == 0) {
-						testY -= (board.getHeight() - 1);
+						testY = (board.getHeight() - 1);
 					} else if (directionOfInsertion == 2) {
-						testY += 0;
+						testY = 0;
 					}
 				}
 				player.setY(testY);
 			//If the inserted tile effects a horizontal row.
-			} else if (((directionOfInsertion == 1) || (directionOfInsertion == 1)) && player.getY() == insertionY) { 
+			} else if (((directionOfInsertion == 1) || (directionOfInsertion == 3)) && player.getY() == insertionY) { 
 				int testX = player.getX();
 				//Makes the appropriate change
 				if (directionOfInsertion == 3) {
@@ -192,9 +192,9 @@ public class Game {
 				//If the players position is now illegal, but them back on the board.
 				if(testX >= board.getWidth() || testX < 0) {
 					if (directionOfInsertion == 3) {
-						testX -= (board.getWidth() - 1);
+						testX = (board.getWidth() - 1);
 					} else if (directionOfInsertion == 1) {
-						testX += 0;
+						testX = 0;
 					}
 				}
 				player.setX(testX);
