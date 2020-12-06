@@ -7,19 +7,13 @@ Our Files are split into 4 sections:
 - Data folder - holds the format for the game boards which can be loaded, player data and all the games which are saved
 - bin folder
 
-All participates in Project
+All participates in Project:
+
 Ashley Arik (also known as Ashley Arik) - Student Number - 850904
-
 Morgan Firkins - Student Number - 852264
-
 Joe Sell - Student Number - 1913324
-
 Joshua Sinderberry - Student Number - 851800
-
 Sam Steadman - Student Number - 1910177
-
 Milan Tiji - Student Number - 980334
-
 Fai Tong - Student Number - 1909787
-
 Alexander Ullman - Student Number - 851732
