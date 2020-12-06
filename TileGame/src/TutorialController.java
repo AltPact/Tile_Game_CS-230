@@ -29,8 +29,8 @@ import javafx.scene.shape.Circle;
 import javafx.util.Duration;
 /**
  * Controls the functionality of the Tutorial Window
- * @author Wan Fai Tong (1909787),Sam Steadman (1910177),Morgan Firkins(852264) 
- * @version: 1.0
+ * @author Wan Fai Tong (1909787),Sam Steadman (1910177),Morgan Firkins(852264), Adem Arik (850904)
+ * @version: 1.1
  */
 public class TutorialController extends GameWindow implements Initializable{
 
@@ -90,14 +90,15 @@ public class TutorialController extends GameWindow implements Initializable{
 		counter=0;
 		currentImage=imageView1;
 		
-		imageView2 = setImageView("/img/Tut 2.png", imageView2);
-		imageView3 = setImageView("/img/Tut 3.png", imageView3);
-		imageView4 = setImageView("/img/Tut 4.png", imageView4);
-		imageView5 = setImageView("/img/Tut 5.png", imageView5);
-		imageView6 = setImageView("/img/Tut 6.png", imageView6);
-		imageView7 = setImageView("/img/Tut 7.png", imageView7);
-		imageView8 = setImageView("/img/Tut 8.png", imageView8);
-		imageView9 = setImageView("/img/Tut 9.png", imageView9);
+		imageView2 = setImageView("/img/Tut2.png", imageView2);
+		imageView3 = setImageView("/img/Tut3.png", imageView3);
+		imageView4 = setImageView("/img/Tut4.png", imageView4);
+		imageView5 = setImageView("/img/Tut5.png", imageView5);
+		imageView6 = setImageView("/img/Tut6.png", imageView6);
+		imageView7 = setImageView("/img/Tut7.png", imageView7);
+		imageView8 = setImageView("/img/Tut8.png", imageView8);
+		imageView9 = setImageView("/img/Tut9.png", imageView9);
+		
 		imageArr.add(imageView1);
 		imageArr.add(imageView2);
 		imageArr.add(imageView3);
@@ -107,6 +108,7 @@ public class TutorialController extends GameWindow implements Initializable{
 		imageArr.add(imageView7);
 		imageArr.add(imageView8);
 		imageArr.add(imageView9);
+		
 		circleArr.add(C1);
 		circleArr.add(C2);
 		circleArr.add(C3);
@@ -137,6 +139,7 @@ public class TutorialController extends GameWindow implements Initializable{
 	public void buttonOnActionR(ActionEvent event) throws IOException {
 		int nextcounter=setCounter((counter+1));
 		switchImage(imageArr.get(nextcounter), true);
+		System.out.println(nextcounter);
 		setCircleDot(nextcounter);
 		counter=nextcounter;
 		//System.out.println(SP.getChildren());
@@ -151,6 +154,7 @@ public class TutorialController extends GameWindow implements Initializable{
 	public void buttonOnActionL(ActionEvent event) throws IOException {
 		int nextcounter=setCounter((counter-1));
 		switchImage(imageArr.get(nextcounter), false);
+		System.out.println(nextcounter);
 		setCircleDot(nextcounter);
 		counter=nextcounter;
 		//System.out.println(SP.getChildren());
@@ -225,8 +229,8 @@ public class TutorialController extends GameWindow implements Initializable{
 	//Refine the counter b4 it is used as index of arrayList
 	private int setCounter(int n) {
 		if(n<0) {
-			return 2;
-		}else if(n>2) {
+			return 8;
+		}else if(n>8) {
 			return 0;
 		}
 		return n;
@@ -310,12 +314,13 @@ public class TutorialController extends GameWindow implements Initializable{
 	 * @param i The dot counter
 	 */
 	private void setCircleDot(int i) {
-		for(int n=0;n<3;n++) {
+		for(int n=0;n<9;n++) {
 			if(n!=i) {
 				//System.out.println(circleArr.get(n));
 				FillTransition ft = new FillTransition(Duration.millis(50), circleArr.get(n), Color.LIGHTSALMON, Color.WHITE);
 				ft.play();
 			}else {
+				//System.out.println(circleArr.get(n + "Check"));
 				FillTransition ft = new FillTransition(Duration.millis(50), circleArr.get(n), Color.WHITE, Color.LIGHTSALMON);
 				ft.play();
 			}
