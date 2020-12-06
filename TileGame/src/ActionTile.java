@@ -1,11 +1,8 @@
 /**
  * This is a abstract class action tile. All action tiles
  * exist lower in the tile inheritance hierarchy. It inherits from tile.
- * 
  * @author Alex Ullman (851732) and Joshua Sinderberry (851800)
- * 
- * @version 1
- *
+ * @version 1.0
  */
 
 public abstract class ActionTile extends Tile {

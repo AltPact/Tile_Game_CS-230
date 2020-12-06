@@ -4,9 +4,7 @@
  * a sub class implements the activation/de-activations by providing 
  * abstract implementations.  
  * @author Alex Ullman (851732) and Joshua Sinderberry (851800)
- * 
  * @version 1.0
- *
  */
 public abstract class ActionTilePlaceable extends ActionTile {
 	
