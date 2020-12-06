@@ -389,6 +389,7 @@ public class Game {
 		if ((curPlayer % players.length) == 0) {
 			curPlayer = 0;
 		}
+		System.out.println("PLAYER HAS BEEN UPDATED TO: " + curPlayer);
 		movesRemaingForThisPlayer = 1;
 		canPlayerInsertTile = true;
 		for(ActionTilePlaceable tile : tilesInAction) {

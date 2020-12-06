@@ -109,12 +109,11 @@ public class GameSceneController extends GameWindow implements Initializable {
 	 */
 	@Override
 	public void initialize(URL url, ResourceBundle resources) {
-		currentGame = FileReaderWriterTest.generateTestGame();
 		currentGameState = currentGame.getInitalGameState();
 		initVariables();
 		addFloor();
 		addTile();
-		initLightSource();
+		initLightSource(); 
 		addPlayer();
 		sRightMenuPane = rightMenuPane;
 		// gameObjects.getChildren().add(objectFactory.makeFireFly());

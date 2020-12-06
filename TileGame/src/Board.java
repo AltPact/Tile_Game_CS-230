@@ -70,6 +70,7 @@ public class Board {
 		}
 		int playerX = player.getX();
 		int playerY = player.getY();
+		System.out.println("CURRENT PLAYER POSITIONS: X: " + playerX + " Y: " + playerY);
 		boolean[][] moveableSpaces = new boolean[height][width];
 		for (int y = 0; y < height; y++) {
 			for (int x = 0; x < width; x++) {
@@ -85,13 +86,13 @@ public class Board {
 			}
 		}
 		//Checks if player can move right
-		if(playerX < width){
+		if(playerX < width - 1){
 			if(tileDirections[1] &&  tiles[playerY][playerX + 1].canMove(3)) {
 				moveableSpaces[playerY][playerX + 1] = true;
 			}
 		}
 		//Checks if player can move down
-		if(playerY < height){
+		if(playerY < height - 1){
 			if(tileDirections[2] &&  tiles[playerY + 1][playerX].canMove(0)) {
 				moveableSpaces[playerY + 1][playerX] = true;
 			}
