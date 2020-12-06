@@ -14,7 +14,7 @@
                <children>
             <ImageView fx:id="imageView1" fitHeight="299.0" fitWidth="430.0" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="/img/Tut1" />
+                  <Image url="/img/Tut 1.png" />
                </image>
             </ImageView>
              </children>
