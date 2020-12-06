@@ -68,22 +68,24 @@ public class ApplicationController extends Application {
 				Optional<String> msgBoxRespDialog = newFileNameDialog.showAndWait();
 				newFileName = msgBoxRespDialog.get();
 				System.out.println(newFileName);
-			} catch (NoSuchElementException e) {
-				System.out.println("User has selected cancel");
-				
-			}
 				GameState s = game.getEndGameState();
 				GameFileWriter.writeGameFile(s, newFileName + ".txt");
 				Label successLabel = new Label("Game successfully saved");
 				Popup successDialog = new Popup();
 				successDialog.getContent().add(successLabel);
-			
+				successDialog.show(stage);
+				PlayerPiece[] players = s.getPlayers();
+				for(PlayerPiece p : players) {
+					PlayerDataFileWriter.generateFile(p.getLinkedData());
+				}
+			} catch (NoSuchElementException e) {
+				System.out.println("User has selected cancel");
+			} finally {
+				stage.close();
+			}
+		} else {
+			stage.close();
 		}
-
-		else {
-			
-		}
-		stage.close();
 	}
 
 }

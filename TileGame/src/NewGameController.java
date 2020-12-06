@@ -1,3 +1,4 @@
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -266,19 +267,27 @@ public class NewGameController extends GameWindow implements Initializable {
 				}
 				index++;
 			}
-			currentGame = initGame(boardSelected);
+			initGame(boardSelected);
 			switchPane("/fxml/GameBoardPane.fxml", BP, "forward");
 		} else {
 			wrongInputAnimation("Not enough player(Minimun: 2)");
 		}
 	}
 
-	private Game initGame(int boardNumber) {
-		// working in progress
+	/**
+	 * This method creates a new game and sets the board
+	 * to the correct board.
+	 * @param boardNumber the board to be read
+	 */
+	private void initGame(int boardNumber) {
 		if (boardNumber == 0) {
-			// GameFileReader.readBoardFile(filename, 4);
+			PlayerPiece[] players = new PlayerPiece[playerQueue.size()];
+			for(int i = 0; i < playerQueue.size(); i++) {
+				players[i] = new PlayerPiece(0, 0, "Blue", false, playerQueue.get(i)); 
+			}
+			File f = new File("./data/gameboard/" + boardNumber + ".txt");
+			currentGame = GameFileReader.readBoardFile(f, players);
 		}
-		return null;
 	}
 
 	/**

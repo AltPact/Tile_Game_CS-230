@@ -15,6 +15,8 @@ public class PlayerDataFileWriter {
 	public static void generateFile(PlayerData playerData) {
 		String fileName = "data/playerdata/" + playerData.getName() + "playerdata.txt";
 		try {
+            File oldFile = new File(fileName);
+            oldFile.delete();
 			File newFile = new File(fileName);
 			if (newFile.createNewFile()) {
 				FileWriter writer = new FileWriter(fileName);

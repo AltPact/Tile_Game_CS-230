@@ -405,7 +405,7 @@ public class Game {
 	 * @private
 	 * A method that makes a GameState after the actionTile has been played.
 	 * It contains the board and actionTileApplied is set to true.
-	 * @return
+	 * @return a new game state
 	 */
 	private GameState actionTilePlayed() {
 		GameState newState = new GameState();

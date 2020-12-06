@@ -85,6 +85,7 @@ public class GameFileReader {
 			while(p < 4) {
 				s.nextInt();
 				s.nextInt();
+				p++;
 			}
 			
 			/* read board meta data */
