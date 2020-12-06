@@ -20,6 +20,7 @@
                   <Image url="/img/logo.png" />
                </image>
            </ImageView>
+         
          </children>
       </VBox>
    </top>
