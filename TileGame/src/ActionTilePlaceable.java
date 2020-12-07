@@ -32,7 +32,7 @@ public abstract class ActionTilePlaceable extends ActionTile {
 	public int getTimeRemaining() {
 		return timeRemaing;
 	}
-	
+	public abstract void refreshAction();
 	/**
 	 * Sets the time remaining for this tile. 
 	 * It should be used when the tile is played.
@@ -41,9 +41,9 @@ public abstract class ActionTilePlaceable extends ActionTile {
 	 */
 	protected void setTimeRemaining() throws IncorrectTileTypeException {
 		if (super.getType() == TileType.Ice) {
-			this.timeRemaing = NUM_OF_PLAYERS;
+			this.timeRemaing = 1;
 		} else if (super.getType() == TileType.Fire) {
-			this.timeRemaing = NUM_OF_PLAYERS * 2;
+			this.timeRemaing = 2;
 		} else {
 			throw new IncorrectTileTypeException(super.getType());
 		}
@@ -60,6 +60,16 @@ public abstract class ActionTilePlaceable extends ActionTile {
 			deactiveAction();
 		}
 	}
+	
+	public void decrementTimeIfOwner(PlayerPiece owner) {
+        if (super.getOwner() == owner) {
+            this.timeRemaing--;
+            System.out.println("New time is: "+timeRemaing);
+            if (timeRemaing == 0) {
+                deactiveAction();
+            }
+        }
+    }
 	
 	/**
 	 * This method should be used to set the tile that are being used and 

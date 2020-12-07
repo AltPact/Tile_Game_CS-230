@@ -35,7 +35,17 @@ public class Ice extends ActionTilePlaceable {
 			//This occurs when a action tile is close to the border of the game.
 		}
 	}
-	
+	/**
+     * This method re-freezes all tiles that should be frozen - in case they got melted
+     * by another ice tile expiring which covered some of the same tiles.
+     */
+    public void refreshAction() {
+        if (super.getTimeRemaining() > 0) {
+            for (int i = 0; i < tilesToAction.length; i++) {
+                tilesToAction[i].freeze();
+            }
+        }
+    }
 	/**
 	 * This method deactivates the action. It should be used when a time remaining == 0.
 	 */

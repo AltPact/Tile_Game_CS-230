@@ -89,7 +89,7 @@ public class GameSceneController extends GameWindow implements Initializable {
 	private static ParallelTransition clickableAnime;
 	private static Label turnLabel;
 	private static ImageView playerIndicator;
-	private static int playerNoGotBackTrack;
+	private static int playerNoGotBackTrack=-1;
 	@FXML
 	public BorderPane GB;
 	@FXML
@@ -125,7 +125,7 @@ public class GameSceneController extends GameWindow implements Initializable {
 		GB.setCenter(subScene);
 
 		newTurn();
-		// pushTileAnimation(0,2,0);
+		//teleportPlayer(playerObjectArray[1], 300, 500);
 	}
 
 	/**
@@ -231,13 +231,18 @@ public class GameSceneController extends GameWindow implements Initializable {
 	 */
 	private static void newTurn() {
 		// displayTurns();
-		playerPlaying = playerObjectArray[currentGameState.getCurPlayer()];
-		phase = 1;
 		updateGameState();
-		displayTurns();
-		setRightMenu();
+		updateBoard();
 		if (!currentGameState.getIsGoalHit()) {
+			playerPlaying = playerObjectArray[currentGameState.getCurPlayer()];
+			System.out.println("Current player number: "+currentGameState.getCurPlayer());
+			phase = 1;
+			displayTurns();
+			setRightMenu();
 			turns++;
+		}else {
+			ImageView winIcon = new ImageView(new Image("/img/texture/trophy.png"));
+			gameObjects.getChildren().add(winIcon);
 		}
 	}
 	
@@ -264,7 +269,16 @@ public class GameSceneController extends GameWindow implements Initializable {
 			int y = playerPosition[playerNum][0];
 			System.out.println("Player Position X: " + x + " Y: " + y);
 			Box onTile = tileArray[y][x];
-			movePlayer(playerObjectArray[playerNum], onTile.getTranslateX(), onTile.getTranslateY());
+			System.out.println("player got backTrack value: "+playerNoGotBackTrack);
+			if(playerNoGotBackTrack>=0&&playerNoGotBackTrack==playerNum) {
+				System.out.println("player got back: "+playerNoGotBackTrack+" player num: "+playerNum);
+				teleportPlayer(playerObjectArray[playerNum], onTile.getTranslateX(),onTile.getTranslateY());
+				playerNoGotBackTrack=-1;
+				System.out.println("Teleport");
+			}else {
+				System.out.println("Move");
+				movePlayer(playerObjectArray[playerNum], onTile.getTranslateX(), onTile.getTranslateY());
+			}
 		}
 	}
 	/**
@@ -335,7 +349,7 @@ public class GameSceneController extends GameWindow implements Initializable {
 		turnsLabel.setFont(new Font("Arial", 40));
 		turnsLabel.setTranslateX(-150);
 		turnsLabel.setTranslateY(350);
-		turnsLabel.setPrefWidth(1200);
+		turnsLabel.setMinWidth(1200);
 		turnsLabel.setAlignment(Pos.CENTER);
 		gameObjects.getChildren().add(turnsLabel);
 		ScaleTransition turnShow = new ScaleTransition(Duration.millis(800), turnsLabel);
@@ -353,17 +367,31 @@ public class GameSceneController extends GameWindow implements Initializable {
 			gameObjects.getChildren().remove(turnsLabel);
 
 			currentGameState = currentGame.getNewTileForCurrentPlayer();
-			actionTilesOwned = currentGameState.getActionTileForPlayer(currentGameState.getCurPlayer());
+			
 			Tile drawTile = currentGameState.getTileDrawn();
 			System.out.println("************Type of Tile Drawn " + drawTile.getType());
-
+            updateGameState();
 			showDrawTile(drawTile);
 			if (!drawTile.isAction()) {
 				System.out.println("Drawn tile: " + drawTile.getType());
 				activePlaceable = (Placeable) drawTile;
-				showPlaceableFloor(drawTile);
-				setPushableArrows();
 				
+				boolean[][] insertables = currentGameState.getInsertableLocations();
+                boolean anyInsertables = false;
+                for (int i = 0; i < insertables.length; i++) {
+                    for (int j = 0; j<insertables[i].length; j++) {
+                        if (insertables[i][j]) {
+                            anyInsertables = true;
+                        }
+                    }
+                }
+                
+				if(!anyInsertables) {
+					showInventory();
+				}else {
+					showPlaceableFloor(drawTile);
+				    setPushableArrows();
+				}
 			}else {
 				showInventory();
 			}
@@ -388,7 +416,7 @@ public class GameSceneController extends GameWindow implements Initializable {
 		fTile = floor;
 		floor.setOnMouseClicked(e -> {
 			fTile.setRotate(fTile.getRotate() + 90);
-			activePlaceable.rotateLeft();
+			activePlaceable.rotateRight();
 		});
 		floor.setTranslateY(400);
 		floor.setTranslateZ(-50);
@@ -402,8 +430,20 @@ public class GameSceneController extends GameWindow implements Initializable {
 	
 	
 	public static void setPushableArrows() {
+		updateGameState();
+		updateBoard();
+		System.out.println("Current player: "+currentGameState.getCurPlayer());
 		ArrayList<Box> pushableTiles = new ArrayList<Box>();
 		boolean[][] insertablePlaces = currentGameState.getInsertableLocations(); // [rows, columns][index]
+		System.out.print("rows: ");
+        for (int i = 0; i < insertablePlaces[0].length; i++) {
+            System.out.print(insertablePlaces[0][i] + ", ");
+        }
+        System.out.print("\ncolumns: ");
+        for (int i = 0; i < insertablePlaces[1].length; i++) {
+            System.out.print(insertablePlaces[1][i] + ", ");
+        }
+		
 		for (int x = 0; x < boardWidth; x++) { // for each column
 			final int finalX = x;
 			if (insertablePlaces[0][x]) {
@@ -536,6 +576,7 @@ public class GameSceneController extends GameWindow implements Initializable {
 	}
 
 	public static void setMoveableTiles() {
+		
 		updateGameState();
 		boolean moveable=false;
 		System.out.println("CURRENT PLAYER: " + currentGameState.getCurPlayer());
@@ -550,6 +591,7 @@ public class GameSceneController extends GameWindow implements Initializable {
 		}
 		System.out.println("setMoveableTiles() "+!moveable);
 		if(!moveable) {
+			currentGame.endTurn();
 			
 			newTurn();
 		}else {
@@ -588,12 +630,14 @@ public class GameSceneController extends GameWindow implements Initializable {
 			updateGameState();
 			movePlayer(player, tileArray[y][x].getTranslateX(), tileArray[y][x].getTranslateY());
 			resetClickable();
+			updatePlayerPosition();
 			if(currentGameState.getMovesLeftForCurrentPlayer()>0) {
 				setMoveableTiles();
 			}else {
 				currentGame.endTurn();
 			    updateGameState();
 			    newTurn();
+			    System.out.println("turn ends");
 			}
 			
 			
@@ -613,6 +657,7 @@ public class GameSceneController extends GameWindow implements Initializable {
 	}
 
 	public static void resetClickable() {
+		System.out.println("================================================");
 		for (Box tile : clickAble) {
 			tile.setOnMouseClicked(null);
 			tile.scaleXProperty().set(1);
@@ -621,19 +666,19 @@ public class GameSceneController extends GameWindow implements Initializable {
 		clickableAnime.pause();
 		clickAble.clear();
 		updateBoard();
-		try {
+		/*try {
 			updatePlayerPosition();
 		} catch (IllegalMove e) {
 			e.printStackTrace();
 			displayErrorMessage("Cant move player this way");
-		}
+		}*/
 	}
 
 	public static void pushTileAnimation(int rows, int columns, int orientation) {
 		System.out.println("============ Active Placeable Type : " + activePlaceable.getType() + " Ori: " + activePlaceable.getOrientation());
 		
 		gameObjects.getChildren().remove(arrows);
-		arrows.getChildren().removeAll();
+		arrows.getChildren().clear();
 		hideInventory();
         
 		Box tileToRemove = null;
@@ -703,7 +748,7 @@ public class GameSceneController extends GameWindow implements Initializable {
 	}
 
 	public static Box pushNewTile(double x, double y, int rows, int columns, boolean last) {
-		System.out.println("Push "+activePlaceable.getType());
+		//System.out.println("Push "+activePlaceable.getType());
 		Box newTile = objectFactory.makeTile(activePlaceable);
 		newTile.setTranslateX(1000);
 		newTile.setTranslateY(600);
@@ -739,32 +784,9 @@ public class GameSceneController extends GameWindow implements Initializable {
 		tileMove.play();
 	}
 
-	/*
-	 * public static void displayTurns() { //incomplete Label numOfTurns = new
-	 * Label("Turns: "+Integer.toString(currentGame.getTurns()));
-	 * numOfTurns.setStyle("-fx-text-fill: White; -fx-background-color: black;");
-	 * numOfTurns.setAlignment(Pos.CENTER); numOfTurns.setMinWidth(400);
-	 * numOfTurns.setMinHeight(50); numOfTurns.setFont(new Font(50));
-	 * numOfTurns.setLayoutX(200); numOfTurns.setLayoutY(350);
-	 * gameObjects.getChildren().add(numOfTurns); FadeTransition turnsFade = new
-	 * FadeTransition(Duration.seconds(2),numOfTurns); turnsFade.setFromValue(0);
-	 * turnsFade.setToValue(1.0); turnsFade.setCycleCount(2);
-	 * turnsFade.setAutoReverse(true); turnsFade.play();
-	 * gameObjects.getChildren().remove(numOfTurns); }
-	 */
-	/*
-	 * public static Sphere getPlayingPlayer() { return
-	 * playerObjectArray[currentGame.getPlayingPlayerIndex()]; }
-	 * 
-	 * public static void colorTheTile() { PhongMaterial greenFill = new
-	 * PhongMaterial(Color.GREEN); for (Box tile : clickAble) {
-	 * tile.setMaterial(greenFill); } }
-	 */
-
-	
-
-	
 	public static void showInventory() {
+		updateGameState();
+		actionTilesOwned = currentGameState.getActionTileForPlayer(currentGameState.getCurPlayer());
 		clickableAnime=new ParallelTransition();
 		selectedTile = null;
 		boolean actionTileObtained[] = { false, false, false, false };
@@ -776,6 +798,7 @@ public class GameSceneController extends GameWindow implements Initializable {
 		skipB.setTranslateZ(-5);
 		skipB.setOnMouseClicked(e->{
 			hideInventory();
+			resetClickable();
 			setMoveableTiles();
 		});
 		
@@ -788,7 +811,7 @@ public class GameSceneController extends GameWindow implements Initializable {
 		double y = -200;
 
 		for (ActionTile actionTile : actionTilesOwned) {
-			System.out.println(actionTile.getType());
+			//System.out.println(actionTile.getType());
 			if (actionTile.getType() == TileType.Fire) {
 				actionTileObtained[0] = true;
 			} else if (actionTile.getType() == TileType.Ice) {
@@ -946,7 +969,7 @@ public class GameSceneController extends GameWindow implements Initializable {
 	}
 
 	public static void placeFireTile(int y, int x) {
-		System.out.println("Fire y: "+y+" x: "+x);
+		//System.out.println("Fire y: "+y+" x: "+x);
 		Fire fireTile = null;
 		for (ActionTile actionTile : actionTilesOwned) {
 			if (actionTile.getType() == TileType.Fire) {
@@ -954,8 +977,8 @@ public class GameSceneController extends GameWindow implements Initializable {
 			}
 		}
 		try {
-			System.out.println("Fire tile"+fireTile);
-			currentGameState = currentGame.playFire(fireTile, x, y);
+			//System.out.println("Fire tile"+fireTile);
+			currentGameState = currentGame.newPlayFire(x, y);
 			updateBoard();
 			//resetClickable();
 			hideInventory();
@@ -963,19 +986,20 @@ public class GameSceneController extends GameWindow implements Initializable {
 			setMoveableTiles();
 			
 		} catch (IncorrectTileTypeException | IllegalFireException e) {
-			e.printStackTrace();
+			displayErrorMessage("Cannot place fire on player");
+			
 		}
 	}
 
 	public static void playIceTile() {
-		System.out.println("Call ice tile");
+		//System.out.println("Call ice tile");
 		for (int y = 0; y < boardHeight; y++) {
 			final int finalY = y;
 			for (int x = 0; x < boardWidth; x++) {
 				final int finalX = x;
 				clickableAnime.getChildren().add(animateTile(tileArray[y][x]));
 				tileArray[y][x].setOnMouseClicked(e -> {
-					System.out.println("=========================PLay ice X: "+finalX+"Y: "+finalY);
+					//System.out.println("=========================PLay ice X: "+finalX+"Y: "+finalY);
 					placeIceTile(finalY, finalX);
 				});
 				clickAble.add(tileArray[y][x]);
@@ -985,7 +1009,7 @@ public class GameSceneController extends GameWindow implements Initializable {
 	}
 
 	private static void placeIceTile(int y, int x) {
-		System.out.println("ice y: "+y+" x: "+x);
+		//System.out.println("ice y: "+y+" x: "+x);
 		Ice iceTile = null;
 		for (ActionTile actionTile : actionTilesOwned) {
 			if (actionTile.getType() == TileType.Ice) {
@@ -993,12 +1017,9 @@ public class GameSceneController extends GameWindow implements Initializable {
 			}
 		}
 		try {
-			currentGameState = currentGame.playIce(iceTile, x, y);
-			
+			currentGameState = currentGame.newPlayIce(x, y);
 			updateBoard();
-			
 			hideInventory();
-			
 			resetClickable();
 			setMoveableTiles();
 		} catch (IncorrectTileTypeException e) {
@@ -1009,16 +1030,7 @@ public class GameSceneController extends GameWindow implements Initializable {
 	}
 	
 	public static void playDoubleMove() {
-		playerPlaying.setMouseTransparent(false);
-		playerPlaying.setOnMouseClicked(e -> {
-			useDoubleMove();
-		});
-	}
-	
-	public static void useDoubleMove() {
-		playerPlaying.setMouseTransparent(true);
-		playerPlaying.setOnMouseClicked(null);
-		System.out.println("Double Move played");
+		//System.out.println("Double Move played");
 		DoubleMove dmTile=null;
 		for(ActionTile actionTile : actionTilesOwned) {
 			if(actionTile.getType() == TileType.DoubleMove) {
@@ -1030,14 +1042,17 @@ public class GameSceneController extends GameWindow implements Initializable {
 		resetClickable();
 		setMoveableTiles();
 	}
+	
 
 	public static void playBacktrack() {
-		for (Group playerObject:playerObjectArray) {
-			if(playerObject != playerPlaying) {
-				playerObject.setMouseTransparent(false);
-				playerObject.setOnMouseClicked(e -> {
+		for (int p=0;p<playerObjectArray.length;p++) {
+			if(playerObjectArray[p] != playerPlaying) {
+				final Group fplayer=playerObjectArray[p];
+				System.out.println("Making "+p+" clickable");
+				playerObjectArray[p].setMouseTransparent(false);
+				playerObjectArray[p].setOnMouseClicked(e -> {
 					System.out.println("Back Track echo");
-					useBacktrack(playerObject);
+					useBacktrack(fplayer);
 				});
 			}
 		}
@@ -1066,7 +1081,7 @@ public class GameSceneController extends GameWindow implements Initializable {
 			setMoveableTiles();
 		} catch  (IllegalBackTrackException | IllegalMove e) {
 			e.printStackTrace();
-			System.out.println("Cannot back track");
+			displayErrorMessage("Cannot back track");
 		}
 	}
 	
@@ -1074,7 +1089,7 @@ public class GameSceneController extends GameWindow implements Initializable {
 	 * Animation
 	 */
 	private static void hideInventory() {
-		System.out.println("Hide inventory");
+		//System.out.println("Hide inventory");
 		TranslateTransition tileMove = new TranslateTransition(Duration.millis(1000), inventory);
 		tileMove.setFromX(950);
 		tileMove.setToX(1200);

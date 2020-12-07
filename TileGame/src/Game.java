@@ -38,8 +38,8 @@ public class Game {
 		this.pastStates = new ArrayList<GameState>();
 		
 		for(int i = 0; i < players.length; i++) {
-			System.out.println("Player " + i + "X Cooridnate: " + players[i].getX());
-			System.out.println("Player " + i + "Y Cooridnate: " + players[i].getY());
+			//System.out.println("Player " + i + "X Cooridnate: " + players[i].getX());
+			//System.out.println("Player " + i + "Y Cooridnate: " + players[i].getY());
 		}
 		
 	}
@@ -256,7 +256,7 @@ public class Game {
 			players[playerAgainst].setBacktrack(true);
 		} catch(IndexOutOfBoundsException e) {
 			e.printStackTrace();
-			System.out.println("Brah Brah");
+			//System.out.println("Brah Brah");
 			throw new IllegalBackTrackException("Not enough moves made to conduct backtrack against player " + playerAgainst);
 		} finally {
 			players[curPlayer].addActionTile(new BackTrack(players[curPlayer]));
@@ -274,26 +274,59 @@ public class Game {
 	 * @return a new Game State: see actionTilePlayed for more details.
 	 * @throws IncorrectTileTypeException
 	 */
-	public GameState playIce(Ice ice, int x, int y) throws IncorrectTileTypeException {
-		players[curPlayer].playActionTile(ice);	
-		Placeable[] tilesToAction= new Placeable[9];
-		try {
-			tilesToAction[0] = (Placeable) board.getTile((y - 1), (x - 1));
-			tilesToAction[1] = (Placeable) board.getTile((y - 1), x);
-			tilesToAction[2] = (Placeable) board.getTile((y - 1), (x + 1));
-			tilesToAction[3] = (Placeable) board.getTile(y, (x - 1));
-			tilesToAction[4] = (Placeable) board.getTile(y, x);
-			tilesToAction[5] = (Placeable) board.getTile(y, (x + 1));
-			tilesToAction[6] = (Placeable) board.getTile((y + 1), (x - 1));
-			tilesToAction[7] = (Placeable) board.getTile((y + 1), x);
-			tilesToAction[8] = (Placeable) board.getTile((y + 1) , (x + 1));
-		} catch (IllegalStateException e) {
-			//Continues processing as tile does not exists, if the tile is too close to the board.
-		} finally {
-			ice.instantiateAction(tilesToAction);
-		}
-		return actionTilePlayed();
-	}
+	public GameState newPlayIce(int x, int y) throws IncorrectTileTypeException {
+        ArrayList<Placeable> tilesToActionList = new ArrayList<Placeable>();
+
+        boolean rightEdge = (x == board.getWidth() - 1);
+        boolean leftEdge = (x == 0);
+        boolean topEdge = (y == 0);
+        boolean bottomEdge = (y == board.getHeight() - 1);
+
+        tilesToActionList.add((Placeable) board.getTile(x, y)); // middle
+        if (!topEdge) {  // up
+            tilesToActionList.add((Placeable) board.getTile(x, y-1));
+        }
+        if (!topEdge && !rightEdge) {  // up right
+            tilesToActionList.add((Placeable) board.getTile(x+1, y-1));
+        }
+        if (!rightEdge) {  // right
+            tilesToActionList.add((Placeable) board.getTile(x+1, y));
+        }
+        if (!rightEdge && !bottomEdge) {  // down right
+            tilesToActionList.add((Placeable) board.getTile(x+1, y+1));
+        }
+        if (!bottomEdge) {  // down
+            tilesToActionList.add((Placeable) board.getTile(x, y+1));
+        }
+        if (!leftEdge && !bottomEdge) {  // down left
+            tilesToActionList.add((Placeable) board.getTile(x-1, y+1));
+        }
+        if (!leftEdge) {  // left
+            tilesToActionList.add((Placeable) board.getTile(x-1, y));
+        }
+        if (!leftEdge && !topEdge) {  // up left
+            tilesToActionList.add((Placeable) board.getTile(x-1, y-1));
+        }
+
+        Placeable[] tilesToAction = new Placeable[tilesToActionList.size()];
+        for (int i = 0; i < tilesToAction.length; i++) {
+            tilesToAction[i] = tilesToActionList.get(i);
+        }
+
+        // find an ice tile to use for the current player
+        ArrayList<ActionTile> actionTilesOwned = getActionTilesForPlayers()[curPlayer];
+        Ice ice = null;
+        for (int i = 0; i < actionTilesOwned.size(); i++) {
+            if (actionTilesOwned.get(i).getType() == TileType.Ice) {
+                ice = (Ice) actionTilesOwned.get(i);
+            }
+        }
+        players[curPlayer].playActionTile(ice);  // removes action tile from player's inventory
+        ice.instantiateAction(tilesToAction);
+        tilesInAction.add(ice);
+
+        return actionTilePlayed();
+    }
 	
 	/**
 	 * Method that allows the player to play a Fire Tile.
@@ -304,9 +337,10 @@ public class Game {
 	 * @throws IncorrectTileTypeException
 	 * @throws IllegalFireException 
 	 */
-	public GameState playFire(Fire fire, int x, int y) throws IncorrectTileTypeException, IllegalFireException {
+	/*public GameState playFire(Fire fire, int x, int y) throws IncorrectTileTypeException, IllegalFireException {
 		players[curPlayer].playActionTile(fire);
 		Placeable[] tilesToAction= new Placeable[9];
+		System.out.println("Fire coor: "+x+" <x y> "+y);
 		try {
 			tilesToAction[0] = getTileFire((y - 1), (x - 1));
 			tilesToAction[1] = getTileFire((y - 1), x);
@@ -323,8 +357,62 @@ public class Game {
 			fire.instantiateAction(tilesToAction);
 		}
 		return actionTilePlayed();
-	}
-	
+	}*/
+	public GameState newPlayFire(int x, int y) throws IncorrectTileTypeException, IllegalFireException {
+
+        //Placeable[] tilesToAction= new Placeable[9];
+        ArrayList<Placeable> tilesToActionList = new ArrayList<Placeable>();
+
+        boolean rightEdge = (x == board.getWidth() - 1);
+        boolean leftEdge = (x == 0);
+        boolean topEdge = (y == 0);
+        boolean bottomEdge = (y == board.getHeight() - 1);
+
+        tilesToActionList.add(getTileFire(x, y)); // middle
+        if (!topEdge) {  // up
+            tilesToActionList.add(getTileFire(x, y-1));
+        }
+        if (!topEdge && !rightEdge) {  // up right
+            tilesToActionList.add(getTileFire(x+1, y-1));
+        }
+        if (!rightEdge) {  // right
+            tilesToActionList.add(getTileFire(x+1, y));
+        }
+        if (!rightEdge && !bottomEdge) {  // down right
+            tilesToActionList.add(getTileFire(x+1, y+1));
+        }
+        if (!bottomEdge) {  // down
+            tilesToActionList.add(getTileFire(x, y+1));
+        }
+        if (!leftEdge && !bottomEdge) {  // down left
+            tilesToActionList.add(getTileFire(x-1, y+1));
+        }
+        if (!leftEdge) {  // left
+            tilesToActionList.add(getTileFire(x-1, y));
+        }
+        if (!leftEdge && !topEdge) {  // up left
+            tilesToActionList.add(getTileFire(x-1, y-1));
+        }
+
+        Placeable[] tilesToAction = new Placeable[tilesToActionList.size()];
+        for (int i = 0; i < tilesToAction.length; i++) {
+            tilesToAction[i] = tilesToActionList.get(i);
+        }
+
+        // find a fire tile to use for the current player
+        ArrayList<ActionTile> actionTilesOwned = getActionTilesForPlayers()[curPlayer];
+        Fire fire = null;
+        for (int i = 0; i < actionTilesOwned.size(); i++) {
+            if (actionTilesOwned.get(i).getType() == TileType.Fire) {
+                fire = (Fire) actionTilesOwned.get(i);
+            }
+        }
+        players[curPlayer].playActionTile(fire);  // removes action tile from player's inventory
+        fire.instantiateAction(tilesToAction);
+        tilesInAction.add(fire);
+
+        return actionTilePlayed();
+    }
 	/**
 	 * This method gets a tile in a specific location.
 	 * It does this while checking for players. It ensures 
@@ -362,10 +450,12 @@ public class Game {
 			players[curPlayer].setY(newY);
 			players[curPlayer].setX(newX);
 			movesRemaingForThisPlayer--;
-			Placeable newTile = (Placeable) board.getTile(newY, newX);
-			isGoalReached = newTile.isGoal();
+			Placeable newTile = (Placeable) board.getTile(newX, newY);
+			isGoalReached = (newTile.getType() == TileType.Goal);
+			System.out.println("Checking if goal reached: "+newTile.getType());
 			//If the goal is reached, end the game. 
 			if(isGoalReached) {
+				System.out.println("Goal reached");
 				for(int i = 0; i < players.length; i++) {
 					if(i == curPlayer) {
 						players[i].getLinkedData().incrementWins();
@@ -374,37 +464,41 @@ public class Game {
 					}
 				}
 			}
+			
 			return playerMoved();
 		} else {
 			throw new IllegalMove("Player Cannot move in this Direction");
 		}
 	}
 	
+	
 	/**
-	 * This method should be called at the end of every turn. 
-	 * It is designed to set the game up for the next turn
-	 * @return a new Game state, see makeStateEndTurn for details.
-	 */
-	public GameState endTurn() {
-		curPlayer ++;
-		if ((curPlayer % players.length) == 0) {
-			curPlayer = 0;
-		}
-		System.out.println("PLAYER HAS BEEN UPDATED TO: " + curPlayer);
-		movesRemaingForThisPlayer = 1;
-		canPlayerInsertTile = true;
-		for(ActionTilePlaceable tile : tilesInAction) {
-			tile.decrementTime();
-		}
-		GameState newState = makeStateEndTurn();
-		this.pastStates.add(newState);
-		if(pastStates.size() > players.length * 2) {
-			pastStates.remove(0);
-		}
-		
-		return newState;
-		
-	}
+     * This method should be called at the end of every turn. 
+     * It is designed to set the game up for the next turn
+     * @return a new Game state, see makeStateEndTurn for details.
+     */
+    public GameState endTurn() {
+        curPlayer ++;
+        if ((curPlayer % players.length) == 0) {
+            curPlayer = 0;
+        }
+        //System.out.println("PLAYER HAS BEEN UPDATED TO: " + curPlayer);
+        movesRemaingForThisPlayer = 1;
+        canPlayerInsertTile = true;
+        for (ActionTilePlaceable tile : tilesInAction) {  // decrement times
+            tile.decrementTimeIfOwner(players[curPlayer]);  // decrement time if it's the start of the owner's turn
+        }
+        for (ActionTilePlaceable tile : tilesInAction) {
+            tile.refreshAction();
+        }
+        GameState newState = makeStateEndTurn();
+        this.pastStates.add(newState);
+        if(pastStates.size() > players.length * 2) {
+            pastStates.remove(0);
+        }
+        
+        return newState;
+    }
 	
 	/**
 	 * @private
@@ -430,7 +524,7 @@ public class Game {
 		for(int i = 0; i < players.length; i++) {
 			playerPositions[i][1] = players[i].getX();
 			playerPositions[i][0] = players[i].getY();
-			System.out.println(playerPositions[i][1] + " " + playerPositions[i][0]);
+			//System.out.println(playerPositions[i][1] + " " + playerPositions[i][0]);
 		}
 		return playerPositions;
 	}

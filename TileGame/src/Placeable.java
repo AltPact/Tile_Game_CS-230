@@ -144,12 +144,12 @@ public class Placeable extends Tile {
 	 */
 	
 	public void rotateRight() {
-		this.orientation = (NUM_OF_WAYS_TO_MOVE + (this.orientation - 1)) % NUM_OF_WAYS_TO_MOVE;
-		boolean temp = this.waysToMove[0];
-		this.waysToMove[0] = this.waysToMove[3];
-		this.waysToMove[3] = this.waysToMove[2];
-		this.waysToMove[2] = this.waysToMove[1];
-		this.waysToMove[1] = temp;
+		this.orientation = (this.orientation + 1) % NUM_OF_WAYS_TO_MOVE;
+        boolean temp = this.waysToMove[3];
+        this.waysToMove[3] = this.waysToMove[2];
+        this.waysToMove[2] = this.waysToMove[1];
+        this.waysToMove[1] = this.waysToMove[0];
+        this.waysToMove[0] = temp;
 	}
 	
 	/**

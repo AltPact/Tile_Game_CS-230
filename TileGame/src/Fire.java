@@ -36,6 +36,18 @@ public class Fire extends ActionTilePlaceable {
 	}
 	
 	/**
+     * This method sets all tiles back on fire that should be on fire - in case they got extinguished
+     * by another fire tile expiring which covered some of the same tiles.
+     */
+    public void refreshAction() {
+        if (super.getTimeRemaining() > 0) {
+            for (int i = 0; i < tilesToAction.length; i++) {
+                tilesToAction[i].putOnFire();
+            }
+        }
+    }
+	
+	/**
 	 * This method deactivates the action. It should be used when a time remaining == 0.
 	 */
 	protected void deactiveAction() {

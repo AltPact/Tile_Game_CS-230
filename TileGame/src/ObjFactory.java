@@ -185,13 +185,13 @@ public class ObjFactory {
 			tile.setMaterial(fixedTTexture);
 		}else if(tileType.getType()==TileType.TShaped) {
 		    tile.setMaterial(tTileTexture);
-		    System.out.println("make TShaped");
+		   // System.out.println("make TShaped");
 		}else if(tileType.getType()==TileType.Straight) {
 			tile.setMaterial(straightTileTexture);
-			System.out.println("make Straight");
+			//System.out.println("make Straight");
 		}else if(tileType.getType()==TileType.Corner) {
 			tile.setMaterial(cornerTileTexture);
-			System.out.println("make Corner");
+			//System.out.println("make Corner");
 		}else if(tileType.getType()==TileType.Goal) {
 			tile.setMaterial(goalTileTexture);
 		}
@@ -267,8 +267,8 @@ public class ObjFactory {
 		Box body = colorLegs(new Box(50,bodyWidth,60));
 		Box leftLeg = colorLegs(new Box((body.getWidth()/2)-5, bodyWidth ,body.getDepth()));
 		Box rightLeg = colorLegs(new Box((body.getWidth()/2)-5, bodyWidth ,body.getDepth()));
-		Box hat = new Box(30,30,30);
-		Box hatFlatPlate = new Box(90,90,5);
+		Box hat = new Box(25,25,25);
+		Box hatFlatPlate = new Box(70,70,5);
 		wholeHat = colorHat(hat, hatFlatPlate,playerIndex);
 		Cylinder ward = new Cylinder(5,160);
 		Sphere orb = new Sphere(10);
@@ -352,7 +352,7 @@ public class ObjFactory {
 		return lightSource;
 	}
 	public Box makeActionTileInventory() {
-		Box actionTileInventory = new Box(100,500,10);
+		Box actionTileInventory = new Box(100,500,1);
 		PhongMaterial Lcolor = new PhongMaterial(Color.BROWN);
 		actionTileInventory.setMaterial(Lcolor);
 		return actionTileInventory;
