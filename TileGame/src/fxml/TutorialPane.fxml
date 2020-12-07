@@ -24,12 +24,6 @@
                   <Circle fx:id="C1" fill="#ff9500" radius="6.0" stroke="BLACK" strokeType="INSIDE" />
                   <Circle fx:id="C2" fill="WHITE" radius="6.0" stroke="BLACK" strokeType="INSIDE" />
                   <Circle fx:id="C3" fill="WHITE" radius="6.0" stroke="BLACK" strokeType="INSIDE" />
-		  <Circle fx:id="C4" fill="WHITE" radius="6.0" stroke="BLACK" strokeType="INSIDE" />
-                  <Circle fx:id="C5" fill="WHITE" radius="6.0" stroke="BLACK" strokeType="INSIDE" />
-                  <Circle fx:id="C6" fill="WHITE" radius="6.0" stroke="BLACK" strokeType="INSIDE" />
-		  <Circle fx:id="C7" fill="WHITE" radius="6.0" stroke="BLACK" strokeType="INSIDE" />
-                  <Circle fx:id="C8" fill="WHITE" radius="6.0" stroke="BLACK" strokeType="INSIDE" />
-                  <Circle fx:id="C9" fill="WHITE" radius="6.0" stroke="BLACK" strokeType="INSIDE" />
                </children>
             </HBox>
          </children>
