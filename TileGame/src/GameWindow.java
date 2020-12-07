@@ -151,15 +151,12 @@ public class GameWindow {
     }
     
     protected static void initPlayerDataQueue() {
+    	playerDataQueue=new PriorityQueue<PlayerData>();
     	if (playerDataQueue.size() == 0) {
     		File[] contentsOfDir = new File("data/playerdata").listFiles();
     		for(File file:contentsOfDir) {
     			playerDataQueue.add(PlayerDataFileReader.readFile(file));
     		}
     	}
-    	else {
-    		
-    	}
-    	
     }
 }

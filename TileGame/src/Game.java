@@ -462,6 +462,7 @@ public class Game {
 					} else {
 						players[i].getLinkedData().incrementLosses();
 					}
+					PlayerDataFileWriter.generateFile(players[i].getLinkedData());
 				}
 			}
 			
@@ -648,6 +649,8 @@ public class Game {
 		newState.setMoveableSpaces(board.getMoveableSpaces(players[curPlayer]));
 		newState.setPlayerPositions(getPlayerPositions());
 		newState.setInsertableLocation(board.getInsertablePlaces());
+		newState.isGoalHit(isGoalReached);
+		newState.setPlayers(players);
 		return newState;
 	}
 	

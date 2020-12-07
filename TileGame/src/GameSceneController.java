@@ -90,6 +90,8 @@ public class GameSceneController extends GameWindow implements Initializable {
 	private static Label turnLabel;
 	private static ImageView playerIndicator;
 	private static int playerNoGotBackTrack=-1;
+	private static ArrayList<Box> actionTile = new ArrayList<Box>();
+	private static Tile drawnTile;
 	@FXML
 	public BorderPane GB;
 	@FXML
@@ -109,7 +111,7 @@ public class GameSceneController extends GameWindow implements Initializable {
 	 */
 	@Override
 	public void initialize(URL url, ResourceBundle resources) {
-		currentGame = FileReaderWriterTest.generateTestGame();
+		//currentGame = FileReaderWriterTest.generateTestGame();
 		currentGameState = currentGame.getInitalGameState();
 		initVariables();
 		addFloor();
@@ -160,6 +162,7 @@ public class GameSceneController extends GameWindow implements Initializable {
 		scaleArray = new ArrayList<ScaleTransition>();
 		tiles = new Group();
 		arrows = new Group();
+		turns=1;
 	}
 
 	public void addFloor() {
@@ -242,7 +245,7 @@ public class GameSceneController extends GameWindow implements Initializable {
 		// displayTurns();
 		updateGameState();
 		updateBoard();
-		if (!currentGameState.getIsGoalHit()) {
+		if (!currentGameState.isGoalHit()) {
 			playerPlaying = playerObjectArray[currentGameState.getCurPlayer()];
 			System.out.println("Current player number: "+currentGameState.getCurPlayer());
 			phase = 1;
@@ -250,8 +253,23 @@ public class GameSceneController extends GameWindow implements Initializable {
 			setRightMenu();
 			turns++;
 		}else {
-			ImageView winIcon = new ImageView(new Image("/img/texture/trophy.png"));
-			gameObjects.getChildren().add(winIcon);
+			PlayerPiece winplayer=currentGameState.getPlayers()[turns%currentGameState.getPlayers().length];
+			String winnerName=winplayer.getLinkedData().getName();
+			ImageView winIcon=new ImageView(new Image("/img/texture/trophy.png"));
+			winIcon.setTranslateX(-150);
+			winIcon.setTranslateY(350);
+			winIcon.setFitWidth(500);
+			winIcon.setFitHeight(500);
+			Label turnsLabel = new Label("Winner: " + winnerName);
+			turnsLabel.setStyle("-fx-background-color: rgba(0, 0, 0, 0.5);");
+			turnsLabel.setTextFill(Color.WHITE);
+			turnsLabel.setFont(new Font("Arial", 40));
+			turnsLabel.setTranslateX(-150);
+			turnsLabel.setTranslateY(350);
+			turnsLabel.setMinWidth(1200);
+			turnsLabel.setAlignment(Pos.CENTER);
+			gameObjects.getChildren().addAll(winIcon,turnsLabel);
+
 		}
 	}
 	
@@ -313,9 +331,10 @@ public class GameSceneController extends GameWindow implements Initializable {
 	private static void setRightMenu() {
 		sRightMenuPane.getChildren().remove(turnLabel);
 		turnLabel = new Label(Integer.toString(turns));
-		turnLabel.setPrefWidth(20);
-		turnLabel.setLayoutX(59);
+		turnLabel.setPrefWidth(200);
+		turnLabel.setLayoutX(50);
 		turnLabel.setLayoutY(9);
+		turnLabel.setWrapText(true);
 		turnLabel.setTextFill(Color.WHITE);
 		turnLabel.setFont(new Font("Arial", 29));
 		sRightMenuPane.getChildren().add(turnLabel);
@@ -389,6 +408,7 @@ public class GameSceneController extends GameWindow implements Initializable {
 			currentGameState = currentGame.getNewTileForCurrentPlayer();
 			
 			Tile drawTile = currentGameState.getTileDrawn();
+			drawnTile=drawTile;
 			System.out.println("************Type of Tile Drawn " + drawTile.getType());
             updateGameState();
 			showDrawTile(drawTile);
@@ -428,13 +448,14 @@ public class GameSceneController extends GameWindow implements Initializable {
 		inventory = new Group();
 		Box floor = null;
 		final Box fTile;
-		if (floorTile.getType() == TileType.Corner) {
-			floor = objectFactory.makeTileInInventory(4);
-		} else if (floorTile.getType() == TileType.Straight) {
-			floor = objectFactory.makeTileInInventory(5);
-		} else if (floorTile.getType() == TileType.TShaped) {
-			floor = objectFactory.makeTileInInventory(6);
-		}
+		floor = objectFactory.makeTileInInventory(floorTile.getType());
+		/*if (floorTile.getType() == TileType.Corner) {
+			
+		//} else if (floorTile.getType() == TileType.Straight) {
+			//floor = objectFactory.makeTileInInventory(5);
+		//} else if (floorTile.getType() == TileType.TShaped) {
+			//floor = objectFactory.makeTileInInventory(6);
+		//}*/
 		selectedTile = floor;
 		fTile = floor;
 		floor.setOnMouseClicked(e -> {
@@ -848,6 +869,7 @@ public class GameSceneController extends GameWindow implements Initializable {
 	*/
 	public static void showInventory() {
 		updateGameState();
+		actionTile.clear();
 		actionTilesOwned = currentGameState.getActionTileForPlayer(currentGameState.getCurPlayer());
 		clickableAnime=new ParallelTransition();
 		selectedTile = null;
@@ -884,59 +906,72 @@ public class GameSceneController extends GameWindow implements Initializable {
 				actionTileObtained[3] = true;
 			}
 		}
-		for (int i = 0; i < actionTileObtained.length; i++) {
-			if (actionTileObtained[i]) {
-				Box acTile = objectFactory.makeTileInInventory(i);
+		
+		for (int i = 0; i < actionTilesOwned.size(); i++) {
+			if(actionTilesOwned.get(i)!=drawnTile) {
+			
+				Box acTile = objectFactory.makeTileInInventory(actionTilesOwned.get(i).getType());
+				actionTile.add(acTile);
 				acTile.setTranslateX(inventoryBase.getTranslateX() - 10);
 				acTile.setTranslateY(y);
 				acTile.setTranslateZ(inventoryBase.getTranslateZ() - 50);
-				if (actionTileObtained[0]) {
+				if (actionTilesOwned.get(i).getType()==TileType.Fire) {
 					acTile.setOnMouseClicked(e -> {
 						// what to do when a fire tile is clicked
 						if (selectedTile != acTile) {
 							setSelectedTile(acTile);
+							resetActionTileClickable();
 							if(clickableAnime!=null&&clickableAnime.getStatus()==Animation.Status.RUNNING) {
 								resetClickable();
 								}
 							playFireTile();
 						} 
+						System.out.println("Click fire");
 					});
-				} else if (actionTileObtained[1]) {
+				} else if (actionTilesOwned.get(i).getType()==TileType.Ice) {
 					acTile.setOnMouseClicked(e -> {
 						// what to do when an ice tile is clicked
 						if (selectedTile != acTile) {
 							setSelectedTile(acTile);
+							resetActionTileClickable();
 							if(clickableAnime!=null&&clickableAnime.getStatus()==Animation.Status.RUNNING) {
 								resetClickable();
 								}
 							playIceTile();
 						} 
-						
+						System.out.println("Click ice");
 					});
-				} else if (actionTileObtained[2]) {
+				} else if (actionTilesOwned.get(i).getType()==TileType.DoubleMove) {
 					acTile.setOnMouseClicked(e -> {
 						// what to do when a doubleMove tile is clicked
 						if (selectedTile != acTile) {
 							setSelectedTile(acTile);
+							resetActionTileClickable();
 							if(clickableAnime!=null&&clickableAnime.getStatus()==Animation.Status.RUNNING) {
 							resetClickable();
 							}
+							animationPlayTile(playerPlaying.getTranslateX(),playerPlaying.getTranslateY(),"wind");
 							playDoubleMove();
+							
 						}
+						System.out.println("Click double");
 					});
-				} else if (actionTileObtained[3]) {
+				} else if (actionTilesOwned.get(i).getType()==TileType.BackTrack) {
 					acTile.setOnMouseClicked(e -> {
 						// what to do when a Backtrack tile is clicked
 						if (selectedTile != acTile) {
 							setSelectedTile(acTile);
+							resetActionTileClickable();
 							if(clickableAnime!=null&&clickableAnime.getStatus()==Animation.Status.RUNNING) {
 							resetClickable();
 							}
 							playBacktrack();
 						}
+						System.out.println("Click back");
 						//setMoveableTiles();
 					});
 				}
+			
 				tileInventory.add(acTile);
 				inventory.getChildren().add(acTile);
 				y += 70;
@@ -948,6 +983,12 @@ public class GameSceneController extends GameWindow implements Initializable {
 		tileMove.setToX(950);
 		tileMove.play();
 
+	}
+	
+	private static void resetActionTileClickable() {
+		for(Box t:actionTile) {
+		    t.setOnMouseClicked(null);
+		}
 	}
 	
 
@@ -1023,9 +1064,11 @@ public class GameSceneController extends GameWindow implements Initializable {
 			final int finalY = y;
 			for (int x = 0; x < boardWidth; x++) {
 				final int finalX = x;
+				
 				clickableAnime.getChildren().add(animateTile(tileArray[y][x]));
 				tileArray[y][x].setOnMouseClicked(e -> {
 					placeFireTile(finalY, finalX);
+					
 				});
 				clickAble.add(tileArray[y][x]);
 			}
@@ -1044,6 +1087,7 @@ public class GameSceneController extends GameWindow implements Initializable {
 		try {
 			//System.out.println("Fire tile"+fireTile);
 			currentGameState = currentGame.newPlayFire(x, y);
+			animationPlayTile(tileArray[y][x].getTranslateX(),tileArray[y][x].getTranslateY(),"fire");
 			updateBoard();
 			//resetClickable();
 			hideInventory();
@@ -1066,6 +1110,7 @@ public class GameSceneController extends GameWindow implements Initializable {
 				tileArray[y][x].setOnMouseClicked(e -> {
 					//System.out.println("=========================PLay ice X: "+finalX+"Y: "+finalY);
 					placeIceTile(finalY, finalX);
+					
 				});
 				clickAble.add(tileArray[y][x]);
 			}
@@ -1083,6 +1128,7 @@ public class GameSceneController extends GameWindow implements Initializable {
 		}
 		try {
 			currentGameState = currentGame.newPlayIce(x, y);
+			animationPlayTile(tileArray[y][x].getTranslateX(),tileArray[y][x].getTranslateY(),"ice");
 			updateBoard();
 			hideInventory();
 			resetClickable();
@@ -1103,6 +1149,7 @@ public class GameSceneController extends GameWindow implements Initializable {
 			}
 		}
 		currentGame.playDoubleMove(dmTile);
+		
 		hideInventory();
 		resetClickable();
 		setMoveableTiles();
@@ -1173,7 +1220,7 @@ public class GameSceneController extends GameWindow implements Initializable {
 		}
 		newSelected.setWidth(90);
 		newSelected.setHeight(90);
-		selectedTile = newSelected;
+		
 	}
 	
 	public static void teleportPlayer(Group player, double x, double y) {

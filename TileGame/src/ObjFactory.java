@@ -112,28 +112,28 @@ public class ObjFactory {
 		arrowRightTexture.setDiffuseMap(new Image(getClass().getResourceAsStream("/img/texture/arrow-right.png")));
 	}
 	
-	public Box makeTileInInventory(int tileType) {
+	public Box makeTileInInventory(TileType tileType) {
 		Box tile = new Box(70,70,10);
 		PhongMaterial tileTexture = new PhongMaterial();
-		if(tileType==0) {//fire
+		if(tileType==TileType.Fire) {//fire
 			tileTexture.setDiffuseMap(new Image(getClass().getResourceAsStream("/img/texture/fireTile.jpg")));
 			tileTexture.setSelfIlluminationMap(new Image(getClass().getResourceAsStream("/img/texture/fireTile.jpg")));
-		}else if(tileType==1) {//ice
+		}else if(tileType==TileType.Ice) {//ice
 			tileTexture.setDiffuseMap(new Image(getClass().getResourceAsStream("/img/texture/IceTile.jpg")));
 			tileTexture.setSelfIlluminationMap(new Image(getClass().getResourceAsStream("/img/texture/IceTile.jpg")));
-		}else if(tileType==2) {//doubleMove
+		}else if(tileType==TileType.DoubleMove) {//doubleMove
 			tileTexture.setDiffuseMap(new Image(getClass().getResourceAsStream("/img/texture/doubleMoveTile.jpg")));
 			tileTexture.setSelfIlluminationMap(new Image(getClass().getResourceAsStream("/img/texture/doubleMoveTile.jpg")));
-		}else if(tileType==3) {//backtrack
+		}else if(tileType==TileType.BackTrack) {//backtrack
 			tileTexture.setDiffuseMap(new Image(getClass().getResourceAsStream("/img/texture/backTrackTile.jpg")));
 			tileTexture.setSelfIlluminationMap(new Image(getClass().getResourceAsStream("/img/texture/backTrackTile.jpg")));
-		}else if(tileType==4) {//corner
+		}else if(tileType==TileType.Corner) {//corner
 			tileTexture.setDiffuseMap(new Image(getClass().getResourceAsStream("/img/texture/Corner.png")));
 			tileTexture.setSelfIlluminationMap(new Image(getClass().getResourceAsStream("/img/texture/Corner.png")));
-		}else if(tileType==5) {//straight
+		}else if(tileType==TileType.Straight) {//straight
 			tileTexture.setDiffuseMap(new Image(getClass().getResourceAsStream("/img/texture/Straight.png")));
 			tileTexture.setSelfIlluminationMap(new Image(getClass().getResourceAsStream("/img/texture/Straight.png")));
-		}else if(tileType==6) {//t-shaped
+		}else if(tileType==TileType.TShaped) {//t-shaped
 			tileTexture.setDiffuseMap(new Image(getClass().getResourceAsStream("/img/texture/TShaped.png")));
 			tileTexture.setSelfIlluminationMap(new Image(getClass().getResourceAsStream("/img/texture/TShaped.png")));
 		}

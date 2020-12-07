@@ -42,6 +42,7 @@ public class LeaderBoardController extends GameWindow implements Initializable {
 	
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
+		initPlayerDataQueue();
 		makeLeaderBoard();
 	}
 	
