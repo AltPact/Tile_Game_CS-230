@@ -1,0 +1,1 @@
+0,0,0,5,5,0,5,5,6,6,5,0,0,0,false,Corner,5,0,1,false,Corner,5,5,2,false,Corner,0,5,3,false,Corner,4,3,0,true,Goal,15,15,15,15,50,50,50,

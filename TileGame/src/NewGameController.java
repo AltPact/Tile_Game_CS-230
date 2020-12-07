@@ -287,6 +287,13 @@ public class NewGameController extends GameWindow implements Initializable {
 			}
 			File f = new File("./data/gameboard/" + boardNumber + ".txt");
 			currentGame = GameFileReader.readBoardFile(f, players);
+		} else if (boardNumber == 1) {
+			PlayerPiece[] players = new PlayerPiece[playerQueue.size()];
+			for(int i = 0; i < playerQueue.size(); i++) {
+				players[i] = new PlayerPiece(0, 0, "Blue", false, playerQueue.get(i)); 
+			}
+			File f = new File("./data/gameboard/" + boardNumber + ".txt");
+			currentGame = GameFileReader.readBoardFile(f, players);
 		}
 	}
 

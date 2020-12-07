@@ -162,7 +162,7 @@ public class GameSceneController extends GameWindow implements Initializable {
 		scaleArray = new ArrayList<ScaleTransition>();
 		tiles = new Group();
 		arrows = new Group();
-		turns=1;
+		turns= currentGameState.getTurns();
 	}
 
 	public void addFloor() {

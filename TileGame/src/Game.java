@@ -17,6 +17,7 @@ public class Game {
 	private boolean isGoalReached;
 	private ArrayList<GameState> pastStates = new ArrayList<GameState>();
 	private boolean canPlayerInsertTile;
+	private int turns;
 	
 	
 	/**
@@ -36,11 +37,7 @@ public class Game {
 		this.tilesInAction = new ArrayList<ActionTilePlaceable>();
 		this.isGoalReached = false;
 		this.pastStates = new ArrayList<GameState>();
-		
-		for(int i = 0; i < players.length; i++) {
-			//System.out.println("Player " + i + "X Cooridnate: " + players[i].getX());
-			//System.out.println("Player " + i + "Y Cooridnate: " + players[i].getY());
-		}
+		this.turns = 1;
 		
 	}
 	
@@ -72,6 +69,7 @@ public class Game {
 		this.curPlayer = curState.getCurPlayer();
 		this.movesRemaingForThisPlayer = curState.getMovedPlayer();
 		this.canPlayerInsertTile = curState.hasPlayerInsertedTile();
+		this.turns = curState.getTurns();
 	}
 	
 	/**
@@ -284,28 +282,28 @@ public class Game {
 
         tilesToActionList.add((Placeable) board.getTile(x, y)); // middle
         if (!topEdge) {  // up
-            tilesToActionList.add((Placeable) board.getTile(x, y-1));
+            tilesToActionList.add((Placeable) board.getTile(x, y - 1));
         }
         if (!topEdge && !rightEdge) {  // up right
-            tilesToActionList.add((Placeable) board.getTile(x+1, y-1));
+            tilesToActionList.add((Placeable) board.getTile(x + 1, y - 1));
         }
         if (!rightEdge) {  // right
-            tilesToActionList.add((Placeable) board.getTile(x+1, y));
+            tilesToActionList.add((Placeable) board.getTile(x + 1, y));
         }
         if (!rightEdge && !bottomEdge) {  // down right
-            tilesToActionList.add((Placeable) board.getTile(x+1, y+1));
+            tilesToActionList.add((Placeable) board.getTile(x + 1, y +1 ));
         }
         if (!bottomEdge) {  // down
-            tilesToActionList.add((Placeable) board.getTile(x, y+1));
+            tilesToActionList.add((Placeable) board.getTile(x, y + 1));
         }
         if (!leftEdge && !bottomEdge) {  // down left
-            tilesToActionList.add((Placeable) board.getTile(x-1, y+1));
+            tilesToActionList.add((Placeable) board.getTile(x - 1, y + 1));
         }
         if (!leftEdge) {  // left
-            tilesToActionList.add((Placeable) board.getTile(x-1, y));
+            tilesToActionList.add((Placeable) board.getTile(x - 1, y));
         }
         if (!leftEdge && !topEdge) {  // up left
-            tilesToActionList.add((Placeable) board.getTile(x-1, y-1));
+            tilesToActionList.add((Placeable) board.getTile(x - 1, y - 1));
         }
 
         Placeable[] tilesToAction = new Placeable[tilesToActionList.size()];
@@ -337,27 +335,6 @@ public class Game {
 	 * @throws IncorrectTileTypeException
 	 * @throws IllegalFireException 
 	 */
-	/*public GameState playFire(Fire fire, int x, int y) throws IncorrectTileTypeException, IllegalFireException {
-		players[curPlayer].playActionTile(fire);
-		Placeable[] tilesToAction= new Placeable[9];
-		System.out.println("Fire coor: "+x+" <x y> "+y);
-		try {
-			tilesToAction[0] = getTileFire((y - 1), (x - 1));
-			tilesToAction[1] = getTileFire((y - 1), x);
-			tilesToAction[2] = getTileFire((y - 1), (x + 1));
-			tilesToAction[3] = getTileFire(y, (x - 1));
-			tilesToAction[4] = getTileFire(y, x);
-			tilesToAction[5] = getTileFire(y, (x + 1));
-			tilesToAction[6] = getTileFire((y + 1), (x - 1));
-			tilesToAction[7] = getTileFire((y + 1), x);
-			tilesToAction[8] = getTileFire((y + 1) , (x + 1));
-		} catch (IllegalStateException e) {
-			//Continues processing as tile does not exists, if the tile is too close to the board.
-		} finally {
-			fire.instantiateAction(tilesToAction);
-		}
-		return actionTilePlayed();
-	}*/
 	public GameState newPlayFire(int x, int y) throws IncorrectTileTypeException, IllegalFireException {
 
         //Placeable[] tilesToAction= new Placeable[9];
@@ -370,28 +347,28 @@ public class Game {
 
         tilesToActionList.add(getTileFire(x, y)); // middle
         if (!topEdge) {  // up
-            tilesToActionList.add(getTileFire(x, y-1));
+            tilesToActionList.add(getTileFire(x, y - 1));
         }
         if (!topEdge && !rightEdge) {  // up right
-            tilesToActionList.add(getTileFire(x+1, y-1));
+            tilesToActionList.add(getTileFire(x + 1, y - 1));
         }
         if (!rightEdge) {  // right
-            tilesToActionList.add(getTileFire(x+1, y));
+            tilesToActionList.add(getTileFire(x + 1, y));
         }
         if (!rightEdge && !bottomEdge) {  // down right
-            tilesToActionList.add(getTileFire(x+1, y+1));
+            tilesToActionList.add(getTileFire(x + 1, y + 1));
         }
         if (!bottomEdge) {  // down
-            tilesToActionList.add(getTileFire(x, y+1));
+            tilesToActionList.add(getTileFire(x, y + 1));
         }
         if (!leftEdge && !bottomEdge) {  // down left
-            tilesToActionList.add(getTileFire(x-1, y+1));
+            tilesToActionList.add(getTileFire(x - 1, y + 1));
         }
         if (!leftEdge) {  // left
-            tilesToActionList.add(getTileFire(x-1, y));
+            tilesToActionList.add(getTileFire(x - 1, y));
         }
         if (!leftEdge && !topEdge) {  // up left
-            tilesToActionList.add(getTileFire(x-1, y-1));
+            tilesToActionList.add(getTileFire(x - 1, y - 1));
         }
 
         Placeable[] tilesToAction = new Placeable[tilesToActionList.size()];
@@ -483,7 +460,7 @@ public class Game {
         if ((curPlayer % players.length) == 0) {
             curPlayer = 0;
         }
-        //System.out.println("PLAYER HAS BEEN UPDATED TO: " + curPlayer);
+        turns++;
         movesRemaingForThisPlayer = 1;
         canPlayerInsertTile = true;
         for (ActionTilePlaceable tile : tilesInAction) {  // decrement times
@@ -511,6 +488,7 @@ public class Game {
 		GameState newState = new GameState();
 		newState.setBoard(board.getTiles(), board.getWidth(), board.getHeight());
 		newState.setActionTileApplied();
+		newState.setTurns(turns);
 		return newState;
 	}
 	
@@ -542,6 +520,7 @@ public class Game {
 		newState.setChangedPlayerPosition(curPlayer, getPlayerPositions()[curPlayer]);
 		newState.setPlayerPositions(getPlayerPositions());
 		newState.isGoalHit(isGoalReached);
+		newState.setTurns(turns);
 		return newState;
 	}
 
@@ -557,6 +536,7 @@ public class Game {
 		GameState newState = new GameState();
 		newState.setChangedPlayerPosition(playerBackTracked, getPlayerPositions()[playerBackTracked]);
 		newState.setPlayerPositions(getPlayerPositions());
+		newState.setTurns(turns);
 		return newState;
 	}
 	
@@ -573,6 +553,7 @@ public class Game {
 		newState.setBoard(board.getTiles(), board.getWidth(), board.getHeight());
 		newState.setChangedTile(t, positionOfInsertedTile);
 		newState.setPlayerPositions(getPlayerPositions());
+		newState.setTurns(turns);
 		return newState;	
 	}
 	
@@ -592,6 +573,7 @@ public class Game {
 		newState.setCurrentPlayer(curPlayer, movesRemaingForThisPlayer);
 		newState.setMoveableSpaces(board.getMoveableSpaces(players[curPlayer]));
 		newState.setInsertableLocation(board.getInsertablePlaces());
+		newState.setTurns(turns);
 		return newState;
 	}
 	
@@ -620,7 +602,9 @@ public class Game {
 		newState.setMoveableSpaces(board.getMoveableSpaces(players[curPlayer]));
 		newState.setPlayerPositions(getPlayerPositions());
 		newState.setInsertableLocation(board.getInsertablePlaces());
+		newState.setTurns(turns);
 		this.pastStates.add(newState);
+		newState.setTurns(turns);
 		return newState;
 	}
 	
@@ -638,15 +622,22 @@ public class Game {
 		newState.setSilkBag(bag);
 		newState.setTilesInAction(tilesInAction);
 		newState.setPlayers(players);
+		newState.setTurns(turns);
 		return newState;
 	}
 	
+	/**
+	 * This method returns all of the general data items needed for 
+	 * game scene controller to constuct the game.
+	 * @return
+	 */
 	public GameState getCurrentGameState() {
 		GameState newState = new GameState();
 		newState.setBoard(board.getTiles(), board.getWidth(), board.getHeight());
 		newState.setActionTilesForPlayers(getActionTilesForPlayers());
 		newState.setCurrentPlayer(curPlayer, movesRemaingForThisPlayer);
 		newState.setMoveableSpaces(board.getMoveableSpaces(players[curPlayer]));
+		newState.setTurns(turns);
 		newState.setPlayerPositions(getPlayerPositions());
 		newState.setInsertableLocation(board.getInsertablePlaces());
 		newState.isGoalHit(isGoalReached);

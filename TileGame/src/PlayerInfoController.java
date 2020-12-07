@@ -1,3 +1,6 @@
+
+
+
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -19,6 +22,13 @@ import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.StrokeType;
 
+/**
+ * This class is designed to show all of the players in the game's 
+ * saved data files.
+ * @author Wan Fai Tong (1909787)
+ * @version 1
+ */
+
 public class PlayerInfoController extends GameWindow implements Initializable {
 	@FXML
 	private BorderPane bPane;
@@ -32,19 +42,39 @@ public class PlayerInfoController extends GameWindow implements Initializable {
 	private Button backButton;
 	
 	private ArrayList<PlayerData> playerList = new ArrayList<PlayerData>();
-
+	
+	/**
+	 * Initialize's the PlayerInfo Controller
+	 */
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
-		//extract PlayerData ArrayList to playerList
-		printPLayer();
+		getPlayers();
+		printPlayer();
 	}
 	
+	/**
+	 * Switches panes back to the HomePage
+	 * @param event
+	 * @throws IOException
+	 */
 	@FXML
 	public void backButtonClick(ActionEvent event) throws IOException {
 		switchPane("/fxml/HomePagePane.fxml", bPane, "back");
 	}
 	
-	public void printPLayer() {
+	/**
+	 * Gets the players from the PlayerDataPriorityQueue
+	 */
+	private void getPlayers() {
+		for(PlayerData p : playerDataQueue) {
+			playerList.add(p);
+		}
+	}
+	
+	/**
+	 * Prints the player data to the screen 
+	 */
+	private void printPlayer() {
 		int index=0;
 		for(int i=0;i<(playerList.size()/2);i++){
 			int max =2;
@@ -86,7 +116,7 @@ public class PlayerInfoController extends GameWindow implements Initializable {
 	public VBox makeVBox(String playerName, int win, int lose) {
 		VBox infoBox = new VBox();
 		Label name = new Label(playerName);
-		Label winLose = new Label("Win: "+win+"    Lose: "+lose);
+		Label winLose = new Label("Wins: "+win+"\nLosses: "+lose);
 		infoBox.getChildren().addAll(name,winLose);
 		return infoBox;
 	}

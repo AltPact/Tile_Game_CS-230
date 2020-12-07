@@ -18,6 +18,7 @@ public class GameState {
 	private ArrayList<ActionTile>[] actionTilesForEachPlayer;
 	private ArrayList<ActionTilePlaceable> tilesInAction;
 	private Tile tileDrawn;
+	private int turns;
 	
 	private int[] positionOfInsertedTile;
 	private Tile insertedTile;
@@ -34,6 +35,14 @@ public class GameState {
 	private int height;
 	private PlayerPiece[] players;
 	private boolean hasPlayerInsertedTile;
+	
+	public void setTurns(int turns) {
+		this.turns = turns;
+	}
+	
+	public int getTurns() {
+		return turns;
+	}
 	
 	public void setHasPlayerInsertedTile(boolean b) {
 		this.hasPlayerInsertedTile = b;
