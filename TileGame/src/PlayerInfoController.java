@@ -59,7 +59,11 @@ public class PlayerInfoController extends GameWindow implements Initializable {
 			}
 		}
 	}
-	
+	/**
+	 * Constructs columns for table containing player data
+	 * @param player
+	 * @return playerBox
+	 */
 	public HBox makePlayerBox(PlayerData player) {
 		HBox playerBox = new HBox();
 		playerBox.setAlignment(Pos.CENTER);
@@ -72,6 +76,13 @@ public class PlayerInfoController extends GameWindow implements Initializable {
 		playerBox.getChildren().addAll(playerIcon,makeVBox(player.getName(),player.getWins(),player.getLosses()));
 		return playerBox;
 	}
+	/**
+	 * Constructs rows for table containing player data
+	 * @param playerName
+	 * @param win
+	 * @param lose
+	 * @return infoBox
+	 */
 	public VBox makeVBox(String playerName, int win, int lose) {
 		VBox infoBox = new VBox();
 		Label name = new Label(playerName);
