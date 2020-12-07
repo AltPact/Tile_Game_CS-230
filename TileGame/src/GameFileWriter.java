@@ -30,6 +30,7 @@ public class GameFileWriter {
             
             /* write game metadata */
             w.write(String.valueOf(g.isGoalHit()) + DEL);
+            w.write(String.valueOf(g.getTurns()) + DEL);
             w.write(String.valueOf(g.getCurPlayer()) + DEL);
             w.write(String.valueOf(g.getMovesLeftForCurrentPlayer()) + DEL);
             w.write(String.valueOf(g.hasPlayerInsertedTile()) + DEL);
@@ -118,6 +119,7 @@ public class GameFileWriter {
             			w.write(String.valueOf(tile.getType()) + DEL);
             			w.write(String.valueOf(i) + DEL);
             			w.write(String.valueOf(tile.getTimeRemaining()) + DEL);
+            			correctPlayerFound = true;
             		}
             	}
             }

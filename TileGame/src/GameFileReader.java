@@ -23,6 +23,8 @@ public class GameFileReader {
 			GameState curState = new GameState();
 			
 			curState.isGoalHit(s.nextBoolean());
+			curState.setTurns(s.nextInt());
+			
 			//Current player and moves remaining.
 			curState.setCurrentPlayer(s.nextInt(), s.nextInt());
 			curState.setHasPlayerInsertedTile(s.nextBoolean());
@@ -106,8 +108,10 @@ public class GameFileReader {
 			
 			Board board = new Board(width, height, tiles);
 			board.fillBoard(bag);
-
-			return new Game(bag, players, board);
+			
+			Game g = new Game(bag, players, board);
+			System.out.println(g.toString());
+			return g;
 		} catch (FileNotFoundException e) {
 			System.out.println("An error occurred.");
 			e.printStackTrace();
