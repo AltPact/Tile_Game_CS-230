@@ -450,13 +450,6 @@ public class ObjFactory {
 		lightSource.getChildren().addAll(light,firefly);
 		return lightSource;
 	}
-	/* TODO: DELETE THIS
-	public Box makeActionTileInventory() {
-		Box actionTileInventory = new Box(100,500,1);
-		PhongMaterial Lcolor = new PhongMaterial(Color.BROWN);
-		actionTileInventory.setMaterial(Lcolor);
-		return actionTileInventory;
-	}*/
 
 	/**
 	 * Sets the animation of a firefly texture to pulse gently

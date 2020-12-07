@@ -34,6 +34,7 @@ import javafx.util.Duration;
 
 /**
  * Controls the functionality of the New Game Window
+ * 
  * @author Wan Fai Tong (1909787),Sam Steadman (1910177),Morgan Firkins(852264)
  * @version: 1.2(Implemented playerDataQueue from Game Window)
  */
@@ -71,20 +72,31 @@ public class NewGameController extends GameWindow implements Initializable {
 	private ArrayList<HBox> playerRows = new ArrayList<HBox>();
 
 	@Override
+	/**
+	 * This method initialize's the new game controller. 
+	 */
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		setComboBox("");
 		makeBoardRadio();
-		
+
 	}
 	
+	/**
+	 * This method sets the Listener for the comboBox
+	 */
 	private void setListenerComboBox() {
-		searchBox.getEditor().textProperty().addListener((v,oldV,newV)->{
-			//setComboBox();
+		searchBox.getEditor().textProperty().addListener((v, oldV, newV) -> {
+			// setComboBox();
 		});
-	} 
-
+	}
+	
+	/**
+	 * Set's the comboBox to allow a person 
+	 * to search for a string.
+	 * @param searchName
+	 */
 	private void setComboBox(String searchName) {
-		
+
 		searchBox.getItems().clear();
 		if (searchName.equals("")) {
 			for (PlayerData player : playerDataQueue) {
@@ -95,14 +107,18 @@ public class NewGameController extends GameWindow implements Initializable {
 		} else {
 			for (PlayerData player : playerDataQueue) {
 				if (!checkIfInQueue(player)) {
-					if(player.getName().equals(searchName)) {
-					   searchBox.getItems().add(player.getName());
+					if (player.getName().equals(searchName)) {
+						searchBox.getItems().add(player.getName());
 					}
 				}
 			}
 		}
 	}
-
+	
+	/**
+	 * Makes the board radio button, allows a user 
+	 * to choose the board they want to play. 
+	 */
 	private void makeBoardRadio() {
 		boardGroup = new ToggleGroup();
 		RadioButton boardChoose1 = new RadioButton();
@@ -120,13 +136,22 @@ public class NewGameController extends GameWindow implements Initializable {
 		boardSelection.add(boardChoose2);
 		boardHBox.getChildren().addAll(boardChoose1, boardChoose2);
 	}
-
+	
+	/**
+	 * Adds a player to the queue of players that can play.
+	 * @param playerToAdd
+	 */
 	private void addPlayerInQueue(PlayerData playerToAdd) {
 		playerQueue.add(playerToAdd);
 		playerBox.getChildren().add(makePlayerRows(playerToAdd));
 
 	}
-
+	
+	/**
+	 * Makes the rows for the players in the drop-down box.
+	 * @param playerInfo The player 
+	 * @return the row.
+	 */
 	private HBox makePlayerRows(PlayerData playerInfo) {
 		HBox row = new HBox();
 		row.setPrefSize(496, 22);
@@ -134,7 +159,13 @@ public class NewGameController extends GameWindow implements Initializable {
 		playerRows.add(row);
 		return row;
 	}
-
+	
+	/**
+	 * Makes the buttons for each player to be added to a particular game.
+	 * @param row the row the player has clicked on. 
+	 * @param player The player data that has been selected. 
+	 * @return
+	 */
 	private Button makeButton(HBox row, PlayerData player) {
 		Button removeButton = new Button();
 		removeButton.setText("remove");
@@ -154,7 +185,12 @@ public class NewGameController extends GameWindow implements Initializable {
 		});
 		return removeButton;
 	}
-
+	
+	/**
+	 * Makes the label for the player name in the drop down box.
+	 * @param name the name to be added.
+	 * @return the label that has been created. 
+	 */
 	private Label makeLabel(String name) {
 		Label playerName = new Label();
 		playerName.setText(name);
@@ -164,7 +200,12 @@ public class NewGameController extends GameWindow implements Initializable {
 		playerName.setStyle("-fx-background-color: rgba(0, 0, 0, 0.5);");
 		return playerName;
 	}
-
+	
+	/**
+	 * In the event a user clicks the add player button. 
+	 * @param event the event that has occured. 
+	 * @throws IOException
+	 */
 	@FXML
 	public void addButtonClick(ActionEvent event) throws IOException {
 		String playerName = (String) searchBox.getValue();
@@ -183,7 +224,13 @@ public class NewGameController extends GameWindow implements Initializable {
 		}
 		System.out.println(playerQueue);
 	}
-
+	
+	/**
+	 * Checks to see if a player has already been added to the 
+	 * player data queue.
+	 * @param playerToCheck
+	 * @return true if the have been, false if they haven't. 
+	 */
 	private boolean checkIfInQueue(PlayerData playerToCheck) {
 		for (PlayerData playerInQueue : playerQueue) {
 			if (playerToCheck == playerInQueue) {
@@ -192,7 +239,13 @@ public class NewGameController extends GameWindow implements Initializable {
 		}
 		return false;
 	}
-
+	
+	/**
+	 * Gets the player's data from the name on the screen
+	 * (Links the screen's data to the backend's data).
+	 * @param name the name of the player
+	 * @return the player's data.
+	 */
 	private PlayerData getExistPlayer(String name) {
 		for (PlayerData playerInQueue : playerQueue) {
 			if (playerInQueue.getName().equals(name)) {
@@ -207,29 +260,39 @@ public class NewGameController extends GameWindow implements Initializable {
 
 		return null;
 	}
-
-	/*
-	 * private boolean createGameSucc() {
-	 * 
-	 * }
+	
+	/**
+	 * If a person clicks to create a new player. 
+	 * @param event
+	 * @throws IOException
 	 */
 	@FXML
 	public void createButtonClick(ActionEvent event) throws IOException {
 		switchPane("/fxml/CreatePlayerPane.fxml", BP, "back");
 	}
-
+	
+	/**
+	 * Changes the colour of the create newPlayer button to white.
+	 */
 	@FXML
 	public void mouseOnCreate() {
 		createButton.setStyle("-fx-background-color: WHITE; -fx-background-radius: 5em;");
 
 	}
 
+	/**
+	 * Changes the colour of the create newPlayer button to light salmon.
+	 */
 	@FXML
 	public void mouseOffCreate() {
 		createButton.setStyle("-fx-background-color: LIGHTSALMON; -fx-background-radius: 5em;");
 
 	}
-
+	
+	/**
+	 * Checks the ammount of players in the queue.
+	 * @return
+	 */
 	private boolean checkPlayerAmount() {
 		// System.out.println(playerQueue.size());
 		if (playerQueue.size() < 2) {
@@ -275,22 +338,22 @@ public class NewGameController extends GameWindow implements Initializable {
 	}
 
 	/**
-	 * This method creates a new game and sets the board
-	 * to the correct board.
+	 * This method creates a new game and sets the board to the correct board.
+	 * 
 	 * @param boardNumber the board to be read
 	 */
 	private void initGame(int boardNumber) {
 		if (boardNumber == 0) {
 			PlayerPiece[] players = new PlayerPiece[playerQueue.size()];
-			for(int i = 0; i < playerQueue.size(); i++) {
-				players[i] = new PlayerPiece(0, 0, "Blue", false, playerQueue.get(i)); 
+			for (int i = 0; i < playerQueue.size(); i++) {
+				players[i] = new PlayerPiece(0, 0, "Blue", false, playerQueue.get(i));
 			}
 			File f = new File("./data/gameboard/" + boardNumber + ".txt");
 			currentGame = GameFileReader.readBoardFile(f, players);
 		} else if (boardNumber == 1) {
 			PlayerPiece[] players = new PlayerPiece[playerQueue.size()];
-			for(int i = 0; i < playerQueue.size(); i++) {
-				players[i] = new PlayerPiece(0, 0, "Blue", false, playerQueue.get(i)); 
+			for (int i = 0; i < playerQueue.size(); i++) {
+				players[i] = new PlayerPiece(0, 0, "Blue", false, playerQueue.get(i));
 			}
 			File f = new File("./data/gameboard/" + boardNumber + ".txt");
 			currentGame = GameFileReader.readBoardFile(f, players);
