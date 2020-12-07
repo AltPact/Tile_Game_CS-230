@@ -139,7 +139,7 @@ public class NewGameController extends GameWindow implements Initializable {
 	
 	/**
 	 * Adds a player to the queue of players that can play.
-	 * @param playerToAdd
+	 * @param playerToAdd the player to add to the queue.
 	 */
 	private void addPlayerInQueue(PlayerData playerToAdd) {
 		playerQueue.add(playerToAdd);
@@ -164,7 +164,7 @@ public class NewGameController extends GameWindow implements Initializable {
 	 * Makes the buttons for each player to be added to a particular game.
 	 * @param row the row the player has clicked on. 
 	 * @param player The player data that has been selected. 
-	 * @return
+	 * @return the new button.
 	 */
 	private Button makeButton(HBox row, PlayerData player) {
 		Button removeButton = new Button();
@@ -203,8 +203,8 @@ public class NewGameController extends GameWindow implements Initializable {
 	
 	/**
 	 * In the event a user clicks the add player button. 
-	 * @param event the event that has occured. 
-	 * @throws IOException
+	 * @param event the event that has occurred. 
+	 * @throws IOException If a illegal user input
 	 */
 	@FXML
 	public void addButtonClick(ActionEvent event) throws IOException {
@@ -263,7 +263,7 @@ public class NewGameController extends GameWindow implements Initializable {
 	
 	/**
 	 * If a person clicks to create a new player. 
-	 * @param event
+	 * @param event the event that has been triggered
 	 * @throws IOException
 	 */
 	@FXML
