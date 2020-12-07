@@ -27,14 +27,14 @@ public class ApplicationController extends Application {
 
 	public static void main(String[] args) {
 		launch(args);
+		
 	}
 
+	@Override
 	/**
 	 * This method starts the application window
-	 * 
-	 * @param primaryStage
+	 * @param primaryStage: The stage to start
 	 */
-	@Override
 	public void start(Stage primaryStage) throws Exception {
 		// Scene run
 		GameWindow gameWin = new GameWindow();
@@ -54,7 +54,9 @@ public class ApplicationController extends Application {
 	}
 
 	/**
-	 * This method will save game data
+	 * Method to have functionality when window closed. Allows you
+	 * to save the game when exiting
+	 * @param game: The Game to be saved
 	 */
 	public static void closeWindow(Game game) {
 		if (game != null) {
@@ -66,7 +68,6 @@ public class ApplicationController extends Application {
 			try {
 				Optional<String> msgBoxRespDialog = newFileNameDialog.showAndWait();
 				newFileName = msgBoxRespDialog.get();
-				System.out.println(newFileName);
 				GameState s = game.getEndGameState();
 				GameFileWriter.writeGameFile(s, newFileName + ".txt");
 				Label successLabel = new Label("Game successfully saved");
@@ -85,6 +86,8 @@ public class ApplicationController extends Application {
 		} else {
 			stage.close();
 		}
+	
+	
 	}
 
 }

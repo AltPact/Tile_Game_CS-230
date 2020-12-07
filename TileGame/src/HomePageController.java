@@ -28,7 +28,7 @@ import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaPlayer.Status;
 import javafx.scene.shape.HLineTo;
-import javafx.scene.input.MouseEvent; 
+import javafx.scene.input.MouseEvent;
 import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
 import javafx.scene.text.Font;
@@ -37,7 +37,9 @@ import javafx.util.Duration;
 
 /**
  * Controls the widgets on the HomePage of the game
- * @author Wan Fai Tong (1909787), Sam Steadman (1910177), Morgan Firkins(852264)
+ * 
+ * @author Wan Fai Tong (1909787), Sam Steadman (1910177), Morgan
+ *         Firkins(852264)
  * @version: 1.1(Changed style of messageOfTheDay)
  */
 public class HomePageController extends GameWindow implements Initializable {
@@ -61,17 +63,15 @@ public class HomePageController extends GameWindow implements Initializable {
 	 */
 	@Override
 	public void initialize(URL url, ResourceBundle resources) {
-		// for future use
-		// Play bg music
 		if (homepane != null) {
 			if (!homepane.getChildren().contains(bgImg)) {
 				homepane.getChildren().add(bgImg);
 			}
 		}
 		try {
-		    messageOfTheDay.setText(MessageOfTheDay.getResult());
-		    messageOfTheDay.setTextAlignment(TextAlignment.CENTER);
-		    messageOfTheDay.setFont(new Font("Helvetica", 18));
+			messageOfTheDay.setText(MessageOfTheDay.getResult());
+			messageOfTheDay.setTextAlignment(TextAlignment.CENTER);
+			messageOfTheDay.setFont(new Font("Helvetica", 18));
 		} catch (IOException e) {
 			System.out.println("Cannot get message of the day");
 		}
@@ -80,31 +80,44 @@ public class HomePageController extends GameWindow implements Initializable {
 			Media bgm = new Media(bgmF.toURI().toString());
 			background = new MediaPlayer(bgm);
 			background.setVolume(0.1);
-			//background.play();
+			// background.play();
 		} else if (!background.getStatus().equals(Status.PLAYING)) {
-			//background.play();
+			// background.play();
 		}
-		
+
 	}
 
 	@FXML
+	/**
+	 * Defines the functionality when playerIcon is clicked
+	 * 
+	 * @param event: The event that triggers the method
+	 * @throws IOException
+	 */
 	public void playerIconOnClick(ActionEvent event) throws IOException {
 		// load NewGameScene
 		switchPane("/fxml/PlayerInfoPane.fxml", bPane, "forward");
 
 	}
+
 	@FXML
+	/**
+	 * Defines the functionality when LeaderBoard Icon is clicked
+	 * 
+	 * @param event: The event that triggers the method
+	 * @throws IOException
+	 */
 	public void LeaderBoardOnClick(ActionEvent event) throws IOException {
 		// load NewGameScene
 		switchPane("/fxml/LeaderBoard.fxml", bPane, "forward");
 
 	}
-	
+
 	/**
 	 * This method is called when the new button is click it will call the
 	 * switchPane() method which switch to NewGamePane
 	 * 
-	 * @param event The action event
+	 * @param event: the event that triggers the method
 	 */
 	@FXML
 	public void buttonOnActionN(ActionEvent event) throws IOException {
@@ -117,7 +130,7 @@ public class HomePageController extends GameWindow implements Initializable {
 	 * This method is called when the load button is click it will call the
 	 * switchPane() method which switch to LoadGamePane
 	 * 
-	 * @param event The action event
+	 * @param event: The event that triggers the method
 	 */
 	@FXML
 	public void buttonOnActionL(ActionEvent event) throws IOException {
@@ -128,17 +141,22 @@ public class HomePageController extends GameWindow implements Initializable {
 	 * This method is called when the tutorial button is click it will call the
 	 * switchPane() method which switch to TutorialPane
 	 * 
-	 * @param event The action event
+	 * @param event: The event that triggers the method
 	 */
 	@FXML
+	/**
+	 * Defines the functionality when tutorial button is clicked
+	 * 
+	 * @param event: The event that triggers the method
+	 * @throws IOException
+	 */
 	public void buttonOnActionT(ActionEvent event) throws IOException {
-		// load NewGameScene
 		switchPane("/fxml/TutorialPane.fxml", bPane, "back");
 	}
 
 	/**
 	 * This method is called when mouse is on the new button it will change the
-	 * color of the button
+	 * colour of the button
 	 */
 	@FXML
 	public void mouseOnN() {
@@ -148,7 +166,7 @@ public class HomePageController extends GameWindow implements Initializable {
 
 	/**
 	 * This method is called when mouse is off the new button it will change the
-	 * color of the button back
+	 * colour of the button back
 	 */
 	@FXML
 	public void mouseOFFN() {
@@ -158,7 +176,7 @@ public class HomePageController extends GameWindow implements Initializable {
 
 	/**
 	 * This method is called when mouse is on the load button it will change the
-	 * color of the button
+	 * colour of the button
 	 */
 	@FXML
 	public void mouseOnL() {
@@ -168,7 +186,7 @@ public class HomePageController extends GameWindow implements Initializable {
 
 	/**
 	 * This method is called when mouse is off the load button it will change the
-	 * color of the button back
+	 * colour of the button back
 	 */
 	@FXML
 	public void mouseOFFL() {
@@ -178,7 +196,7 @@ public class HomePageController extends GameWindow implements Initializable {
 
 	/**
 	 * This method is called when mouse is on the tutorial button it will change the
-	 * color of the button
+	 * colour of the button
 	 */
 	@FXML
 	public void mouseOnT() {
@@ -188,7 +206,7 @@ public class HomePageController extends GameWindow implements Initializable {
 
 	/**
 	 * This method is called when mouse is off the tutorial button it will change
-	 * the color of the button back
+	 * the colour of the button back
 	 */
 	@FXML
 	public void mouseOFFT() {
