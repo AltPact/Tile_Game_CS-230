@@ -5,8 +5,10 @@ import java.util.Scanner;
 import java.util.regex.Pattern;
 /**
  * A class that reads a game board file or a game file and constructs a game object.
+ * 
  * @author Sam Steadman (1910177), Alex Ullman (851732) and Joshua Sinderberry (851800)
- * @version 1.2
+ * @version 2
+ *
  */
 public class GameFileReader {
 
@@ -23,8 +25,6 @@ public class GameFileReader {
 			GameState curState = new GameState();
 			
 			curState.isGoalHit(s.nextBoolean());
-			curState.setTurns(s.nextInt());
-			
 			//Current player and moves remaining.
 			curState.setCurrentPlayer(s.nextInt(), s.nextInt());
 			curState.setHasPlayerInsertedTile(s.nextBoolean());
@@ -108,10 +108,8 @@ public class GameFileReader {
 			
 			Board board = new Board(width, height, tiles);
 			board.fillBoard(bag);
-			
-			Game g = new Game(bag, players, board);
-			System.out.println(g.toString());
-			return g;
+
+			return new Game(bag, players, board);
 		} catch (FileNotFoundException e) {
 			System.out.println("An error occurred.");
 			e.printStackTrace();
@@ -156,7 +154,7 @@ public class GameFileReader {
 		int height = s.nextInt();
 		
 		
-		/* Read the current state of tiles */
+		/* read tiles */
 		Placeable[][] stateTiles = new Placeable[height][width];
 		for (int y = 0; y < height; y++) {
 			for (int x = 0; x < width; x++) {

@@ -258,22 +258,17 @@ public class TutorialController extends GameWindow implements Initializable{
 		TranslateTransition trans = new TranslateTransition();
 		trans.setDuration(Duration.seconds(0.5));
 		trans.setNode(i1);
-		//System.out.println("Image1xb4: "+trans.getByX());
 		trans.setFromX(s1);
 		trans.setToX(e1);
-		//System.out.println("Image1x: "+trans.getByX());
 		
 		TranslateTransition trans2 = new TranslateTransition();
 		trans2.setDuration(Duration.seconds(0.5));
 		trans2.setNode(i2);
-		//System.out.println("Image1xb4: "+trans2.getByX());
 		trans2.setFromX(s2);
 		trans2.setToX(e2);
-		//System.out.println("Image2x: "+trans2.getByX());
 		
 		ParallelTransition paral = new ParallelTransition();
 		paral.getChildren().addAll(trans,trans2);
-		//System.out.println("B4 SP:"+SP.getChildren());
 		paral.setOnFinished(e->SP.getChildren().remove(i1));
 		paral.play();
 	}

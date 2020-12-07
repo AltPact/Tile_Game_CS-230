@@ -7,7 +7,7 @@ import javafx.stage.Popup;
  * This class is designed to write a game to file.
  * All of its methods are static.
  * @author  Sam Steadman (1910177), Alex Ullman (851732) and Joshua Sinderberry (851800)
- * @version 1.2
+ * @version 2
  */
 public class GameFileWriter {
 
@@ -30,7 +30,6 @@ public class GameFileWriter {
             
             /* write game metadata */
             w.write(String.valueOf(g.isGoalHit()) + DEL);
-            w.write(String.valueOf(g.getTurns()) + DEL);
             w.write(String.valueOf(g.getCurPlayer()) + DEL);
             w.write(String.valueOf(g.getMovesLeftForCurrentPlayer()) + DEL);
             w.write(String.valueOf(g.hasPlayerInsertedTile()) + DEL);
@@ -44,7 +43,7 @@ public class GameFileWriter {
                 w.write(String.valueOf(players[p].getColour()) + DEL);
                 w.write(String.valueOf(players[p].getBacktrack()) + DEL);
                 w.write(players[p].getLinkedData().getName() + "playerdata.txt" + DEL);
-	    }
+            }
             
             /* write current game state */
             writeCurrentGameState(g, w, players);
@@ -119,7 +118,6 @@ public class GameFileWriter {
             			w.write(String.valueOf(tile.getType()) + DEL);
             			w.write(String.valueOf(i) + DEL);
             			w.write(String.valueOf(tile.getTimeRemaining()) + DEL);
-            			correctPlayerFound = true;
             		}
             	}
             }
