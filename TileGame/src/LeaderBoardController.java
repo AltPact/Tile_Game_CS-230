@@ -30,8 +30,8 @@ public class LeaderBoardController extends GameWindow implements Initializable {
 
 	@FXML
 	/**
-	 * Purpose: To make sure window closes when clicked
-	 * @param event
+	 * To make sure window closes when clicked
+	 * @param event: The event that triggers the method
 	 * @throws IOException
 	 */
 	public void closeOnClick(ActionEvent event) throws IOException {
@@ -41,6 +41,11 @@ public class LeaderBoardController extends GameWindow implements Initializable {
 	}
 	
 	@Override
+	/**
+	 * Initializes and sets up the window
+	 * @param arg0
+	 * @param arg1
+	 */
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		initPlayerDataQueue();
 		makeLeaderBoard();
