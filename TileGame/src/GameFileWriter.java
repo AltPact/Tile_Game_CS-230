@@ -6,7 +6,7 @@ import javafx.stage.Popup;
 /**
  * This class is designed to write a game to file.
  * All of its methods are static.
- * @author  Sam Steadman (1910177), Alex Ullman (851732) and Joshua Sinderberry (851800)
+ * @author  Sam Steadman (1910177), Alex Ullman (851732), Joshua Sinderberry (851800) and Adem Arik (850904)
  * @version 2
  */
 public class GameFileWriter {
@@ -31,6 +31,7 @@ public class GameFileWriter {
             /* write game metadata */
             w.write(String.valueOf(g.isGoalHit()) + DEL);
             w.write(String.valueOf(g.getCurPlayer()) + DEL);
+	    w.write(String.valueOf(g.getTurns()) + DEL)
             w.write(String.valueOf(g.getMovesLeftForCurrentPlayer()) + DEL);
             w.write(String.valueOf(g.hasPlayerInsertedTile()) + DEL);
             w.write(String.valueOf(players.length) + DEL);
@@ -118,6 +119,7 @@ public class GameFileWriter {
             			w.write(String.valueOf(tile.getType()) + DEL);
             			w.write(String.valueOf(i) + DEL);
             			w.write(String.valueOf(tile.getTimeRemaining()) + DEL);
+				correctPlayerFound = true;
             		}
             	}
             }
