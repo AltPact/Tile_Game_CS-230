@@ -31,7 +31,7 @@ public class GameFileWriter {
             /* write game metadata */
             w.write(String.valueOf(g.isGoalHit()) + DEL);
             w.write(String.valueOf(g.getCurPlayer()) + DEL);
-	    w.write(String.valueOf(g.getTurns()) + DEL)
+	    w.write(String.valueOf(g.getTurns()) + DEL);
             w.write(String.valueOf(g.getMovesLeftForCurrentPlayer()) + DEL);
             w.write(String.valueOf(g.hasPlayerInsertedTile()) + DEL);
             w.write(String.valueOf(players.length) + DEL);
