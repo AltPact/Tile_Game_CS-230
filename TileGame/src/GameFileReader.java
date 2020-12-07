@@ -25,6 +25,7 @@ public class GameFileReader {
 			GameState curState = new GameState();
 			
 			curState.isGoalHit(s.nextBoolean());
+			curState.setTurns(s.nextInt());
 			//Current player and moves remaining.
 			curState.setCurrentPlayer(s.nextInt(), s.nextInt());
 			curState.setHasPlayerInsertedTile(s.nextBoolean());
@@ -44,7 +45,7 @@ public class GameFileReader {
 				PlayerData pData = PlayerDataFileReader.readFile(pDataFile);
 				players[p] = new PlayerPiece(playerX, playerY, playerColour, backtrackApplied, pData);
 			}
-			
+
 			readCurrentGameState(curState, s, players);
 
 
@@ -74,20 +75,20 @@ public class GameFileReader {
 		try {
 			s = new Scanner(f).useDelimiter(",");
 			int numPlayers = players.length;
-			
+
 			int p;
 			for(p = 0; p < numPlayers; p++) {
 				players[p].setX(s.nextInt());
 				players[p].setY(s.nextInt());
 			}
 			// if a board file is being read that supports more players than are needed, skip unneeded player positions
-			
+
 			while(p < 4) {
 				s.nextInt();
 				s.nextInt();
 				p++;
 			}
-			
+
 			/* read board meta data */
 			int height = s.nextInt();
 			int width = s.nextInt();
@@ -102,14 +103,16 @@ public class GameFileReader {
 				Placeable newTile = new Placeable(type, isGoal, true, orientation);
 				tiles[y][x] = newTile;
 			}
-			
+
 			/* read the silk bag */
 			SilkBag bag = readSilkBag(s);
-			
+
 			Board board = new Board(width, height, tiles);
 			board.fillBoard(bag);
 
-			return new Game(bag, players, board);
+			Game g = new Game(bag, players, board);
+			System.out.println(g.toString());
+			return g;
 		} catch (FileNotFoundException e) {
 			System.out.println("An error occurred.");
 			e.printStackTrace();
@@ -149,12 +152,12 @@ public class GameFileReader {
 	 * @param players Array of players to be referred to as the owners of action tiles.
 	 */
 	private static void readCurrentGameState(GameState curState, Scanner s, PlayerPiece[] players) {
-		
+
 		int width = s.nextInt();
 		int height = s.nextInt();
-		
-		
-		/* read tiles */
+
+
+		/* Read the current state of tiles */
 		Placeable[][] stateTiles = new Placeable[height][width];
 		for (int y = 0; y < height; y++) {
 			for (int x = 0; x < width; x++) {
@@ -178,11 +181,11 @@ public class GameFileReader {
 				}
 			}
 		}
-		
-		
+
+
 		curState.setBoard(stateTiles, width, height);
 		ArrayList<ActionTile>[] actionTilesOwnedForEachPlayer = new ArrayList[players.length];
-		
+
 		/* Read the action tiles for each player */
 		for(int p = 0; p < players.length; p++) {
 			int numOfActionTilesOwned = s.nextInt();
@@ -202,9 +205,9 @@ public class GameFileReader {
 
 			actionTilesOwnedForEachPlayer[p] = actionTilesOwned;
 		}
-		
+
 		curState.setActionTilesForPlayers(actionTilesOwnedForEachPlayer);
-		
+
 		/* Reads all of the action tiles in play at save time */
 		int numOfTilesInAction = s.nextInt();
 		ArrayList<ActionTilePlaceable> tilesInAction = new ArrayList<ActionTilePlaceable>();
@@ -222,19 +225,19 @@ public class GameFileReader {
 			tilesInAction.add(tile);
 		}
 		curState.setTilesInAction(tilesInAction);
-		
+
 		ArrayList<GameState> pastStates = new ArrayList<GameState>();
-		
+
 		int numOfPastStates = s.nextInt();
 		for(int i = 0; i < numOfPastStates; i++) {
 			pastStates.add(readPastState(s, players.length));
 		}
-		
+
 		curState.setPastStates(pastStates);
 
 		return;
 	}
-	
+
 	/**
 	 * A method that reads a past game state 
 	 * @param s
@@ -261,7 +264,7 @@ public class GameFileReader {
 		File f = new File ("./data/savedgames");
 		return f.list();
 	}
-	
+
 	/**
 	 * @return a list of stored game boards.
 	 */
