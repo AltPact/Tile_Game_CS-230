@@ -30,11 +30,11 @@ public class ApplicationController extends Application {
 		
 	}
 
+	@Override
 	/**
 	 * This method starts the application window
 	 * @param primaryStage: The stage to start
 	 */
-	@Override
 	public void start(Stage primaryStage) throws Exception {
 		// Scene run
 		GameWindow gameWin = new GameWindow();

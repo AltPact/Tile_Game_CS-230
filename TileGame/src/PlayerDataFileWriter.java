@@ -7,7 +7,6 @@ import java.io.IOException;
  * @author Morgan Firkins (852264)
  * @version 1.1(Delimited values with commas)
  */
-
 public class PlayerDataFileWriter {
 
 	public static void generateFile(PlayerData playerData) {
