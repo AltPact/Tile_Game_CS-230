@@ -177,6 +177,9 @@ public class GameSceneController extends GameWindow implements Initializable {
 		
 	}
 
+	/**
+	* Setting up the visual representation of board
+	*/
 	public void addTile() {
 		int y = 400 - (boardHeight * 100) / 2;
 		// System.out.println("Starting X: "+(400-boardWidth/2));
@@ -198,7 +201,10 @@ public class GameSceneController extends GameWindow implements Initializable {
 		}
 		gameObjects.getChildren().add(tiles);// add tile group to game group
 	}
-
+	
+	/**
+	* Adds players to the board
+	*/
 	public void addPlayer() {
 		initPlayerPos = currentGameState.getPlayersPositions();
 		// PlayerPiece pieceArray[] = currentGame.getPlayerPieceArray();
@@ -218,6 +224,9 @@ public class GameSceneController extends GameWindow implements Initializable {
 		// System.out.println(gameObjects.getChildren());
 	}
 
+	/**
+	* Sets up the players perspective
+	*/
 	public void setCamera() {
 		PerspectiveCamera camera = new PerspectiveCamera();
 		camera.translateXProperty().set(cameraX);
@@ -261,6 +270,9 @@ public class GameSceneController extends GameWindow implements Initializable {
 		}
 	}
 
+	/**
+	* Updates player positions
+	*/
 	private static void updatePlayerPosition() throws IllegalMove {
 		updateGameState();
 		int[][] playerPosition = currentGameState.getPlayersPositions();
@@ -318,6 +330,9 @@ public class GameSceneController extends GameWindow implements Initializable {
 		//tileArray[4][4].getTranslateY());
 	}
 
+	/**
+	* Creating the visual representations of players
+	*/
 	private static void showCurPlayer() {
 		sRightMenuPane.getChildren().remove(playerIndicator);
 		int curPlayerNum = currentGameState.getCurPlayer();
@@ -342,6 +357,11 @@ public class GameSceneController extends GameWindow implements Initializable {
 		changePlayer.play();
 	}
 	
+	/**
+	* Displays which players turn it is.
+	* Displays the tile the player has drawn.
+	* Displays the action tiles, if any, the player owns.
+	*/
 	private static void displayTurns() {
 		Label turnsLabel = new Label("Turns: " + turns);
 		turnsLabel.setStyle("-fx-background-color: rgba(0, 0, 0, 0.5);");
@@ -400,6 +420,9 @@ public class GameSceneController extends GameWindow implements Initializable {
 		seqTransition.play();
 	}
 	
+	/**
+	* Displays the type of tile the player is placing on the board.
+	*/
 	private static void showPlaceableFloor(Tile floorTile) {
 		System.out.println("===========New Tile: " + floorTile.getType());
 		inventory = new Group();
@@ -428,7 +451,12 @@ public class GameSceneController extends GameWindow implements Initializable {
 		gameObjects.getChildren().add(inventory);
 	}
 	
-	
+	/**
+	* Allows the player to interact with the board, showing which rows and columns
+	* the player can insert a tile into.
+	* Updates the game state with the new board.
+	* Throws an exception if a tile cannot be inserted.
+	*/
 	public static void setPushableArrows() {
 		updateGameState();
 		updateBoard();
@@ -553,7 +581,9 @@ public class GameSceneController extends GameWindow implements Initializable {
 		}
 	}
 
-
+	/**
+	* Handles the visuals of error messages
+	*/
 	private static void displayErrorMessage(String errorMessage) {
 		Label error = new Label(errorMessage);
 		error.setStyle("-fx-background-color: transparent;");
@@ -574,7 +604,12 @@ public class GameSceneController extends GameWindow implements Initializable {
 		});
 		seqTransition.play();
 	}
-
+	
+	/**
+	* Shows the moveable tiles available to the current player.
+	* Shows the moveable spaces available to current player.
+	* Updates game state on the players choice.
+	*/
 	public static void setMoveableTiles() {
 		
 		updateGameState();
@@ -616,7 +651,11 @@ public class GameSceneController extends GameWindow implements Initializable {
 		clickableAnime.play();
 		}
 	}
-
+	
+	/**
+	* Adds visuals for players movement.
+	* Throws an exception if an illegal move is attempted.
+	*/
 	public static void movePlayer(Group player, double x, double y) throws IllegalMove {
 		TranslateTransition playerMove = new TranslateTransition(Duration.seconds(1), player);
 		playerMove.setToX(x);
@@ -624,6 +663,9 @@ public class GameSceneController extends GameWindow implements Initializable {
 		playerMove.play();
 	}
 
+	/**
+	* Moves the player and updates the game state
+	*/
 	public static void playerDeliberateMove(Group player, int y, int x) {
 		try {
 			currentGame.moveCurrentPlayer(x, y);
@@ -646,6 +688,7 @@ public class GameSceneController extends GameWindow implements Initializable {
 		}
 	}
 
+	
 	private static ScaleTransition animateTile(Box tile) {
 		ScaleTransition enlarge = new ScaleTransition(Duration.millis(500), tile);
 		enlarge.setToX(0.8);
@@ -656,6 +699,10 @@ public class GameSceneController extends GameWindow implements Initializable {
 		return enlarge;
 	}
 
+	/**
+	* Resets clickable allowing the player to interact
+	* with clickable and updating board.
+	*/
 	public static void resetClickable() {
 		System.out.println("================================================");
 		for (Box tile : clickAble) {
@@ -674,6 +721,11 @@ public class GameSceneController extends GameWindow implements Initializable {
 		}*/
 	}
 
+	/**
+	* Works out which directionn the current players tile is
+	* being inserted in and removes the tile that gets pushed 
+	* out in either deriction.
+	*/
 	public static void pushTileAnimation(int rows, int columns, int orientation) {
 		System.out.println("============ Active Placeable Type : " + activePlaceable.getType() + " Ori: " + activePlaceable.getOrientation());
 		
@@ -747,6 +799,10 @@ public class GameSceneController extends GameWindow implements Initializable {
 		pushNewTile(X, Y, rows, columns, true);
 	}
 
+	/** 
+	* Puts the tile that the current player has pulled 
+	* from the bag in the correct space.
+	*/
 	public static Box pushNewTile(double x, double y, int rows, int columns, boolean last) {
 		//System.out.println("Push "+activePlaceable.getType());
 		Box newTile = objectFactory.makeTile(activePlaceable);
@@ -784,6 +840,12 @@ public class GameSceneController extends GameWindow implements Initializable {
 		tileMove.play();
 	}
 
+	/**
+	* Gets all the action tiles the current player owns.
+	* Implements the action tiles when the current player
+	* chooses to use them.
+	* Implements the graphics of action tiles.
+	*/
 	public static void showInventory() {
 		updateGameState();
 		actionTilesOwned = currentGameState.getActionTileForPlayer(currentGameState.getCurPlayer());
@@ -889,6 +951,9 @@ public class GameSceneController extends GameWindow implements Initializable {
 	}
 	
 
+	/** 
+	* Shows the tile pulled from the silk bag onto the screen.
+	*/
 	private static void showDrawTile(Tile drawTile) {
 		Image tileImage = null;
 		if (drawTile.getType() == TileType.Straight) {
