@@ -61,26 +61,6 @@ public class TutorialController extends GameWindow implements Initializable{
 	public Button Left;
 	@FXML
 	public Button Back;
-	@FXML
-	public Circle C1; 
-	@FXML
-	public Circle C2; 
-	@FXML
-	public Circle C3;
-	@FXML
-	public Circle C4; 
-	@FXML
-	public Circle C5; 
-	@FXML
-	public Circle C6;
-	@FXML
-	public Circle C7; 
-	@FXML
-	public Circle C8; 
-	@FXML
-	public Circle C9;
-	@FXML
-	public HBox CircleBox;
 	
 	/**
 	 * This method initialize this page
