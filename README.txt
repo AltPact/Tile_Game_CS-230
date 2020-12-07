@@ -24,3 +24,5 @@ Milan Tiji - Student Number - 980334
 Fai Tong - Student Number - 1909787
 
 Alexander Ullman - Student Number - 851732
+
+To run the the code, launch application controller. Everything should be accessable from this menu.
