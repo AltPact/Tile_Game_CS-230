@@ -9,7 +9,7 @@ Our Files are split into 4 sections:
 
 All participates in Project:
 
-Ashley Arik (also known as Ashley Arik) - Student Number - 850904
+Adem Arik (also known as Ashley Arik) - Student Number - 850904
 
 Morgan Firkins - Student Number - 852264
 
