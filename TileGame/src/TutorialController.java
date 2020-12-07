@@ -29,7 +29,7 @@ import javafx.scene.shape.Circle;
 import javafx.util.Duration;
 /**
  * Controls the functionality of the Tutorial Window
- * @author Wan Fai Tong (1909787),Sam Steadman (1910177),Morgan Firkins(852264), Adem Arik (850904)
+ * @author Wan Fai Tong (1909787),Sam Steadman (1910177),Morgan Firkins(852264), Ashley Arik (850904)
  * @version: 1.1
  */
 public class TutorialController extends GameWindow implements Initializable{
@@ -78,7 +78,9 @@ public class TutorialController extends GameWindow implements Initializable{
 	@FXML
 	public Circle C8; 
 	@FXML
-	public Circle C9; 
+	public Circle C9;
+	@FXML
+	public HBox CircleBox;
 	
 	/**
 	 * This method initialize this page
@@ -108,16 +110,6 @@ public class TutorialController extends GameWindow implements Initializable{
 		imageArr.add(imageView7);
 		imageArr.add(imageView8);
 		imageArr.add(imageView9);
-		
-		circleArr.add(C1);
-		circleArr.add(C2);
-		circleArr.add(C3);
-		circleArr.add(C4);
-		circleArr.add(C5);
-		circleArr.add(C6);
-		circleArr.add(C7);
-		circleArr.add(C8);
-		circleArr.add(C9);
 	}
 	
 	/**
@@ -140,7 +132,6 @@ public class TutorialController extends GameWindow implements Initializable{
 		int nextcounter=setCounter((counter+1));
 		switchImage(imageArr.get(nextcounter), true);
 		System.out.println(nextcounter);
-		setCircleDot(nextcounter);
 		counter=nextcounter;
 		//System.out.println(SP.getChildren());
 	}
@@ -155,7 +146,6 @@ public class TutorialController extends GameWindow implements Initializable{
 		int nextcounter=setCounter((counter-1));
 		switchImage(imageArr.get(nextcounter), false);
 		System.out.println(nextcounter);
-		setCircleDot(nextcounter);
 		counter=nextcounter;
 		//System.out.println(SP.getChildren());
 	}
@@ -222,7 +212,7 @@ public class TutorialController extends GameWindow implements Initializable{
 	
 	/**
 	 * This method make sure the counter wouldn't below 0
-	 * and larger than 2
+	 * and larger than 8
 	 * @param n The next counter
 	 * @return The correct counter
 	 */
@@ -306,24 +296,5 @@ public class TutorialController extends GameWindow implements Initializable{
 		//System.out.println("B4 SP:"+SP.getChildren());
 		paral.setOnFinished(e->SP.getChildren().remove(i1));
 		paral.play();
-	}
-	
-	/**
-	 * This method animates and change the color
-	 * of the progress dots
-	 * @param i The dot counter
-	 */
-	private void setCircleDot(int i) {
-		for(int n=0;n<9;n++) {
-			if(n!=i) {
-				//System.out.println(circleArr.get(n));
-				FillTransition ft = new FillTransition(Duration.millis(50), circleArr.get(n), Color.LIGHTSALMON, Color.WHITE);
-				ft.play();
-			}else {
-				//System.out.println(circleArr.get(n + "Check"));
-				FillTransition ft = new FillTransition(Duration.millis(50), circleArr.get(n), Color.WHITE, Color.LIGHTSALMON);
-				ft.play();
-			}
-		}
 	}
 }
